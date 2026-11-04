@@ -126,20 +126,22 @@ const HeroSection = ({ onOpenAdmission, onOpenLogin, onOpenVerify }) => {
                 
                 {/* Visual Header */}
                 <div className="flex items-center justify-between pb-4 border-b border-white/10">
-                  <div className="flex items-center gap-2.5">
-                    <div className="w-10 h-10 rounded-xl bg-blue-600/30 border border-blue-400/30 flex items-center justify-center text-blue-300">
-                      <Monitor className="w-5 h-5" />
-                    </div>
+                  <div className="flex items-center gap-3">
+                    <img
+                      src="/mdi-real-logo-cropped.png"
+                      alt="Modern Delhi Infotech Official Logo"
+                      className="w-12 h-12 object-contain rounded-full bg-white p-0.5 shadow-md flex-shrink-0"
+                    />
                     <div>
                       <h4 className="font-bold text-white text-sm">
-                        High-Tech Computer Lab
+                        High-Tech Computer Training Centre
                       </h4>
                       <p className="text-[11px] text-emerald-400 font-semibold">
                         Adarsh Nagar (Branch 2) &amp; SBI Road (Branch 1)
                       </p>
                     </div>
                   </div>
-                  <span className="px-2.5 py-1 rounded-full text-[10px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/40">
+                  <span className="px-2.5 py-1 rounded-full text-[10px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/40 whitespace-nowrap">
                     50+ PCs
                   </span>
                 </div>

@@ -75,11 +75,18 @@ const LoginModal = ({ isOpen, onClose }) => {
             <X className="w-5 h-5" />
           </button>
 
-          <div className="flex items-center gap-2 mb-2">
-            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-            <span className="text-xs font-bold text-blue-200 uppercase tracking-widest">
-              Modern Delhi Infotech Portal
-            </span>
+          <div className="flex items-center gap-3 mb-3">
+            <img
+              src="/mdi-real-logo-cropped.png"
+              alt="Logo"
+              className="w-12 h-12 object-contain rounded-full bg-white p-0.5 shadow-md flex-shrink-0"
+            />
+            <div>
+              <span className="text-[10px] font-bold text-amber-400 uppercase tracking-widest block">
+                MODERN DELHI INFOTECH
+              </span>
+              <span className="text-xs text-blue-200">Official Student &amp; Staff Portal</span>
+            </div>
           </div>
 
           <h3 className="text-2xl font-display font-extrabold text-white">

@@ -91,15 +91,17 @@ const VerificationSection = () => {
             {searchResult ? (
               <div className="bg-white rounded-3xl p-6 sm:p-8 border-2 border-emerald-400 shadow-xl relative overflow-hidden">
                 <div className="flex items-center justify-between pb-4 border-b border-slate-100">
-                  <div className="flex items-center gap-2.5">
-                    <div className="w-10 h-10 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center">
-                      <ShieldCheck className="w-6 h-6" />
-                    </div>
+                  <div className="flex items-center gap-3">
+                    <img
+                      src="/mdi-real-logo-cropped.png"
+                      alt="Logo"
+                      className="w-12 h-12 object-contain rounded-full bg-white p-0.5 border border-amber-300 shadow-sm"
+                    />
                     <div>
                       <h4 className="font-bold text-slate-900 text-base">
-                        Verified Authentic Student
+                        Verified Student Record
                       </h4>
-                      <p className="text-xs text-slate-500">Modern Delhi Infotech Records</p>
+                      <p className="text-xs text-slate-500">Modern Delhi Infotech Official Records</p>
                     </div>
                   </div>
                   <span className="px-3 py-1 bg-emerald-50 text-emerald-700 border border-emerald-300 font-bold text-xs rounded-full">

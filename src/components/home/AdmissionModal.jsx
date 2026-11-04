@@ -49,16 +49,24 @@ const AdmissionModal = ({ initialCourse = null, onClose }) => {
             <X className="w-5 h-5" />
           </button>
           
-          <div className="flex items-center gap-2">
-            <span className="px-2 py-0.5 rounded bg-amber-500 text-slate-950 font-bold text-[10px] tracking-wider uppercase">
-              Online Admission
-            </span>
-            <span className="text-xs text-blue-200">Session 2026-27</span>
+          <div className="flex items-center gap-3 mb-2">
+            <img
+              src="/mdi-real-logo-cropped.png"
+              alt="Logo"
+              className="w-12 h-12 object-contain rounded-full bg-white p-0.5 shadow-md flex-shrink-0"
+            />
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="px-2 py-0.5 rounded bg-amber-500 text-slate-950 font-bold text-[10px] tracking-wider uppercase">
+                  Online Admission
+                </span>
+                <span className="text-xs text-blue-200">Session 2026-27</span>
+              </div>
+              <h3 className="text-lg sm:text-xl font-display font-extrabold text-white mt-0.5">
+                Modern Delhi Infotech
+              </h3>
+            </div>
           </div>
-
-          <h3 className="text-xl sm:text-2xl font-display font-extrabold text-white mt-1">
-            Course Admission & Enquiry Form
-          </h3>
           <p className="text-xs text-slate-300 mt-0.5">
             Modern Delhi Infotech · Direct Mentorship by Sonu Sir (BCA, MCA)
           </p>

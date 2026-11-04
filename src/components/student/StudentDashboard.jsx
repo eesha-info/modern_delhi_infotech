@@ -203,12 +203,19 @@ const StudentDashboard = () => {
               
               {/* Digital Student Identity Card (Specimen replica) */}
               <div className="lg:col-span-5 bg-white rounded-3xl p-6 border-2 border-slate-200 shadow-lg relative overflow-hidden">
-                <div className="bg-gradient-to-r from-blue-900 to-brand-navyDark text-white -mx-6 -mt-6 p-4 text-center border-b-2 border-amber-500">
-                  <span className="text-[10px] font-bold uppercase tracking-widest text-amber-400 block">
-                    MODERN DELHI INFOTECH · MADHEPURA
-                  </span>
-                  <h4 className="font-bold text-sm text-white">STUDENT IDENTITY CARD</h4>
-                  <p className="text-[10px] text-blue-200">Estd. 2017 · Regd. Govt. of India</p>
+                <div className="bg-gradient-to-r from-blue-900 to-brand-navyDark text-white -mx-6 -mt-6 p-4 text-center border-b-2 border-amber-500 flex items-center justify-center gap-3">
+                  <img
+                    src="/mdi-real-logo-cropped.png"
+                    alt="Logo"
+                    className="w-10 h-10 object-contain rounded-full bg-white p-0.5"
+                  />
+                  <div>
+                    <span className="text-[10px] font-bold uppercase tracking-widest text-amber-400 block">
+                      MODERN DELHI INFOTECH · MADHEPURA
+                    </span>
+                    <h4 className="font-bold text-sm text-white">STUDENT IDENTITY CARD</h4>
+                    <p className="text-[9px] text-blue-200">Estd. 2017 · Regd. Govt. of India</p>
+                  </div>
                 </div>
 
                 <div className="mt-5 flex gap-4 items-start">
@@ -500,9 +507,9 @@ const StudentDashboard = () => {
             {/* Certificate Visual Replica */}
             <div className="max-w-2xl mx-auto p-8 rounded-3xl border-4 border-double border-amber-500/80 bg-gradient-to-b from-amber-50/20 via-white to-amber-50/20 text-center relative shadow-xl">
               <img
-                src="/logo-icon.svg"
+                src="/mdi-real-logo-cropped.png"
                 alt="Emblem"
-                className="w-16 h-16 mx-auto mb-2"
+                className="w-20 h-20 mx-auto mb-2 object-contain"
               />
               <h2 className="font-serif font-black text-2xl text-blue-950 tracking-wider">
                 MODERN DELHI INFOTECH
