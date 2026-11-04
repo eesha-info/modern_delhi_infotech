@@ -6,6 +6,7 @@ import {
 import { useData } from '../../context/DataContext';
 import { useAppTheme } from '../../context/ThemeContext';
 import Header from '../dashboard/Header';
+import { asset } from '../../utils/asset';
 
 const AdminTakeAttendance = ({ initialBatchId = null }) => {
   const { batches, students, attendanceData, markBatchAttendance, studentsInBatch } = useData();
@@ -608,7 +609,7 @@ const AdminTakeAttendance = ({ initialBatchId = null }) => {
                             alt={st.name}
                             className="w-9 h-9 rounded-full object-cover border border-slate-300/40 flex-shrink-0"
                             onError={(e) => {
-                              e.currentTarget.src = "/logo-icon.svg";
+                              e.currentTarget.src = asset('/logo-icon.svg');
                             }}
                           />
                           <div>

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { X, ShieldCheck, GraduationCap, Lock, Mail, User, ArrowRight, Sparkles, CheckCircle2 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { useData } from '../../context/DataContext';
+import { asset } from '../../utils/asset';
 
 const LoginModal = ({ isOpen, onClose }) => {
   const [activeTab, setActiveTab] = useState('student'); // 'student' | 'admin'
@@ -77,7 +78,7 @@ const LoginModal = ({ isOpen, onClose }) => {
 
           <div className="flex items-center gap-3 mb-3">
             <img
-              src="/mdi-real-logo-cropped.png"
+              src={asset('/mdi-real-logo-cropped.png')}
               alt="Logo"
               className="w-12 h-12 object-contain rounded-full bg-white p-0.5 shadow-md flex-shrink-0"
             />

@@ -1,4 +1,5 @@
 import React from 'react';
+import { asset } from '../../utils/asset';
 
 const Logo = ({ size = "md", light = false }) => {
   const sizeClasses = {
@@ -12,11 +13,11 @@ const Logo = ({ size = "md", light = false }) => {
       {/* Real Authentic Emblem Logo */}
       <div className={`relative flex-shrink-0 ${sizeClasses[size] || sizeClasses.md} rounded-full overflow-hidden shadow-sm bg-white p-0.5 border border-slate-200`}>
         <img
-          src="/mdi-real-logo-cropped.png"
+          src={asset('/mdi-real-logo-cropped.png')}
           alt="Modern Delhi Infotech"
           className="w-full h-full object-contain"
           onError={(e) => {
-            e.currentTarget.src = "/logo-icon.svg";
+            e.currentTarget.src = asset('/logo-icon.svg');
           }}
         />
       </div>

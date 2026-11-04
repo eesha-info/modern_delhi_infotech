@@ -1,5 +1,6 @@
 import React from 'react';
 import { Search, Bell, LogOut, Menu, ExternalLink, ShieldCheck, GraduationCap, Home } from 'lucide-react';
+import { asset } from '../../utils/asset';
 
 const ArgonNavbar = ({
   activeTabTitle = 'Dashboard',
@@ -65,11 +66,11 @@ const ArgonNavbar = ({
         <div className="flex items-center gap-2 pl-2 border-l border-white/20">
           <div className="w-9 h-9 rounded-full bg-white p-0.5 overflow-hidden shadow-sm flex-shrink-0">
             <img
-              src={user?.avatar || (role === 'admin' ? '/mdi-real-logo-cropped.png' : 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80')}
+              src={user?.avatar || (role === 'admin' ? asset('/mdi-real-logo-cropped.png') : 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80')}
               alt={user?.name || 'User'}
               className="w-full h-full object-cover rounded-full"
               onError={(e) => {
-                e.currentTarget.src = "/logo-icon.svg";
+                e.currentTarget.src = asset('/logo-icon.svg');
               }}
             />
           </div>

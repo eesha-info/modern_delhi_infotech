@@ -3,6 +3,7 @@ import { X, Send, CheckCircle2, Phone, Sparkles } from 'lucide-react';
 import { initialCourses, instituteInfo } from '../../data/mdiData';
 import { useData } from '../../context/DataContext';
 import confetti from 'canvas-confetti';
+import { asset } from '../../utils/asset';
 
 const AdmissionModal = ({ initialCourse = null, onClose }) => {
   const { addEnquiry } = useData();
@@ -51,7 +52,7 @@ const AdmissionModal = ({ initialCourse = null, onClose }) => {
           
           <div className="flex items-center gap-3 mb-2">
             <img
-              src="/mdi-real-logo-cropped.png"
+              src={asset('/mdi-real-logo-cropped.png')}
               alt="Logo"
               className="w-12 h-12 object-contain rounded-full bg-white p-0.5 shadow-md flex-shrink-0"
             />

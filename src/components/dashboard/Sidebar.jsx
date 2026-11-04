@@ -6,6 +6,7 @@ import {
   Map, Activity, IndianRupee, ClipboardList
 } from 'lucide-react';
 import { useAppTheme } from '../../context/ThemeContext';
+import { asset } from '../../utils/asset';
 
 const Sidebar = ({
   role = 'admin',
@@ -138,11 +139,11 @@ const Sidebar = ({
               <div className="flex items-center gap-2.5 min-w-0">
                 <div className="w-8 h-8 rounded-full overflow-hidden bg-white p-0.5 border border-slate-300/40 flex-shrink-0 shadow-xs">
                   <img
-                    src="/mdi-real-logo-cropped.png"
+                    src={asset('/mdi-real-logo-cropped.png')}
                     alt="Delhi Infotech"
                     className="w-full h-full object-contain"
                     onError={(e) => {
-                      e.currentTarget.src = "/logo-icon.svg";
+                      e.currentTarget.src = asset('/logo-icon.svg');
                     }}
                   />
                 </div>
@@ -179,13 +180,13 @@ const Sidebar = ({
                 <img
                   src={
                     role === 'admin'
-                      ? '/sonu-kumar.jpg'
+                      ? asset('/sonu-kumar.jpg')
                       : (user?.avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80')
                   }
                   alt={role === 'admin' ? 'Sonu Kumar' : (user?.name || 'Student')}
                   className="w-full h-full object-cover object-top rounded-full"
                   onError={(e) => {
-                    e.currentTarget.src = "/mdi-real-logo-cropped.png";
+                    e.currentTarget.src = asset('/mdi-real-logo-cropped.png');
                   }}
                 />
               </div>

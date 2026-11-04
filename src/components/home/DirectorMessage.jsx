@@ -1,6 +1,7 @@
 import React from 'react';
 import { Award, CheckCircle, Phone, Mail, GraduationCap, Quote, Sparkles, ArrowRight } from 'lucide-react';
 import { instituteInfo } from '../../data/mdiData';
+import { asset } from '../../utils/asset';
 
 const DirectorMessage = ({ onOpenAdmission }) => {
   return (
@@ -31,7 +32,7 @@ const DirectorMessage = ({ onOpenAdmission }) => {
                 {/* Profile Badge */}
                 <div className="w-56 h-72 sm:w-64 sm:h-80 rounded-3xl p-1 bg-gradient-to-tr from-blue-700 via-indigo-600 to-amber-500 shadow-xl">
                   <img
-                    src="/sonu-kumar.jpg"
+                    src={asset('/sonu-kumar.jpg')}
                     alt="Sonu Kumar (Sonu Sir), Founder & Director, Modern Delhi Infotech"
                     className="w-full h-full object-cover object-top rounded-[22px]"
                     loading="lazy"

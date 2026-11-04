@@ -4,6 +4,7 @@ import {
   ExternalLink, Menu
 } from 'lucide-react';
 import { useAppTheme } from '../../context/ThemeContext';
+import { asset } from '../../utils/asset';
 
 const Topbar = ({
   user,
@@ -107,11 +108,11 @@ const Topbar = ({
         <div className="flex items-center gap-2 pl-2 border-l border-white/10">
           <div className="w-8 h-8 rounded-full overflow-hidden border-2 border-[#4cceac]/60 shadow-xs flex-shrink-0 bg-black/10">
             <img
-              src={role === 'admin' ? '/sonu-kumar.jpg' : (user?.avatar || '/mdi-real-logo-cropped.png')}
+              src={role === 'admin' ? asset('/sonu-kumar.jpg') : (user?.avatar || asset('/mdi-real-logo-cropped.png'))}
               alt={role === 'admin' ? 'Sonu Kumar' : 'User'}
               className="w-full h-full object-cover object-top rounded-full"
               onError={(e) => {
-                e.currentTarget.src = "/mdi-real-logo-cropped.png";
+                e.currentTarget.src = asset('/mdi-real-logo-cropped.png');
               }}
             />
           </div>

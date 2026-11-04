@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { asset } from '../utils/asset';
 
 const AuthContext = createContext(null);
 
@@ -42,7 +43,7 @@ export const AuthProvider = ({ children }) => {
       id: 'admin-01',
       role: 'admin',
       name: 'Sonu Kumar',
-      avatar: '/sonu-kumar.jpg',
+      avatar: asset('/sonu-kumar.jpg'),
       email: email,
       designation: 'Director',
       qualifications: 'BCA, MCA',

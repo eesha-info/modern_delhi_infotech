@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Search, CheckCircle2, XCircle, Award, ShieldCheck, Download, Calendar, User, BookOpen } from 'lucide-react';
 import { useData } from '../../context/DataContext';
+import { asset } from '../../utils/asset';
 
 const StudentVerifier = ({ autoFocus = false }) => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -82,7 +83,7 @@ const StudentVerifier = ({ autoFocus = false }) => {
                 <div className="flex items-center justify-between pb-4 border-b border-slate-100">
                   <div className="flex items-center gap-3">
                     <img
-                      src="/mdi-real-logo-cropped.png"
+                      src={asset('/mdi-real-logo-cropped.png')}
                       alt="Logo"
                       className="w-12 h-12 object-contain rounded-full bg-white p-0.5 border border-amber-300 shadow-sm"
                     />

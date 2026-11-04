@@ -5,6 +5,7 @@ import {
   GraduationCap, X, Calendar
 } from 'lucide-react';
 import { instituteInfo } from '../../data/mdiData';
+import { asset } from '../../utils/asset';
 
 const ArgonSidebar = ({
   role = 'admin',
@@ -129,11 +130,11 @@ const ArgonSidebar = ({
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-full overflow-hidden bg-white p-0.5 border border-slate-200 shadow-xs flex-shrink-0">
                 <img
-                  src="/mdi-real-logo-cropped.png"
+                  src={asset('/mdi-real-logo-cropped.png')}
                   alt="MDI Logo"
                   className="w-full h-full object-contain"
                   onError={(e) => {
-                    e.currentTarget.src = "/logo-icon.svg";
+                    e.currentTarget.src = asset('/logo-icon.svg');
                   }}
                 />
               </div>

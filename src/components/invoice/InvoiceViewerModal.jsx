@@ -1,6 +1,7 @@
 import React from 'react';
 import { X, Printer, Download, ArrowLeft, CheckCircle2 } from 'lucide-react';
 import { useData } from '../../context/DataContext';
+import { asset } from '../../utils/asset';
 
 const InvoiceViewerModal = () => {
   const { activeInvoice, setActiveInvoice } = useData();
@@ -58,11 +59,11 @@ const InvoiceViewerModal = () => {
           {/* Real Official Logo Watermark in Center Background */}
           <div className="absolute inset-0 flex items-center justify-center pointer-events-none select-none z-0">
             <img
-              src="/mdi-real-logo-cropped.png"
+              src={asset('/mdi-real-logo-cropped.png')}
               alt="Watermark"
               className="w-72 h-72 sm:w-[440px] sm:h-[440px] object-contain opacity-[0.08] filter contrast-125"
               onError={(e) => {
-                e.currentTarget.src = "/logo-icon.svg";
+                e.currentTarget.src = asset('/logo-icon.svg');
               }}
             />
           </div>
@@ -74,11 +75,11 @@ const InvoiceViewerModal = () => {
               {/* Official Real Logo Emblem on Left */}
               <div className="flex-shrink-0">
                 <img
-                  src="/mdi-real-logo-cropped.png"
+                  src={asset('/mdi-real-logo-cropped.png')}
                   alt="Modern Delhi Infotech Official Logo"
                   className="w-20 h-20 sm:w-24 sm:h-24 object-contain"
                   onError={(e) => {
-                    e.currentTarget.src = "/logo-icon.svg";
+                    e.currentTarget.src = asset('/logo-icon.svg');
                   }}
                 />
               </div>

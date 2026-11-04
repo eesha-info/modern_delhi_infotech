@@ -1,6 +1,7 @@
 import React from 'react';
 import { Award, ArrowRight, Phone, Star, Monitor, ShieldCheck, Keyboard } from 'lucide-react';
 import { instituteInfo } from '../../data/mdiData';
+import { asset } from '../../utils/asset';
 
 const popularPrograms = ['ADIT', 'ADCA', 'DCA', 'Tally Prime + GST', 'Hindi & English Typing'];
 
@@ -93,7 +94,7 @@ const HeroSection = ({ onOpenAdmission }) => {
               <div className="absolute -inset-4 bg-gradient-to-tr from-blue-600/40 to-amber-400/30 rounded-[2rem] blur-2xl" />
               <div className="relative rounded-3xl bg-white p-2 shadow-2xl rotate-[1.5deg] hover:rotate-0 transition-transform duration-500">
                 <img
-                  src="/mdi-banner.png"
+                  src={asset('/mdi-banner.png')}
                   alt="Modern Delhi Infotech Branch 2 — ADIT, ADCA, DCA, Tally and Hindi + English Typing courses by Sonu Sir"
                   className="w-full h-auto rounded-2xl"
                   loading="eager"

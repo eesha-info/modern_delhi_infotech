@@ -16,6 +16,7 @@ import Header from '../dashboard/Header';
 import StatBox from '../dashboard/StatBox';
 import ProgressCircle from '../dashboard/ProgressCircle';
 import TypingTestWidget from '../home/TypingTestWidget';
+import { asset } from '../../utils/asset';
 
 const StudentDashboard = () => {
   const { user, logout, setActiveView } = useAuth();
@@ -180,11 +181,11 @@ const StudentDashboard = () => {
                     <div className="flex items-center justify-between pb-3 border-b border-white/5">
                       <div className="flex items-center gap-2">
                         <img
-                          src="/mdi-real-logo-cropped.png"
+                          src={asset('/mdi-real-logo-cropped.png')}
                           alt="MDI"
                           className="w-7 h-7 rounded-full bg-white p-0.5 object-contain"
                           onError={(e) => {
-                            e.currentTarget.src = "/logo-icon.svg";
+                            e.currentTarget.src = asset('/logo-icon.svg');
                           }}
                         />
                         <span style={{ color: colors.gray[100] }} className="font-bold text-xs">

@@ -1,5 +1,6 @@
 import React from 'react';
 import { QrCode } from 'lucide-react';
+import { asset } from '../../utils/asset';
 
 // Printable completion certificate. Always rendered on white paper, independent of dashboard theme.
 const CertificateCard = ({ cert }) => (
@@ -9,7 +10,7 @@ const CertificateCard = ({ cert }) => (
     className="rounded-lg p-8 sm:p-12 shadow-md border-4 border-amber-600/30 max-w-3xl mx-auto text-center relative overflow-hidden"
   >
     <div className="w-16 h-16 mx-auto mb-3">
-      <img src="/mdi-real-logo-cropped.png" alt="MDI" className="w-full h-full object-contain" />
+      <img src={asset('/mdi-real-logo-cropped.png')} alt="MDI" className="w-full h-full object-contain" />
     </div>
     <h2 className="text-xl sm:text-2xl font-black font-serif text-slate-900 tracking-tight">MODERN DELHI INFOTECH</h2>
     <p className="text-xs text-slate-600 font-semibold uppercase tracking-widest mt-0.5">

@@ -18,6 +18,7 @@ import AdminFees from './AdminFees';
 import AdminTests from './AdminTests';
 import AdminCertificates from './AdminCertificates';
 import AdminHome from './AdminHome';
+import { asset } from '../../utils/asset';
 
 const AdminDashboard = () => {
   const { user, logout, setActiveView } = useAuth();
@@ -274,7 +275,7 @@ const AdminDashboard = () => {
                                 alt={st.name}
                                 className="w-9 h-9 rounded-full object-cover border border-white/10"
                                 onError={(e) => {
-                                  e.currentTarget.src = "/logo-icon.svg";
+                                  e.currentTarget.src = asset('/logo-icon.svg');
                                 }}
                               />
                               <div>

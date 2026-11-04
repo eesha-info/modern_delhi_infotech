@@ -59,6 +59,7 @@ export const instituteInfo = {
     pcsInLab: "80+"
   }
 };
+import { asset } from '../utils/asset';
 
 export const initialCourses = [
   {
@@ -797,6 +798,6 @@ export const typingPracticeTexts = [
 
 // Photo gallery on the landing page. Add more photos to /public/gallery and list them here.
 export const galleryImages = [
-  { src: "/sonu-kumar.jpg", caption: "Sonu Kumar (Sonu Sir) – Founder & Director" },
-  { src: "/mdi-banner.png", caption: "Branch 2 – ADIT, ADCA, DCA, Tally & Typing", fit: "object-contain bg-white" }
+  { src: asset('/sonu-kumar.jpg'), caption: "Sonu Kumar (Sonu Sir) – Founder & Director" },
+  { src: asset('/mdi-banner.png'), caption: "Branch 2 – ADIT, ADCA, DCA, Tally & Typing", fit: "object-contain bg-white" }
 ];

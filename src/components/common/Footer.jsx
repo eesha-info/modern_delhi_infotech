@@ -1,6 +1,7 @@
 import React from 'react';
 import { Phone, Mail, MapPin, Clock, Award, Shield, CheckCircle2, ArrowRight, ExternalLink } from 'lucide-react';
 import { instituteInfo, initialCourses } from '../../data/mdiData';
+import { asset } from '../../utils/asset';
 
 const Footer = ({ onOpenAdmission, onOpenLogin, onOpenVerify }) => {
   return (
@@ -14,11 +15,11 @@ const Footer = ({ onOpenAdmission, onOpenLogin, onOpenVerify }) => {
             <div className="flex items-center gap-3">
               <div className="w-12 h-12 rounded-full overflow-hidden bg-white p-0.5 border border-slate-700 flex-shrink-0">
                 <img
-                  src="/mdi-real-logo-cropped.png"
+                  src={asset('/mdi-real-logo-cropped.png')}
                   alt="Modern Delhi Infotech"
                   className="w-full h-full object-contain"
                   onError={(e) => {
-                    e.currentTarget.src = "/logo-icon.svg";
+                    e.currentTarget.src = asset('/logo-icon.svg');
                   }}
                 />
               </div>
