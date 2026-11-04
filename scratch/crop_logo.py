@@ -108,3 +108,4 @@ def crop_whitespace(src_path, dest_path):
 
 if __name__ == "__main__":
     crop_whitespace("/Users/mdeesha/Desktop/MDI/public/mdi-real-logo.png", "/Users/mdeesha/Desktop/MDI/public/mdi-real-logo-cropped.png")
+

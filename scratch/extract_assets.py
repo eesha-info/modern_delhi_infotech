@@ -133,3 +133,4 @@ if __name__ == "__main__":
     # Also render page 1 of invoice PDF
     invoice_pdf = "/Users/mdeesha/.gemini/antigravity/brain/034cc81c-ed3d-41e4-816c-bea6875e4dbb/.user_uploaded/media_1793788893124_6d7d8aea.pdf"
     render_pdf_page(invoice_pdf, 1, "/Users/mdeesha/Desktop/MDI/public/mdi-invoice-sample.png", 3.0)
+
