@@ -42,7 +42,7 @@ const WhyChooseMdi = () => {
   ];
 
   return (
-    <section id="why-us" className="py-20 bg-slate-50 relative">
+    <section id="why-us" className="py-20 bg-white border-t border-slate-200/80 relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         <div className="text-center max-w-3xl mx-auto mb-16">

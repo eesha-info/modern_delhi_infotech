@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Keyboard, RotateCcw, CheckCircle2, Award, Zap, Trophy } from 'lucide-react';
+import { Keyboard, RotateCcw, CheckCircle2, Award, Zap, Trophy, ArrowRight } from 'lucide-react';
 import { typingPracticeTexts } from '../../data/mdiData';
 
 const TypingTestWidget = ({ onOpenAdmission }) => {
@@ -54,38 +54,39 @@ const TypingTestWidget = ({ onOpenAdmission }) => {
   };
 
   return (
-    <section id="typing-lab" className="py-20 bg-gradient-to-b from-slate-900 to-brand-navyDark text-white relative">
+    <section id="typing-lab" className="py-20 bg-white border-t border-slate-200/80 relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
-        <div className="text-center max-w-3xl mx-auto mb-12">
-          <span className="text-xs font-bold uppercase tracking-widest text-amber-400 bg-amber-500/20 px-3 py-1 rounded-full border border-amber-500/30">
-            Bihar Beltron & Govt. Exam Special
+        {/* Section Heading */}
+        <div className="text-center max-w-3xl mx-auto mb-10">
+          <span className="text-xs font-bold uppercase tracking-widest text-blue-700 bg-blue-100 px-3 py-1 rounded-full">
+            Bihar Beltron &amp; Govt. Exam Lab
           </span>
-          <h2 className="text-3xl sm:text-4xl font-display font-extrabold text-white mt-3 tracking-tight">
-            Try Our Online Typing Speed Simulation
+          <h2 className="text-3xl sm:text-4xl font-display font-extrabold text-slate-900 mt-3 tracking-tight">
+            Online Typing Speed Practice Simulation
           </h2>
-          <p className="text-slate-300 text-sm sm:text-base mt-2">
+          <p className="text-slate-600 text-sm sm:text-base mt-2">
             Practice touch typing in Hindi (KrutiDev / Mangal) and English just like our classroom lab students!
           </p>
 
           {/* Language Switch */}
-          <div className="flex justify-center gap-3 mt-6">
+          <div className="flex justify-center gap-2 mt-6">
             <button
               onClick={() => { setSelectedLang('English'); handleReset(); }}
-              className={`px-5 py-2 rounded-xl text-xs font-bold transition-all ${
+              className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${
                 selectedLang === 'English'
-                  ? 'bg-amber-500 text-slate-950 shadow-md'
-                  : 'bg-white/10 text-white hover:bg-white/20'
+                  ? 'bg-blue-700 text-white shadow-sm'
+                  : 'bg-white text-slate-700 border border-slate-200 hover:bg-slate-100'
               }`}
             >
-              English Touch Typing (35+ WPM)
+              English Touch Typing (Target 35+ WPM)
             </button>
             <button
               onClick={() => { setSelectedLang('Hindi'); handleReset(); }}
-              className={`px-5 py-2 rounded-xl text-xs font-bold transition-all ${
+              className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${
                 selectedLang === 'Hindi'
-                  ? 'bg-amber-500 text-slate-950 shadow-md'
-                  : 'bg-white/10 text-white hover:bg-white/20'
+                  ? 'bg-blue-700 text-white shadow-sm'
+                  : 'bg-white text-slate-700 border border-slate-200 hover:bg-slate-100'
               }`}
             >
               हिन्दी टाइपिंग (KrutiDev / Mangal)
@@ -94,36 +95,36 @@ const TypingTestWidget = ({ onOpenAdmission }) => {
         </div>
 
         {/* Typing Practice Box */}
-        <div className="max-w-3xl mx-auto bg-slate-800/90 rounded-3xl p-6 sm:p-8 border border-white/10 shadow-2xl backdrop-blur-md">
+        <div className="max-w-3xl mx-auto bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-md">
           
           {/* Header Metric Bars */}
-          <div className="grid grid-cols-3 gap-3 mb-6 text-center">
-            <div className="p-3 bg-white/5 rounded-2xl border border-white/10">
-              <span className="text-xs text-slate-400">Current Speed</span>
-              <div className="text-2xl sm:text-3xl font-extrabold text-amber-400 font-mono">
-                {wpm} <span className="text-xs text-slate-400">WPM</span>
+          <div className="grid grid-cols-3 gap-3 mb-5 text-center">
+            <div className="p-3 bg-slate-50 rounded-2xl border border-slate-200">
+              <span className="text-[11px] font-semibold text-slate-500 block">Current Speed</span>
+              <div className="text-2xl sm:text-3xl font-extrabold text-blue-900 font-mono mt-0.5">
+                {wpm} <span className="text-xs text-slate-500 font-sans font-normal">WPM</span>
               </div>
             </div>
-            <div className="p-3 bg-white/5 rounded-2xl border border-white/10">
-              <span className="text-xs text-slate-400">Accuracy</span>
-              <div className="text-2xl sm:text-3xl font-extrabold text-emerald-400 font-mono">
+            <div className="p-3 bg-slate-50 rounded-2xl border border-slate-200">
+              <span className="text-[11px] font-semibold text-slate-500 block">Accuracy</span>
+              <div className="text-2xl sm:text-3xl font-extrabold text-emerald-600 font-mono mt-0.5">
                 {accuracy}%
               </div>
             </div>
-            <div className="p-3 bg-white/5 rounded-2xl border border-white/10">
-              <span className="text-xs text-slate-400">Target Beltron</span>
-              <div className="text-2xl sm:text-3xl font-extrabold text-blue-400 font-mono">
+            <div className="p-3 bg-slate-50 rounded-2xl border border-slate-200">
+              <span className="text-[11px] font-semibold text-slate-500 block">Target Beltron</span>
+              <div className="text-2xl sm:text-3xl font-extrabold text-slate-700 font-mono mt-0.5">
                 {selectedLang === 'Hindi' ? '30 WPM' : '35 WPM'}
               </div>
             </div>
           </div>
 
           {/* Sample Text to Type */}
-          <div className="p-4 bg-slate-900/90 rounded-2xl border border-slate-700/80 mb-4 text-sm sm:text-base leading-relaxed tracking-wide select-none font-mono">
+          <div className="p-4 bg-slate-50 rounded-2xl border border-slate-200 mb-4 text-sm sm:text-base leading-relaxed tracking-wide select-none font-mono">
             {targetText.split('').map((char, index) => {
               let colorClass = "text-slate-400";
               if (index < inputVal.length) {
-                colorClass = inputVal[index] === char ? "text-emerald-400 font-bold" : "text-rose-400 bg-rose-950/60 font-bold";
+                colorClass = inputVal[index] === char ? "text-emerald-700 font-bold bg-emerald-50" : "text-rose-600 bg-rose-50 font-bold";
               }
               return (
                 <span key={index} className={colorClass}>
@@ -142,39 +143,39 @@ const TypingTestWidget = ({ onOpenAdmission }) => {
             placeholder={
               selectedLang === 'Hindi'
                 ? "यहाँ टाइप करना शुरू करें (Start typing here)..."
-                : "Start typing the text above to test your speed..."
+                : "Click here and start typing the passage above..."
             }
-            className="w-full bg-slate-900 border border-slate-700 rounded-2xl p-4 text-sm sm:text-base text-white focus:outline-none focus:border-amber-400 font-mono resize-none transition-colors"
+            className="w-full bg-white border-2 border-slate-200 rounded-2xl p-4 text-sm sm:text-base text-slate-900 focus:outline-none focus:border-blue-600 font-mono resize-none transition-colors"
           />
 
           {/* Actions & Result */}
           <div className="mt-4 flex flex-col sm:flex-row items-center justify-between gap-3">
             <button
               onClick={handleReset}
-              className="px-4 py-2 bg-white/10 hover:bg-white/15 text-slate-300 font-semibold text-xs rounded-xl flex items-center gap-1.5 transition-colors"
+              className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-xs rounded-xl flex items-center gap-1.5 transition-colors"
             >
               <RotateCcw className="w-3.5 h-3.5" />
               <span>Reset Test</span>
             </button>
 
             {isCompleted && (
-              <div className="flex items-center gap-2 text-emerald-400 text-xs font-bold animate-bounce">
-                <Trophy className="w-4 h-4 text-yellow-400" />
+              <div className="flex items-center gap-2 text-emerald-700 text-xs font-bold animate-bounce">
+                <Trophy className="w-4 h-4 text-amber-500" />
                 <span>Test Completed! Great Effort!</span>
               </div>
             )}
 
             <button
               onClick={() => onOpenAdmission({ code: 'TYPING', name: 'Hindi + English Typing' })}
-              className="px-5 py-2 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs rounded-xl shadow transition-all flex items-center gap-1"
+              className="px-4 py-2 bg-blue-700 hover:bg-blue-800 text-white font-bold text-xs rounded-xl shadow-sm transition-all flex items-center gap-1.5"
             >
               <Keyboard className="w-4 h-4" />
               <span>Join Typing Special Batch</span>
             </button>
           </div>
 
-          <p className="mt-4 text-center text-xs text-slate-400">
-            * Dedicated mechanical keyboard lab with daily speed analysis reports available at Branch 2 (Adarsh Nagar).
+          <p className="mt-4 text-center text-xs text-slate-500">
+            * Dedicated computer typing lab with daily speed tests available at Branch 2 (Adarsh Nagar, Madhepura).
           </p>
         </div>
 
@@ -184,4 +185,3 @@ const TypingTestWidget = ({ onOpenAdmission }) => {
 };
 
 export default TypingTestWidget;
-

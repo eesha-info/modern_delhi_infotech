@@ -30,7 +30,7 @@ const VerificationSection = () => {
   };
 
   return (
-    <section id="verification" className="py-20 bg-slate-50 relative">
+    <section id="verification" className="py-20 bg-slate-50 border-t border-slate-200/80 relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         <div className="max-w-3xl mx-auto text-center mb-10">
