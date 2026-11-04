@@ -55,15 +55,20 @@ const InvoiceViewerModal = () => {
             <div className="w-1/3 bg-amber-500"></div>
           </div>
 
-          {/* Faint Center Watermark */}
-          <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-[0.035] select-none">
-            <span className="text-6xl sm:text-8xl font-black font-sans uppercase tracking-widest text-slate-900 -rotate-12">
-              COMPUTER INSTITUTE
-            </span>
+          {/* Real Official Logo Watermark in Center Background */}
+          <div className="absolute inset-0 flex items-center justify-center pointer-events-none select-none z-0">
+            <img
+              src="/mdi-real-logo-cropped.png"
+              alt="Watermark"
+              className="w-72 h-72 sm:w-[440px] sm:h-[440px] object-contain opacity-[0.08] filter contrast-125"
+              onError={(e) => {
+                e.currentTarget.src = "/logo-icon.svg";
+              }}
+            />
           </div>
 
           {/* Header Section */}
-          <div className="relative pb-4">
+          <div className="relative z-10 pb-4">
             <div className="flex flex-col sm:flex-row items-center sm:items-start justify-between gap-4">
               
               {/* Official Real Logo Emblem on Left */}
@@ -116,7 +121,7 @@ const InvoiceViewerModal = () => {
           </div>
 
           {/* Fee Invoice Title Bar & Meta Table */}
-          <div className="mt-4 pt-3 border-t-2 border-slate-300 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div className="relative z-10 mt-4 pt-3 border-t-2 border-slate-300 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div>
               <h2 className="font-serif font-black text-xl sm:text-2xl text-brand-navy tracking-wide">
                 FEE INVOICE
@@ -144,7 +149,7 @@ const InvoiceViewerModal = () => {
           </div>
 
           {/* Student Details & Course Enrolled Cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
+          <div className="relative z-10 grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
             
             {/* Student Details Card */}
             <div className="border border-slate-300 rounded-lg overflow-hidden bg-white">
@@ -218,7 +223,7 @@ const InvoiceViewerModal = () => {
           </div>
 
           {/* Fee Particulars Section */}
-          <div className="mt-4">
+          <div className="relative z-10 mt-4">
             <h3 className="font-bold text-[10px] text-red-600 uppercase tracking-widest mb-1">
               FEE PARTICULARS
             </h3>
@@ -282,7 +287,7 @@ const InvoiceViewerModal = () => {
           </div>
 
           {/* Installment & Payment Record Section */}
-          <div className="mt-4">
+          <div className="relative z-10 mt-4">
             <h3 className="font-bold text-[10px] text-red-600 uppercase tracking-widest mb-1">
               INSTALLMENT &amp; PAYMENT RECORD
             </h3>
@@ -331,7 +336,7 @@ const InvoiceViewerModal = () => {
           </div>
 
           {/* Bottom Section: Words, Terms, Balances */}
-          <div className="grid grid-cols-1 sm:grid-cols-12 gap-4 mt-4">
+          <div className="relative z-10 grid grid-cols-1 sm:grid-cols-12 gap-4 mt-4">
             
             {/* Left: Words & Terms */}
             <div className="sm:col-span-7 text-xs space-y-3">
@@ -386,7 +391,7 @@ const InvoiceViewerModal = () => {
           </div>
 
           {/* Authorised Signatory */}
-          <div className="mt-8 flex justify-end">
+          <div className="relative z-10 mt-8 flex justify-end">
             <div className="text-center w-56">
               <div className="h-10 border-b border-slate-400 mb-1"></div>
               <p className="font-bold text-xs text-slate-900">Authorised Signatory</p>
@@ -395,7 +400,7 @@ const InvoiceViewerModal = () => {
           </div>
 
           {/* Bottom Footer Accent & Branches */}
-          <div className="mt-6 pt-3 border-t border-slate-300 text-center text-[10px] text-slate-500 space-y-0.5">
+          <div className="relative z-10 mt-6 pt-3 border-t border-slate-300 text-center text-[10px] text-slate-500 space-y-0.5">
             <p className="font-medium text-slate-700">
               Main Branch: SBI Road, in front of Pradhi Yadav Hospital, Madhepura, Bihar – 852113 · +91 75469 95935 / +91 80515 16000
             </p>
