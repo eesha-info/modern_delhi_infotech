@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import {
   CheckSquare, Calendar, Users, Check, X, Clock, AlertCircle,
-  Search, Save, RotateCcw, UserCheck, ShieldAlert, Sparkles, Filter, ChevronRight
+  Search, Save, Sparkles, Filter, ChevronRight
 } from 'lucide-react';
 import { useData } from '../../context/DataContext';
 
@@ -25,7 +25,6 @@ const AdminTakeAttendance = () => {
   const activeBatch = batches.find(b => b.id === selectedBatchId) || batches[0];
 
   // Students belonging to the selected batch
-  // For matching: students with batchNo == `Batch-1` etc. or matching activeBatch.name
   const batchStudents = students.filter(s => {
     const batchNum = selectedBatchId.replace('B', '');
     return s.batchNo === `Batch-${batchNum}` || s.batchNo?.includes(selectedBatchId);
@@ -37,7 +36,6 @@ const AdminTakeAttendance = () => {
     if (recordedForBatch) {
       setCurrentAttendance(recordedForBatch);
     } else {
-      // Default initial state: Pre-populate all students as 'Present' for rapid marking, or empty
       const initial = {};
       batchStudents.forEach(st => {
         initial[st.id] = { status: 'Present', remark: 'On time' };
@@ -69,7 +67,7 @@ const AdminTakeAttendance = () => {
     }));
   };
 
-  // Quick Action: Mark All Present
+  // Quick Action: Bulk mark
   const handleMarkAll = (status) => {
     const updated = {};
     batchStudents.forEach(st => {
@@ -87,9 +85,9 @@ const AdminTakeAttendance = () => {
     setTimeout(() => {
       markBatchAttendance(selectedBatchId, selectedDate, currentAttendance);
       setIsSaving(false);
-      setSaveSuccessMessage(`Attendance for ${activeBatch.name} on ${selectedDate} saved successfully!`);
-      setTimeout(() => setSaveSuccessMessage(''), 4500);
-    }, 400);
+      setSaveSuccessMessage(`Attendance for ${activeBatch.name} on ${selectedDate} saved successfully.`);
+      setTimeout(() => setSaveSuccessMessage(''), 4000);
+    }, 300);
   };
 
   // Calculate live statistics for this batch
@@ -110,24 +108,24 @@ const AdminTakeAttendance = () => {
     <div className="space-y-6">
       
       {/* Top Controls Card: Batch Picker & Date Selector */}
-      <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-100">
+      <div className="bg-white rounded-2xl p-6 shadow-xs border border-slate-200/80">
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-5 border-b border-slate-100">
           <div>
-            <span className="text-[10px] font-bold uppercase tracking-wider text-blue-600 block">
+            <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">
               Daily Attendance Register
             </span>
-            <h2 className="text-xl font-display font-extrabold text-slate-900 mt-0.5">
+            <h2 className="text-xl font-display font-bold text-slate-900 mt-0.5">
               Batchwise Student Attendance
             </h2>
             <p className="text-xs text-slate-500 mt-1">
-              Select an active batch and mark student physical presence in the computer lab.
+              Select an active batch to record physical presence in the lab.
             </p>
           </div>
 
           {/* Date Picker Input */}
           <div className="flex items-center gap-3">
             <div className="flex items-center gap-2 bg-slate-50 px-3.5 py-2 rounded-xl border border-slate-200">
-              <Calendar className="w-4 h-4 text-blue-600 flex-shrink-0" />
+              <Calendar className="w-4 h-4 text-slate-500 flex-shrink-0" />
               <label htmlFor="attendance-date" className="text-xs font-bold text-slate-700 whitespace-nowrap">
                 Date:
               </label>
@@ -136,23 +134,23 @@ const AdminTakeAttendance = () => {
                 type="date"
                 value={selectedDate}
                 onChange={(e) => setSelectedDate(e.target.value)}
-                className="bg-transparent text-xs font-bold text-slate-800 focus:outline-none cursor-pointer"
+                className="bg-transparent text-xs font-semibold text-slate-800 focus:outline-none cursor-pointer"
               />
             </div>
 
             <button
               onClick={() => setSelectedDate(new Date().toISOString().split('T')[0])}
-              className="text-xs font-bold text-blue-600 hover:text-blue-800 bg-blue-50 hover:bg-blue-100 px-3 py-2 rounded-xl transition-colors"
+              className="text-xs font-semibold text-slate-700 hover:text-slate-900 bg-slate-100 hover:bg-slate-200 px-3 py-2 rounded-xl transition-colors"
             >
               Today
             </button>
           </div>
         </div>
 
-        {/* Batch Selection Tabs / Pills */}
+        {/* Batch Selection Pills (Clean, minimal, not overly colorful) */}
         <div className="mt-5">
           <label className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block mb-2.5">
-            Select Computer Training Batch:
+            Select Training Batch:
           </label>
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2.5">
             {batches.map((batch) => {
@@ -164,26 +162,26 @@ const AdminTakeAttendance = () => {
                 <button
                   key={batch.id}
                   onClick={() => setSelectedBatchId(batch.id)}
-                  className={`p-3 rounded-xl text-left border transition-all relative ${
+                  className={`p-3 rounded-xl text-left border transition-all ${
                     isSelected
-                      ? 'bg-blue-600 border-blue-600 text-white shadow-md shadow-blue-500/20'
-                      : 'bg-slate-50 hover:bg-slate-100 border-slate-200 text-slate-800'
+                      ? 'bg-[#5e72e4] border-[#5e72e4] text-white shadow-xs'
+                      : 'bg-white hover:bg-slate-50 border-slate-200 text-slate-800'
                   }`}
                 >
                   <div className="flex items-center justify-between">
-                    <span className={`text-[10px] font-black uppercase px-2 py-0.5 rounded ${
-                      isSelected ? 'bg-white/20 text-white' : 'bg-blue-100 text-blue-800'
+                    <span className={`text-[10px] font-bold uppercase px-1.5 py-0.5 rounded ${
+                      isSelected ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-700'
                     }`}>
                       {batch.id}
                     </span>
-                    <span className={`text-[10px] font-bold ${isSelected ? 'text-blue-100' : 'text-slate-500'}`}>
+                    <span className={`text-[10px] ${isSelected ? 'text-blue-100' : 'text-slate-400'}`}>
                       {countInBatch} Students
                     </span>
                   </div>
-                  <h4 className="font-extrabold text-xs mt-2 truncate">
+                  <h4 className="font-bold text-xs mt-2 truncate">
                     {batch.name.split('(')[0]}
                   </h4>
-                  <p className={`text-[10px] mt-0.5 font-medium truncate ${isSelected ? 'text-blue-100' : 'text-slate-500'}`}>
+                  <p className={`text-[10px] mt-0.5 truncate ${isSelected ? 'text-blue-100' : 'text-slate-500'}`}>
                     {batch.timing}
                   </p>
                 </button>
@@ -192,39 +190,30 @@ const AdminTakeAttendance = () => {
           </div>
         </div>
 
-        {/* Selected Batch Meta Pill & Info Bar */}
-        <div className="mt-4 p-3.5 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl border border-blue-100 flex flex-wrap items-center justify-between gap-3 text-xs">
+        {/* Clean, Subtle Batch Meta Info Bar */}
+        <div className="mt-4 p-3 bg-slate-50 rounded-xl border border-slate-200/80 flex flex-wrap items-center justify-between gap-3 text-xs text-slate-600">
           <div className="flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-            <span className="font-bold text-slate-800">
-              {activeBatch.name}
-            </span>
-            <span className="text-slate-400">·</span>
-            <span className="text-slate-600 font-medium">
-              Timing: {activeBatch.timing}
-            </span>
-            <span className="text-slate-400">·</span>
-            <span className="text-slate-600 font-medium">
-              Room: {activeBatch.room} ({activeBatch.branch})
-            </span>
-            <span className="text-slate-400">·</span>
-            <span className="text-slate-600 font-medium">
-              Instructor: <strong className="text-blue-900">{activeBatch.instructor}</strong>
-            </span>
+            <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
+            <strong className="text-slate-900">{activeBatch.name}</strong>
+            <span className="text-slate-300">·</span>
+            <span>Timing: {activeBatch.timing}</span>
+            <span className="text-slate-300">·</span>
+            <span>Room: {activeBatch.room}</span>
+            <span className="text-slate-300">·</span>
+            <span>Instructor: <strong className="text-slate-800">{activeBatch.instructor}</strong></span>
           </div>
 
-          <div className="flex items-center gap-2">
-            <span className="text-slate-500 text-[11px]">Lab Capacity:</span>
-            <span className="font-bold text-slate-800">{activeBatch.enrolled} / {activeBatch.maxCapacity} Seats</span>
+          <div className="text-[11px] text-slate-500">
+            Capacity: <strong className="text-slate-800">{activeBatch.enrolled} / {activeBatch.maxCapacity} Seats</strong>
           </div>
         </div>
       </div>
 
-      {/* Real-time Attendance Stats Bar */}
+      {/* Clean, Neutral Attendance Stats Bar */}
       <div className="grid grid-cols-2 sm:grid-cols-5 gap-3.5">
         
         {/* Total in batch */}
-        <div className="bg-white rounded-xl p-4 shadow-sm border border-slate-100">
+        <div className="bg-white rounded-xl p-4 shadow-xs border border-slate-200/80">
           <div className="flex items-center justify-between">
             <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Total in Batch</span>
             <Users className="w-4 h-4 text-slate-400" />
@@ -232,64 +221,63 @@ const AdminTakeAttendance = () => {
           <div className="text-2xl font-black text-slate-900 mt-1 font-display">
             {totalCount}
           </div>
-          <span className="text-[10px] text-slate-500 font-medium">Registered Students</span>
+          <span className="text-[10px] text-slate-500">Registered Students</span>
         </div>
 
-        {/* Present */}
-        <div className="bg-white rounded-xl p-4 shadow-sm border border-slate-100">
+        {/* Present (Color used only on the status pill) */}
+        <div className="bg-white rounded-xl p-4 shadow-xs border border-slate-200/80">
           <div className="flex items-center justify-between">
-            <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-600">Present</span>
-            <div className="w-5 h-5 rounded-md bg-emerald-100 text-emerald-600 flex items-center justify-center">
-              <Check className="w-3 h-3" />
-            </div>
+            <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500">Present</span>
+            <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
           </div>
-          <div className="text-2xl font-black text-emerald-600 mt-1 font-display">
+          <div className="text-2xl font-black text-slate-900 mt-1 font-display">
             {presentCount}
           </div>
-          <span className="text-[10px] text-emerald-700 font-medium">Attending Lab Today</span>
+          <span className="text-[10px] text-emerald-700 font-semibold bg-emerald-50 px-1.5 py-0.5 rounded">
+            In Lab Today
+          </span>
         </div>
 
         {/* Absent */}
-        <div className="bg-white rounded-xl p-4 shadow-sm border border-slate-100">
+        <div className="bg-white rounded-xl p-4 shadow-xs border border-slate-200/80">
           <div className="flex items-center justify-between">
-            <span className="text-[10px] font-bold uppercase tracking-wider text-rose-500">Absent</span>
-            <div className="w-5 h-5 rounded-md bg-rose-100 text-rose-600 flex items-center justify-center">
-              <X className="w-3 h-3" />
-            </div>
+            <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500">Absent</span>
+            <span className="w-2 h-2 rounded-full bg-rose-500"></span>
           </div>
-          <div className="text-2xl font-black text-rose-600 mt-1 font-display">
+          <div className="text-2xl font-black text-slate-900 mt-1 font-display">
             {absentCount}
           </div>
-          <span className="text-[10px] text-rose-700 font-medium">Not In Institute</span>
+          <span className="text-[10px] text-rose-700 font-semibold bg-rose-50 px-1.5 py-0.5 rounded">
+            Not In Institute
+          </span>
         </div>
 
         {/* Late */}
-        <div className="bg-white rounded-xl p-4 shadow-sm border border-slate-100">
+        <div className="bg-white rounded-xl p-4 shadow-xs border border-slate-200/80">
           <div className="flex items-center justify-between">
-            <span className="text-[10px] font-bold uppercase tracking-wider text-amber-500">Late</span>
-            <div className="w-5 h-5 rounded-md bg-amber-100 text-amber-600 flex items-center justify-center">
-              <Clock className="w-3 h-3" />
-            </div>
+            <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500">Late</span>
+            <span className="w-2 h-2 rounded-full bg-amber-500"></span>
           </div>
-          <div className="text-2xl font-black text-amber-600 mt-1 font-display">
+          <div className="text-2xl font-black text-slate-900 mt-1 font-display">
             {lateCount}
           </div>
-          <span className="text-[10px] text-amber-700 font-medium">Permitted Entry</span>
+          <span className="text-[10px] text-amber-700 font-semibold bg-amber-50 px-1.5 py-0.5 rounded">
+            Permitted Late
+          </span>
         </div>
 
         {/* Attendance Rate */}
-        <div className="bg-white rounded-xl p-4 shadow-sm border border-slate-100 col-span-2 sm:col-span-1">
+        <div className="bg-white rounded-xl p-4 shadow-xs border border-slate-200/80 col-span-2 sm:col-span-1">
           <div className="flex items-center justify-between">
-            <span className="text-[10px] font-bold uppercase tracking-wider text-blue-600">Attendance %</span>
-            <Sparkles className="w-4 h-4 text-blue-500" />
+            <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500">Attendance</span>
+            <span className="text-xs font-bold text-slate-700">{attendanceRate}%</span>
           </div>
-          <div className="text-2xl font-black text-blue-700 mt-1 font-display">
+          <div className="text-2xl font-black text-slate-900 mt-1 font-display">
             {attendanceRate}%
           </div>
-          {/* Progress bar */}
-          <div className="w-full bg-slate-100 h-1.5 rounded-full mt-1.5 overflow-hidden">
+          <div className="w-full bg-slate-100 h-1.5 rounded-full mt-2 overflow-hidden">
             <div
-              className="bg-blue-600 h-full rounded-full transition-all duration-300"
+              className="bg-[#5e72e4] h-full rounded-full transition-all duration-300"
               style={{ width: `${attendanceRate}%` }}
             ></div>
           </div>
@@ -297,29 +285,21 @@ const AdminTakeAttendance = () => {
 
       </div>
 
-      {/* Success Notification Banner */}
+      {/* Save Notification */}
       {saveSuccessMessage && (
-        <div className="p-4 bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-2xl flex items-center justify-between shadow-sm animate-fadeIn">
-          <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-full bg-emerald-600 text-white flex items-center justify-center flex-shrink-0">
-              <Check className="w-4 h-4" />
-            </div>
-            <div>
-              <p className="text-xs font-black">{saveSuccessMessage}</p>
-              <p className="text-[10px] text-emerald-600">Saved to Institute Database & Local Storage.</p>
-            </div>
+        <div className="p-3.5 bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-xl flex items-center justify-between text-xs animate-fadeIn">
+          <div className="flex items-center gap-2">
+            <Check className="w-4 h-4 text-emerald-600 flex-shrink-0" />
+            <span className="font-semibold">{saveSuccessMessage}</span>
           </div>
-          <button
-            onClick={() => setSaveSuccessMessage('')}
-            className="text-emerald-700 hover:text-emerald-900 p-1"
-          >
+          <button onClick={() => setSaveSuccessMessage('')} className="p-1 hover:text-emerald-950">
             <X className="w-4 h-4" />
           </button>
         </div>
       )}
 
       {/* Students Attendance Register Card */}
-      <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
+      <div className="bg-white rounded-2xl shadow-xs border border-slate-200/80 overflow-hidden">
         
         {/* Table Action Bar */}
         <div className="p-5 border-b border-slate-100 flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -331,39 +311,39 @@ const AdminTakeAttendance = () => {
                 placeholder="Search student or Roll No..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full bg-slate-50 border border-slate-200 rounded-xl pl-9 pr-3 py-1.5 text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:border-blue-500 focus:bg-white"
+                className="w-full bg-slate-50 border border-slate-200 rounded-xl pl-9 pr-3 py-1.5 text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:border-[#5e72e4] focus:bg-white"
               />
             </div>
-            <span className="text-xs text-slate-500 font-semibold">
+            <span className="text-xs text-slate-500">
               Showing {displayedStudents.length} of {batchStudents.length} students
             </span>
           </div>
 
-          {/* Quick Action Bulk Buttons */}
+          {/* Clean, Non-loud Quick Bulk Buttons */}
           <div className="flex items-center gap-2">
             <span className="text-[11px] font-bold text-slate-400 uppercase hidden lg:inline">Quick Bulk:</span>
             
             <button
               onClick={() => handleMarkAll('Present')}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border border-emerald-200 transition-colors"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 transition-colors"
             >
-              <Check className="w-3.5 h-3.5" />
+              <Check className="w-3.5 h-3.5 text-emerald-600" />
               <span>Mark All Present</span>
             </button>
 
             <button
               onClick={() => handleMarkAll('Absent')}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-rose-50 text-rose-700 hover:bg-rose-100 border border-rose-200 transition-colors"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 transition-colors"
             >
-              <X className="w-3.5 h-3.5" />
+              <X className="w-3.5 h-3.5 text-rose-600" />
               <span>Mark All Absent</span>
             </button>
 
             <button
               onClick={() => handleMarkAll('Late')}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-amber-50 text-amber-700 hover:bg-amber-100 border border-amber-200 transition-colors"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 transition-colors"
             >
-              <Clock className="w-3.5 h-3.5" />
+              <Clock className="w-3.5 h-3.5 text-amber-600" />
               <span>Mark All Late</span>
             </button>
           </div>
@@ -380,13 +360,13 @@ const AdminTakeAttendance = () => {
           ) : (
             <table className="w-full text-left border-collapse">
               <thead>
-                <tr className="bg-slate-50 border-b border-slate-100 text-[11px] font-black uppercase text-slate-500 tracking-wider">
+                <tr className="bg-slate-50 border-b border-slate-100 text-[11px] font-bold uppercase text-slate-500 tracking-wider">
                   <th className="py-3 px-4 w-12 text-center">#</th>
                   <th className="py-3 px-4">Student Details</th>
-                  <th className="py-3 px-4">Course & Program</th>
+                  <th className="py-3 px-4">Course</th>
                   <th className="py-3 px-4">Assigned PC</th>
-                  <th className="py-3 px-4 text-center">Mark Attendance</th>
-                  <th className="py-3 px-4">Remarks / Note</th>
+                  <th className="py-3 px-4 text-center">Status</th>
+                  <th className="py-3 px-4">Remarks</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100 text-xs">
@@ -395,37 +375,32 @@ const AdminTakeAttendance = () => {
                   const studentRemark = currentAttendance[st.id]?.remark || '';
 
                   return (
-                    <tr
-                      key={st.id}
-                      className={`hover:bg-slate-50/80 transition-colors ${
-                        studentStatus === 'Absent' ? 'bg-rose-50/20' : studentStatus === 'Late' ? 'bg-amber-50/20' : ''
-                      }`}
-                    >
+                    <tr key={st.id} className="hover:bg-slate-50/70 transition-colors">
                       {/* Index */}
-                      <td className="py-3 px-4 text-center text-slate-400 font-bold">
+                      <td className="py-3.5 px-4 text-center text-slate-400 font-semibold">
                         {idx + 1}
                       </td>
 
                       {/* Student Info */}
-                      <td className="py-3 px-4">
+                      <td className="py-3.5 px-4">
                         <div className="flex items-center gap-3">
                           <img
                             src={st.avatar}
                             alt={st.name}
-                            className="w-10 h-10 rounded-full object-cover border border-slate-200 flex-shrink-0"
+                            className="w-9 h-9 rounded-full object-cover border border-slate-200 flex-shrink-0"
                             onError={(e) => {
                               e.currentTarget.src = "/logo-icon.svg";
                             }}
                           />
                           <div>
-                            <div className="font-extrabold text-slate-900 text-sm">
+                            <div className="font-bold text-slate-900">
                               {st.name}
                             </div>
                             <div className="text-[11px] text-slate-500">
                               S/O: {st.fatherName}
                             </div>
                             <div className="flex items-center gap-2 mt-0.5">
-                              <span className="font-mono text-[10px] font-bold text-blue-700 bg-blue-50 px-1.5 py-0.5 rounded">
+                              <span className="font-mono text-[10px] text-slate-600 bg-slate-100 px-1.5 py-0.2 rounded">
                                 {st.regNo}
                               </span>
                               <span className="text-[10px] text-slate-400">
@@ -437,61 +412,61 @@ const AdminTakeAttendance = () => {
                       </td>
 
                       {/* Course */}
-                      <td className="py-3 px-4">
-                        <span className="inline-block px-2.5 py-1 rounded-lg text-xs font-black bg-blue-50 text-blue-800 border border-blue-100">
+                      <td className="py-3.5 px-4">
+                        <span className="font-bold text-slate-800 bg-slate-100 px-2 py-0.5 rounded text-xs">
                           {st.courseCode}
                         </span>
-                        <div className="text-[10px] text-slate-500 mt-1 max-w-[140px] truncate">
+                        <div className="text-[10px] text-slate-400 mt-0.5 truncate max-w-[130px]">
                           {st.courseName}
                         </div>
                       </td>
 
                       {/* PC Station */}
-                      <td className="py-3 px-4">
-                        <span className="font-mono font-bold text-slate-800 bg-slate-100 px-2.5 py-1 rounded-md text-[11px] border border-slate-200">
+                      <td className="py-3.5 px-4">
+                        <span className="font-mono text-slate-700 bg-slate-50 px-2.5 py-1 rounded text-[11px] border border-slate-200">
                           {st.pcNumber || `PC-${String(idx + 1).padStart(2, '0')}`}
                         </span>
                       </td>
 
-                      {/* Attendance Toggle Buttons */}
-                      <td className="py-3 px-4">
+                      {/* Attendance Toggle Buttons (Where color is functionally needed) */}
+                      <td className="py-3.5 px-4">
                         <div className="flex items-center justify-center gap-1.5">
-                          {/* Present Button */}
+                          {/* Present */}
                           <button
                             type="button"
                             onClick={() => handleSetStatus(st.id, 'Present')}
-                            className={`flex items-center gap-1 px-3 py-1.5 rounded-lg font-bold text-xs transition-all ${
+                            className={`flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors ${
                               studentStatus === 'Present'
-                                ? 'bg-emerald-600 text-white shadow-sm ring-2 ring-emerald-400'
-                                : 'bg-slate-100 text-slate-600 hover:bg-emerald-50 hover:text-emerald-700'
+                                ? 'bg-emerald-600 text-white shadow-xs'
+                                : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-50'
                             }`}
                           >
                             <Check className="w-3.5 h-3.5" />
                             <span>Present</span>
                           </button>
 
-                          {/* Absent Button */}
+                          {/* Absent */}
                           <button
                             type="button"
                             onClick={() => handleSetStatus(st.id, 'Absent')}
-                            className={`flex items-center gap-1 px-3 py-1.5 rounded-lg font-bold text-xs transition-all ${
+                            className={`flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors ${
                               studentStatus === 'Absent'
-                                ? 'bg-rose-600 text-white shadow-sm ring-2 ring-rose-400'
-                                : 'bg-slate-100 text-slate-600 hover:bg-rose-50 hover:text-rose-700'
+                                ? 'bg-rose-600 text-white shadow-xs'
+                                : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-50'
                             }`}
                           >
                             <X className="w-3.5 h-3.5" />
                             <span>Absent</span>
                           </button>
 
-                          {/* Late Button */}
+                          {/* Late */}
                           <button
                             type="button"
                             onClick={() => handleSetStatus(st.id, 'Late')}
-                            className={`flex items-center gap-1 px-3 py-1.5 rounded-lg font-bold text-xs transition-all ${
+                            className={`flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors ${
                               studentStatus === 'Late'
-                                ? 'bg-amber-500 text-white shadow-sm ring-2 ring-amber-300'
-                                : 'bg-slate-100 text-slate-600 hover:bg-amber-50 hover:text-amber-700'
+                                ? 'bg-amber-500 text-white shadow-xs'
+                                : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-50'
                             }`}
                           >
                             <Clock className="w-3.5 h-3.5" />
@@ -501,13 +476,13 @@ const AdminTakeAttendance = () => {
                       </td>
 
                       {/* Remark Input */}
-                      <td className="py-3 px-4">
+                      <td className="py-3.5 px-4">
                         <input
                           type="text"
                           value={studentRemark}
                           onChange={(e) => handleSetRemark(st.id, e.target.value)}
                           placeholder="Optional note..."
-                          className="w-full bg-slate-50 border border-slate-200 rounded-lg px-2.5 py-1 text-xs text-slate-700 focus:outline-none focus:bg-white focus:border-blue-500"
+                          className="w-full bg-slate-50 border border-slate-200 rounded-lg px-2.5 py-1 text-xs text-slate-700 focus:outline-none focus:bg-white focus:border-[#5e72e4]"
                         />
                       </td>
 
@@ -521,23 +496,18 @@ const AdminTakeAttendance = () => {
 
         {/* Footer Save Action Bar */}
         <div className="p-4 bg-slate-50 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-3">
-          <div className="flex items-center gap-2 text-xs text-slate-500">
-            <CheckSquare className="w-4 h-4 text-emerald-600" />
-            <span>
-              Ready to submit: <strong>{presentCount}</strong> Present, <strong>{absentCount}</strong> Absent, <strong>{lateCount}</strong> Late for <strong>{activeBatch.name}</strong>.
-            </span>
+          <div className="text-xs text-slate-500">
+            Ready to record: <strong className="text-slate-800">{presentCount} Present</strong>, <strong className="text-slate-800">{absentCount} Absent</strong> for <strong className="text-slate-800">{activeBatch.name}</strong>.
           </div>
 
-          <div className="flex items-center gap-3">
-            <button
-              onClick={handleSaveAttendance}
-              disabled={isSaving}
-              className="inline-flex items-center gap-2 px-6 py-2.5 bg-blue-600 hover:bg-blue-700 active:scale-95 text-white font-bold rounded-xl text-xs shadow-md shadow-blue-500/20 transition-all disabled:opacity-50"
-            >
-              <Save className="w-4 h-4" />
-              <span>{isSaving ? 'Saving to Database...' : 'Save & Record Attendance'}</span>
-            </button>
-          </div>
+          <button
+            onClick={handleSaveAttendance}
+            disabled={isSaving}
+            className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#5e72e4] hover:bg-[#4b5ec9] text-white font-bold rounded-xl text-xs shadow-xs transition-all disabled:opacity-50"
+          >
+            <Save className="w-4 h-4" />
+            <span>{isSaving ? 'Saving...' : 'Save & Record Attendance'}</span>
+          </button>
         </div>
 
       </div>
