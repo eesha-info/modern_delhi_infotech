@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-  Search, Sun, Moon, Bell, Settings, User, LogOut,
+  Search, Sun, Moon, Bell, Settings, LogOut,
   ExternalLink, Menu
 } from 'lucide-react';
 import { useAppTheme } from '../../context/ThemeContext';
@@ -23,8 +23,8 @@ const Topbar = ({
       }}
       className="h-16 px-4 sm:px-6 flex items-center justify-between border-b transition-colors"
     >
-      {/* Left: Mobile Toggle, Real Emblem Logo, Delhi Infotech Name, and Search */}
-      <div className="flex items-center gap-3 sm:gap-4">
+      {/* Left: Mobile Toggle & Search Input Box */}
+      <div className="flex items-center gap-3">
         {/* Mobile menu toggle */}
         <button
           onClick={onToggleSidebar}
@@ -35,41 +35,13 @@ const Topbar = ({
           <Menu className="w-5 h-5" />
         </button>
 
-        {/* Delhi Infotech Logo & Name on Top Navbar */}
-        <div className="flex items-center gap-2.5">
-          <div className="w-8 h-8 rounded-full overflow-hidden bg-white p-0.5 border border-slate-300/40 flex-shrink-0 shadow-sm">
-            <img
-              src="/mdi-real-logo-cropped.png"
-              alt="Delhi Infotech"
-              className="w-full h-full object-contain"
-              onError={(e) => {
-                e.currentTarget.src = "/logo-icon.svg";
-              }}
-            />
-          </div>
-          <div className="hidden xs:block">
-            <h1
-              style={{ color: colors.greenAccent[500] }}
-              className="font-display font-extrabold text-sm sm:text-base tracking-tight leading-none"
-            >
-              Delhi Infotech
-            </h1>
-            <span
-              style={{ color: isDark ? colors.gray[400] : '#64748b' }}
-              className="text-[10px] font-semibold hidden md:block mt-0.5"
-            >
-              Modern Computer Education
-            </span>
-          </div>
-        </div>
-
-        {/* Search Input Box */}
+        {/* Search Input Box (Matching reference Argon Topbar) */}
         <div
           style={{
             backgroundColor: colors.primary[400],
             borderColor: isDark ? 'rgba(255,255,255,0.08)' : '#e2e8f0',
           }}
-          className="flex items-center rounded-md px-3 py-1.5 w-40 sm:w-60 border shadow-xs ml-1"
+          className="flex items-center rounded-md px-3 py-1.5 w-48 sm:w-64 border shadow-xs"
         >
           <input
             type="text"
