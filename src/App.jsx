@@ -22,6 +22,7 @@ import AdmissionModal from './components/home/AdmissionModal';
 import FinalCta from './components/home/FinalCta';
 import DownloadsSection from './components/home/DownloadsSection';
 import GallerySection from './components/home/GallerySection';
+import VerifyRollModal from './components/common/VerifyRollModal';
 
 // Modals & Dashboards
 import LoginModal from './components/auth/LoginModal';
@@ -36,6 +37,7 @@ const MainAppContent = () => {
   const { activeView, setActiveView, user } = useAuth();
   const [isLoginOpen, setIsLoginOpen] = useState(false);
   const [isAdmissionOpen, setIsAdmissionOpen] = useState(false);
+  const [isVerifyOpen, setIsVerifyOpen] = useState(false);
   const [selectedCourseForAdmission, setSelectedCourseForAdmission] = useState(null);
 
   const handleOpenAdmission = (course = null) => {
@@ -85,7 +87,7 @@ const MainAppContent = () => {
       <Navbar
         onOpenLogin={() => setIsLoginOpen(true)}
         onOpenAdmission={() => handleOpenAdmission(null)}
-        onOpenVerify={handleOpenVerify}
+        onOpenVerify={() => setIsVerifyOpen(true)}
       />
 
       {/* 3. Main Body Sections */}
@@ -159,6 +161,8 @@ const MainAppContent = () => {
           }}
         />
       )}
+
+      <VerifyRollModal isOpen={isVerifyOpen} onClose={() => setIsVerifyOpen(false)} />
 
       {/* Global Invoice Viewer Modal */}
       <InvoiceViewerModal />

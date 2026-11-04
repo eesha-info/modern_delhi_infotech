@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import {
-  Menu, X, User, ShieldCheck, GraduationCap, LogOut, ArrowRight, ChevronDown, Phone, Mail,
+  Menu, X, User, ShieldCheck, GraduationCap, LogOut, ArrowRight, ChevronDown, Phone, Mail, BadgeCheck,
 } from 'lucide-react';
 import Logo from './Logo';
 import { useAuth } from '../../context/AuthContext';
@@ -63,11 +63,8 @@ const Navbar = ({ onOpenLogin, onOpenAdmission, onOpenVerify }) => {
     },
     {
       id: 'student', label: 'Student Zone', children: [
-        { label: 'Student Login', action: onOpenLogin },
-        { label: 'Online Test', action: onOpenLogin },
-        { label: 'Verify Certificate / Roll No.', action: onOpenVerify },
-        { label: 'Typing Speed Practice', href: '#typing-lab' },
         { label: 'Apply for Admission', action: onOpenAdmission },
+        { label: 'Verify Roll / Certificate', action: onOpenVerify },
       ],
     },
     { id: 'download', label: 'Download', href: '#downloads' },
@@ -97,8 +94,19 @@ const Navbar = ({ onOpenLogin, onOpenAdmission, onOpenVerify }) => {
     return () => { document.removeEventListener('mousedown', onDown); document.removeEventListener('keydown', onKey); };
   }, []);
 
+  const verifyButton = (
+    <button
+      onClick={run(onOpenVerify)}
+      className="whitespace-nowrap flex items-center gap-1.5 px-4 py-2.5 rounded-lg text-xs font-bold text-blue-800 bg-blue-50 hover:bg-blue-100 border border-blue-200"
+    >
+      <BadgeCheck className="w-4 h-4" />
+      Verify Roll
+    </button>
+  );
+
   const portalButtons = user ? (
     <div className="flex items-center gap-2">
+      {verifyButton}
       <button
         onClick={() => setActiveView(isAdmin ? 'admin' : 'student')}
         className={`whitespace-nowrap flex items-center gap-2 px-4 py-2.5 rounded-lg text-xs font-bold text-white shadow-sm ${isAdmin ? 'bg-blue-900 hover:bg-blue-800' : 'bg-emerald-700 hover:bg-emerald-800'}`}
@@ -112,6 +120,7 @@ const Navbar = ({ onOpenLogin, onOpenAdmission, onOpenVerify }) => {
     </div>
   ) : (
     <div className="flex items-center gap-2.5">
+      {verifyButton}
       <button
         onClick={onOpenLogin}
         className="whitespace-nowrap flex items-center gap-1.5 px-4 py-2.5 rounded-lg text-xs font-bold text-slate-700 hover:text-blue-800 border border-slate-200 hover:bg-slate-50"
@@ -146,7 +155,7 @@ const Navbar = ({ onOpenLogin, onOpenAdmission, onOpenVerify }) => {
                 <span className="block text-sm font-bold text-slate-900 group-hover:text-blue-800">{phone}</span>
               </span>
             </a>
-            <a href={`mailto:${email}`} className="hidden xl:flex items-center gap-2.5 group">
+            <a href={`mailto:${email}`} className="hidden 2xl:flex items-center gap-2.5 group">
               <span className="w-9 h-9 rounded-full bg-blue-50 text-blue-800 flex items-center justify-center"><Mail className="w-4 h-4" /></span>
               <span className="leading-tight">
                 <span className="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold">Email Us</span>
@@ -199,6 +208,9 @@ const Navbar = ({ onOpenLogin, onOpenAdmission, onOpenVerify }) => {
               )}
             </nav>
             <div className="px-4 py-4 space-y-2 bg-slate-50">
+              <button onClick={run(onOpenVerify)} className="w-full py-3 text-sm font-bold bg-blue-50 border border-blue-200 text-blue-800 rounded-lg flex items-center justify-center gap-2">
+                <BadgeCheck className="w-4 h-4" /> Verify Roll / Certificate
+              </button>
               {!user ? (
                 <>
                   <button onClick={run(onOpenAdmission)} className="w-full py-3 text-sm font-bold bg-amber-400 text-slate-950 rounded-lg">Admission Enquiry</button>
