@@ -7,6 +7,7 @@ import {
   initialInvoices,
   initialNotices,
   initialEnquiries,
+  initialAttendance,
   studentTestimonials
 } from '../data/mdiData';
 
@@ -43,6 +44,11 @@ export const DataProvider = ({ children }) => {
     return saved ? JSON.parse(saved) : initialBatches;
   });
 
+  const [attendanceData, setAttendanceData] = useState(() => {
+    const saved = localStorage.getItem('mdi_attendance');
+    return saved ? JSON.parse(saved) : initialAttendance;
+  });
+
   // Selected invoice for the full modal viewer
   const [activeInvoice, setActiveInvoice] = useState(null);
 
@@ -66,6 +72,21 @@ export const DataProvider = ({ children }) => {
   useEffect(() => {
     localStorage.setItem('mdi_notices', JSON.stringify(notices));
   }, [notices]);
+
+  useEffect(() => {
+    localStorage.setItem('mdi_attendance', JSON.stringify(attendanceData));
+  }, [attendanceData]);
+
+  const markBatchAttendance = (batchId, date, attendanceMap) => {
+    setAttendanceData(prev => ({
+      ...prev,
+      [batchId]: {
+        ...(prev[batchId] || {}),
+        [date]: attendanceMap
+      }
+    }));
+    return true;
+  };
 
   // Actions
   const addEnquiry = (enquiryData) => {
@@ -187,6 +208,8 @@ export const DataProvider = ({ children }) => {
         testimonials: studentTestimonials,
         activeInvoice,
         setActiveInvoice,
+        attendanceData,
+        markBatchAttendance,
         addEnquiry,
         updateEnquiryStatus,
         addStudent,

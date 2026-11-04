@@ -286,6 +286,7 @@ export const initialStudents = [
     progress: 88,
     avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80",
     role: "student",
+    pcNumber: "PC-01",
     typingSpeed: { english: 42, hindi: 34 }
   },
   {
@@ -316,6 +317,7 @@ export const initialStudents = [
     progress: 65,
     avatar: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=300&q=80",
     role: "student",
+    pcNumber: "PC-04",
     typingSpeed: { english: 38, hindi: 28 }
   },
   {
@@ -346,6 +348,7 @@ export const initialStudents = [
     progress: 100,
     avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=300&q=80",
     role: "student",
+    pcNumber: "PC-12",
     typingSpeed: { english: 32, hindi: 20 }
   },
   {
@@ -376,9 +379,165 @@ export const initialStudents = [
     progress: 75,
     avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=300&q=80",
     role: "student",
+    pcNumber: "PC-08",
     typingSpeed: { english: 46, hindi: 38 }
+  },
+  {
+    id: "std-005",
+    regNo: "MDI-B2-458",
+    rollNo: "458",
+    name: "Rohan Roy",
+    fatherName: "Subhash Roy",
+    mobile: "+919456781230",
+    email: "rohan.roy@gmail.com",
+    address: "Adarsh Nagar, Madhepura",
+    city: "Madhepura",
+    branchCode: "2",
+    branchName: "Branch 2 (Adarsh Nagar)",
+    courseCode: "ADIT",
+    courseName: "Advanced Diploma in Information Technology",
+    duration: "12 Months",
+    batchNo: "Batch-1",
+    batchTime: "08:00 AM – 09:30 AM",
+    admissionDate: "01-Nov-2026",
+    session: "2026-27",
+    totalFee: 12000,
+    paidFee: 6000,
+    balanceDues: 6000,
+    paymentStatus: "PARTIAL",
+    status: "Active",
+    attendance: "90%",
+    progress: 30,
+    avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=300&q=80",
+    role: "student",
+    pcNumber: "PC-02",
+    typingSpeed: { english: 35, hindi: 22 }
+  },
+  {
+    id: "std-006",
+    regNo: "MDI-B2-459",
+    rollNo: "459",
+    name: "Neha Sharma",
+    fatherName: "Pawan Sharma",
+    mobile: "+919654321098",
+    email: "neha.s@gmail.com",
+    address: "College Road, Madhepura",
+    city: "Madhepura",
+    branchCode: "2",
+    branchName: "Branch 2 (Adarsh Nagar)",
+    courseCode: "ADIT",
+    courseName: "Advanced Diploma in Information Technology",
+    duration: "12 Months",
+    batchNo: "Batch-1",
+    batchTime: "08:00 AM – 09:30 AM",
+    admissionDate: "01-Nov-2026",
+    session: "2026-27",
+    totalFee: 12000,
+    paidFee: 12000,
+    balanceDues: 0,
+    paymentStatus: "FULLY PAID",
+    status: "Active",
+    attendance: "100%",
+    progress: 45,
+    avatar: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=300&q=80",
+    role: "student",
+    pcNumber: "PC-03",
+    typingSpeed: { english: 40, hindi: 30 }
+  },
+  {
+    id: "std-007",
+    regNo: "MDI-B2-460",
+    rollNo: "460",
+    name: "Alok Nath",
+    fatherName: "Ram Chandra Yadav",
+    mobile: "+919712345678",
+    email: "alok.nath@gmail.com",
+    address: "Station Road, Madhepura",
+    city: "Madhepura",
+    branchCode: "2",
+    branchName: "Branch 2 (Adarsh Nagar)",
+    courseCode: "ADCA",
+    courseName: "Advanced Diploma in Computer Applications",
+    duration: "12 Months",
+    batchNo: "Batch-2",
+    batchTime: "09:30 AM – 11:00 AM",
+    admissionDate: "18-Aug-2026",
+    session: "2026-27",
+    totalFee: 10500,
+    paidFee: 10500,
+    balanceDues: 0,
+    paymentStatus: "FULLY PAID",
+    status: "Active",
+    attendance: "95%",
+    progress: 70,
+    avatar: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=300&q=80",
+    role: "student",
+    pcNumber: "PC-05",
+    typingSpeed: { english: 36, hindi: 25 }
+  },
+  {
+    id: "std-008",
+    regNo: "MDI-B2-461",
+    rollNo: "461",
+    name: "Vikram Kumar Yadav",
+    fatherName: "Rajendra Yadav",
+    mobile: "+919834567890",
+    email: "vikram.y@gmail.com",
+    address: "Janseva Lane, Madhepura",
+    city: "Madhepura",
+    branchCode: "2",
+    branchName: "Branch 2 (Adarsh Nagar)",
+    courseCode: "DCA",
+    courseName: "Diploma in Computer Applications",
+    duration: "6 Months",
+    batchNo: "Batch-3",
+    batchTime: "11:00 AM – 12:30 PM",
+    admissionDate: "05-Sep-2026",
+    session: "2026-27",
+    totalFee: 5500,
+    paidFee: 5500,
+    balanceDues: 0,
+    paymentStatus: "FULLY PAID",
+    status: "Active",
+    attendance: "92%",
+    progress: 60,
+    avatar: "https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?auto=format&fit=crop&w=300&q=80",
+    role: "student",
+    pcNumber: "PC-07",
+    typingSpeed: { english: 30, hindi: 20 }
   }
 ];
+
+export const initialAttendance = {
+  "B1": {
+    "2026-11-04": {
+      "std-001": { status: "Present", remark: "On time" },
+      "std-005": { status: "Present", remark: "Lab A" },
+      "std-006": { status: "Present", remark: "Typing practice" }
+    }
+  },
+  "B2": {
+    "2026-11-04": {
+      "std-002": { status: "Present", remark: "Excel formula class" },
+      "std-007": { status: "Late", remark: "10 mins late" }
+    }
+  },
+  "B3": {
+    "2026-11-04": {
+      "std-008": { status: "Present", remark: "MS Word test" }
+    }
+  },
+  "B5": {
+    "2026-11-04": {
+      "std-003": { status: "Present", remark: "GST invoicing" }
+    }
+  },
+  "B6": {
+    "2026-11-04": {
+      "std-004": { status: "Present", remark: "Hindi KrutiDev speed 38 WPM" }
+    }
+  }
+};
 
 export const initialInvoices = [
   {
