@@ -226,3 +226,4 @@ const AdmissionModal = ({ initialCourse = null, onClose }) => {
 };
 
 export default AdmissionModal;
+

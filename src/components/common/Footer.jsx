@@ -176,3 +176,4 @@ const Footer = ({ onOpenAdmission, onOpenLogin, onOpenVerify }) => {
 };
 
 export default Footer;
+

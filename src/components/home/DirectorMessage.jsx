@@ -116,3 +116,4 @@ const DirectorMessage = ({ onOpenAdmission }) => {
 };
 
 export default DirectorMessage;
+

@@ -23,8 +23,8 @@ const WhyChooseMdi = () => {
     },
     {
       icon: Receipt,
-      title: "Transparent GST Invoicing & Installments",
-      description: "Honest, transparent fee structure with official GST invoices and easy installment options (Installment 1, 2 & 3). No surprise or hidden charges.",
+      title: "Flexible Installments & GST Invoices",
+      description: "Affordable fee structure with official computer-generated GST tax receipts and convenient installment plans. No unexpected or hidden charges.",
       color: "from-purple-600 to-indigo-600"
     },
     {
@@ -92,3 +92,4 @@ const WhyChooseMdi = () => {
 };
 
 export default WhyChooseMdi;
+

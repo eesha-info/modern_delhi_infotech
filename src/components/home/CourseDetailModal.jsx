@@ -1,5 +1,5 @@
 import React from 'react';
-import { X, Clock, Award, Briefcase, CheckCircle, BookOpen, ArrowRight, ShieldCheck } from 'lucide-react';
+import { X, Clock, Award, Briefcase, CheckCircle, BookOpen, ArrowRight, ShieldCheck, Calendar } from 'lucide-react';
 
 const CourseDetailModal = ({ course, onClose, onEnroll }) => {
   if (!course) return null;
@@ -38,17 +38,18 @@ const CourseDetailModal = ({ course, onClose, onEnroll }) => {
             {course.hindiName}
           </p>
 
-          <div className="mt-4 flex flex-wrap gap-4 text-xs font-semibold text-slate-200">
+          <div className="mt-4 flex flex-wrap gap-3 text-xs font-semibold text-slate-200">
             <div className="flex items-center gap-1.5 bg-white/10 px-3 py-1.5 rounded-xl">
               <Clock className="w-4 h-4 text-amber-400" />
               <span>Duration: {course.duration}</span>
             </div>
             <div className="flex items-center gap-1.5 bg-white/10 px-3 py-1.5 rounded-xl">
               <Award className="w-4 h-4 text-emerald-400" />
-              <span>Govt. Recognized Diploma</span>
+              <span>Govt. Recognized Certification</span>
             </div>
-            <div className="flex items-center gap-1.5 bg-amber-400/20 text-amber-300 border border-amber-400/30 px-3 py-1.5 rounded-xl">
-              <span>Total Fee: ₹{course.fee.toLocaleString()} (GST Included)</span>
+            <div className="flex items-center gap-1.5 bg-white/10 px-3 py-1.5 rounded-xl">
+              <Calendar className="w-4 h-4 text-blue-300" />
+              <span>Session: 2026-27</span>
             </div>
           </div>
         </div>
@@ -58,7 +59,7 @@ const CourseDetailModal = ({ course, onClose, onEnroll }) => {
           
           {/* Overview */}
           <div>
-            <h4 className="font-bold text-slate-900 text-base mb-2">Course Overview</h4>
+            <h4 className="font-bold text-slate-900 text-base mb-2">Program Overview</h4>
             <p className="text-slate-600 leading-relaxed">{course.description}</p>
           </div>
 
@@ -67,14 +68,14 @@ const CourseDetailModal = ({ course, onClose, onEnroll }) => {
             <div className="p-4 bg-slate-50 rounded-2xl border border-slate-200">
               <h5 className="font-bold text-slate-900 text-xs uppercase tracking-wider mb-1 flex items-center gap-2">
                 <ShieldCheck className="w-4 h-4 text-blue-600" />
-                Eligibility
+                Minimum Eligibility
               </h5>
               <p className="text-slate-700 font-medium">{course.eligibility}</p>
             </div>
             <div className="p-4 bg-slate-50 rounded-2xl border border-slate-200">
               <h5 className="font-bold text-slate-900 text-xs uppercase tracking-wider mb-1 flex items-center gap-2">
                 <Briefcase className="w-4 h-4 text-blue-600" />
-                Target Job Roles
+                Employment Opportunities
               </h5>
               <div className="flex flex-wrap gap-1.5 mt-1">
                 {course.careers.map((job) => (
@@ -116,14 +117,11 @@ const CourseDetailModal = ({ course, onClose, onEnroll }) => {
 
         </div>
 
-        {/* Modal Footer */}
+        {/* Modal Footer (No public prices exposed) */}
         <div className="p-5 bg-slate-50 border-t border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-3">
-          <div>
-            <span className="text-xs text-slate-500">Course Fee (GST Included)</span>
-            <div className="text-xl font-bold text-slate-900">
-              ₹{course.fee.toLocaleString()}
-              <span className="text-xs font-normal text-slate-500 ml-1">/ Easy installments available</span>
-            </div>
+          <div className="text-xs text-slate-600">
+            <span className="font-bold text-slate-900 block">Modern Delhi Infotech · Madhepura</span>
+            <span>Batch Timings: Morning &amp; Evening Batches Available</span>
           </div>
 
           <div className="flex items-center gap-2 w-full sm:w-auto">
@@ -140,7 +138,7 @@ const CourseDetailModal = ({ course, onClose, onEnroll }) => {
               }}
               className="flex-1 sm:flex-initial px-6 py-2.5 bg-blue-700 hover:bg-blue-800 text-white font-bold text-xs rounded-xl shadow-md transition-all flex items-center justify-center gap-1.5"
             >
-              <span>Enroll / Apply for {course.code}</span>
+              <span>Enquire for {course.code}</span>
               <ArrowRight className="w-4 h-4" />
             </button>
           </div>

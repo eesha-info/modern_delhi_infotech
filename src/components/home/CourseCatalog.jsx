@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { initialCourses } from '../../data/mdiData';
-import { Clock, Award, CheckCircle2, ChevronRight, Sparkles, Filter, Info } from 'lucide-react';
+import { Clock, Award, CheckCircle2, ChevronRight, Sparkles, Info, Users, BookOpen } from 'lucide-react';
 import CourseDetailModal from './CourseDetailModal';
 
 const CourseCatalog = ({ onOpenAdmission }) => {
@@ -24,10 +24,10 @@ const CourseCatalog = ({ onOpenAdmission }) => {
             Job-Oriented Training Programs
           </div>
           <h2 className="text-3xl sm:text-4xl font-display font-extrabold text-slate-900 tracking-tight">
-            Explore Courses Offered at Modern Delhi Infotech
+            Courses Offered at Modern Delhi Infotech
           </h2>
           <p className="text-slate-600 text-sm sm:text-base mt-2">
-            Each course is designed with practical computer lab sessions, project work, and official government-recognized certification.
+            Each program combines 100% practical computer lab training, expert guidance by Sonu Sir, and government-recognized diplomas valid across India.
           </p>
 
           {/* Category Filter Pills */}
@@ -79,7 +79,7 @@ const CourseCatalog = ({ onOpenAdmission }) => {
                 <div className="flex items-center gap-3 mt-3 text-xs text-slate-600 font-semibold">
                   <div className="flex items-center gap-1 bg-slate-100 px-2.5 py-1 rounded-lg">
                     <Clock className="w-3.5 h-3.5 text-blue-600" />
-                    <span>{course.duration}</span>
+                    <span>Duration: {course.duration}</span>
                   </div>
                   <div className="flex items-center gap-1 bg-slate-100 px-2.5 py-1 rounded-lg">
                     <Award className="w-3.5 h-3.5 text-emerald-600" />
@@ -95,7 +95,7 @@ const CourseCatalog = ({ onOpenAdmission }) => {
                 {/* Highlights */}
                 <div className="mt-4 pt-4 border-t border-slate-100">
                   <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block mb-2">
-                    Key Curriculum Modules:
+                    Key Topics Covered:
                   </span>
                   <ul className="space-y-1.5 text-xs text-slate-700">
                     {course.highlights.slice(0, 4).map((h, i) => (
@@ -108,19 +108,15 @@ const CourseCatalog = ({ onOpenAdmission }) => {
                 </div>
               </div>
 
-              {/* Card Bottom Pricing & Actions */}
+              {/* Card Bottom: Batch info & Actions (NO COURSE PRICE EXPOSED) */}
               <div className="p-6 pt-4 bg-slate-50/70 border-t border-slate-100 mt-2">
-                <div className="flex items-baseline justify-between mb-4">
-                  <div>
-                    <span className="text-[10px] text-slate-500 font-semibold uppercase tracking-wider block">
-                      Total Course Fee (Incl. GST)
-                    </span>
-                    <span className="text-xl font-display font-black text-slate-900">
-                      ₹{course.fee.toLocaleString()}
-                    </span>
-                  </div>
-                  <span className="text-[11px] font-medium text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
-                    Easy Installments
+                <div className="flex items-center justify-between mb-4 text-xs">
+                  <span className="font-semibold text-slate-600 flex items-center gap-1">
+                    <Users className="w-3.5 h-3.5 text-blue-600" />
+                    <span>Eligibility: {course.eligibility.split('(')[0]}</span>
+                  </span>
+                  <span className="text-[11px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
+                    1:1 PC Guaranteed
                   </span>
                 </div>
 
@@ -130,13 +126,13 @@ const CourseCatalog = ({ onOpenAdmission }) => {
                     className="py-2.5 px-3 text-xs font-bold text-slate-700 bg-white hover:bg-slate-100 border border-slate-200 rounded-xl transition-colors flex items-center justify-center gap-1"
                   >
                     <Info className="w-3.5 h-3.5 text-slate-500" />
-                    <span>Syllabus</span>
+                    <span>View Syllabus</span>
                   </button>
                   <button
                     onClick={() => onOpenAdmission(course)}
                     className="py-2.5 px-3 text-xs font-bold text-white bg-blue-700 hover:bg-blue-800 rounded-xl shadow-sm transition-all flex items-center justify-center gap-1"
                   >
-                    <span>Enroll Now</span>
+                    <span>Enquire / Enroll</span>
                     <ChevronRight className="w-3.5 h-3.5" />
                   </button>
                 </div>

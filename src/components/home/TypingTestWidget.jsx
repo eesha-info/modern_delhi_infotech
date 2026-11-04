@@ -184,3 +184,4 @@ const TypingTestWidget = ({ onOpenAdmission }) => {
 };
 
 export default TypingTestWidget;
+

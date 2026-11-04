@@ -146,3 +146,4 @@ const BranchLocations = ({ onOpenAdmission }) => {
 };
 
 export default BranchLocations;
+

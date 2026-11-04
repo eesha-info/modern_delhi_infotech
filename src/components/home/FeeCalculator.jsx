@@ -236,3 +236,4 @@ const FeeCalculator = ({ onOpenAdmission }) => {
 };
 
 export default FeeCalculator;
+

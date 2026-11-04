@@ -13,7 +13,6 @@ import StatsBanner from './components/home/StatsBanner';
 import CourseCatalog from './components/home/CourseCatalog';
 import DirectorMessage from './components/home/DirectorMessage';
 import WhyChooseMdi from './components/home/WhyChooseMdi';
-import FeeCalculator from './components/home/FeeCalculator';
 import TypingTestWidget from './components/home/TypingTestWidget';
 import VerificationSection from './components/home/VerificationSection';
 import BranchLocations from './components/home/BranchLocations';
@@ -26,7 +25,7 @@ import InvoiceViewerModal from './components/invoice/InvoiceViewerModal';
 import AdminDashboard from './components/admin/AdminDashboard';
 import StudentDashboard from './components/student/StudentDashboard';
 
-import { Phone, ShieldCheck, GraduationCap, ArrowUp } from 'lucide-react';
+import { Phone, ShieldCheck, GraduationCap } from 'lucide-react';
 import { instituteInfo } from './data/mdiData';
 
 const MainAppContent = () => {
@@ -75,7 +74,7 @@ const MainAppContent = () => {
   return (
     <div className="min-h-screen flex flex-col bg-slate-50 relative selection:bg-blue-700 selection:text-white">
       
-      {/* Top Notice Bar with Announcement & Call Ticker */}
+      {/* Top Notice Bar */}
       <TopNoticeBar onOpenAdmission={() => handleOpenAdmission(null)} />
 
       {/* Main Sticky Navbar */}
@@ -98,28 +97,25 @@ const MainAppContent = () => {
         {/* 2. Key Stats Trust Banner */}
         <StatsBanner />
 
-        {/* 3. Course Catalog with Filters & Syllabus Modal */}
+        {/* 3. Course Catalog (No public price exposed) */}
         <CourseCatalog onOpenAdmission={handleOpenAdmission} />
 
-        {/* 4. Director's Desk: Sonu Kumar (Sonu Sir, BCA, MCA) */}
-        <DirectorMessage onOpenAdmission={() => handleOpenAdmission(null)} />
-
-        {/* 5. Why Choose Modern Delhi Infotech */}
+        {/* 4. Why Choose Modern Delhi Infotech (1:1 PC, AC Labs, Govt Cert) */}
         <WhyChooseMdi />
 
-        {/* 6. Transparent Fee & GST Invoice Calculator */}
-        <FeeCalculator onOpenAdmission={handleOpenAdmission} />
+        {/* 5. Director's Desk: Sonu Kumar (Sonu Sir - BCA, MCA) */}
+        <DirectorMessage onOpenAdmission={() => handleOpenAdmission(null)} />
 
-        {/* 7. Interactive Typing Speed Lab (Hindi & English) */}
+        {/* 6. Interactive Typing Speed Lab (Hindi & English) */}
         <TypingTestWidget onOpenAdmission={handleOpenAdmission} />
 
-        {/* 8. Online Student Roll / Certificate Verification */}
+        {/* 7. Online Student Roll / Certificate Verification */}
         <VerificationSection />
 
-        {/* 9. Two Campuses in Madhepura (Branch 2 & Branch 1) */}
+        {/* 8. Two Campuses in Madhepura (Branch 2 & Branch 1) */}
         <BranchLocations onOpenAdmission={handleOpenAdmission} />
 
-        {/* 10. Student Testimonials & Success Stories */}
+        {/* 9. Student Testimonials & Success Stories */}
         <Testimonials />
 
       </main>
@@ -168,7 +164,7 @@ const MainAppContent = () => {
         {/* Quick Phone Call Sonu Sir Floating Button */}
         <a
           href={`tel:${instituteInfo.contact.primaryPhone.replace(/\s+/g, '')}`}
-          className="bg-emerald-600 hover:bg-emerald-500 text-white p-3.5 rounded-full shadow-2xl flex items-center gap-2 border-2 border-white transition-all transform hover:scale-110 active:scale-95"
+          className="bg-emerald-600 hover:bg-emerald-500 text-white p-3.5 rounded-full shadow-2xl flex items-center gap-2 border-2 border-white transition-all transform hover:scale-105 active:scale-95"
           title="Call Sonu Sir Directly"
         >
           <Phone className="w-5 h-5 text-white" />
