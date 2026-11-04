@@ -41,9 +41,10 @@ export const AuthProvider = ({ children }) => {
     const adminUser = {
       id: 'admin-01',
       role: 'admin',
-      name: 'Sonu Kumar (Sonu Sir)',
+      name: 'Sonu Kumar',
+      avatar: '/sonu-kumar.jpg',
       email: email,
-      designation: 'Director & Chief Technical Mentor',
+      designation: 'Director',
       qualifications: 'BCA, MCA',
       phone: '+91 70500 12501'
     };

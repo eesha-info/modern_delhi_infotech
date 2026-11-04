@@ -19,6 +19,7 @@ const Sidebar = ({
   onViewWebsite
 }) => {
   const { colors, mode } = useAppTheme();
+  const isDark = mode === 'dark';
 
   // Admin Navigation Groups matching reference Argon Dashboard
   const adminSections = [
@@ -122,23 +123,30 @@ const Sidebar = ({
               isCollapsed ? 'justify-center' : 'justify-between px-2'
             }`}
           >
-            {/* Logo and Brand Name (Hidden when collapsed) */}
+            {/* Real Logo and Delhi Infotech Brand Name */}
             {!isCollapsed && (
-              <div className="flex items-center gap-2.5">
-                <img
-                  src="/argon-logo.png"
-                  alt="Argon"
-                  className="w-7 h-7 object-contain rounded-md"
-                  onError={(e) => {
-                    e.currentTarget.src = "/mdi-real-logo-cropped.png";
-                  }}
-                />
-                <h2
-                  style={{ color: colors.greenAccent[500] }}
-                  className="font-display font-extrabold text-lg tracking-tight leading-none"
-                >
-                  Argon
-                </h2>
+              <div className="flex items-center gap-2.5 min-w-0">
+                <div className="w-8 h-8 rounded-full overflow-hidden bg-white p-0.5 border border-slate-300/40 flex-shrink-0 shadow-xs">
+                  <img
+                    src="/mdi-real-logo-cropped.png"
+                    alt="Delhi Infotech"
+                    className="w-full h-full object-contain"
+                    onError={(e) => {
+                      e.currentTarget.src = "/logo-icon.svg";
+                    }}
+                  />
+                </div>
+                <div className="min-w-0">
+                  <h2
+                    style={{ color: colors.greenAccent[500] }}
+                    className="font-display font-extrabold text-base tracking-tight leading-none truncate"
+                  >
+                    Delhi Infotech
+                  </h2>
+                  <span style={{ color: colors.gray[400] }} className="text-[10px] font-semibold block mt-0.5 truncate">
+                    Modern Institute
+                  </span>
+                </div>
               </div>
             )}
 
@@ -154,18 +162,18 @@ const Sidebar = ({
             </button>
           </div>
 
-          {/* User Profile Header (Only shown when expanded, matching screenshot!) */}
+          {/* User Profile Header (Real photo of Sonu Kumar & Just name "Sonu Kumar") */}
           {!isCollapsed && (
             <div className="flex flex-col items-center text-center py-5 border-b border-white/5">
-              <div className="w-24 h-24 rounded-full overflow-hidden p-1 border border-slate-500/30 shadow-md mb-2.5">
+              <div className="w-24 h-24 rounded-full overflow-hidden p-1 border-2 border-[#4cceac]/40 shadow-lg mb-2.5 bg-black/10">
                 <img
                   src={
                     role === 'admin'
-                      ? '/tony-avatar.png'
+                      ? '/sonu-kumar.jpg'
                       : (user?.avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80')
                   }
-                  alt={user?.name || (role === 'admin' ? 'Tony Stark' : 'Rajeev Kumar')}
-                  className="w-full h-full object-cover rounded-full"
+                  alt={role === 'admin' ? 'Sonu Kumar' : (user?.name || 'Student')}
+                  className="w-full h-full object-cover object-top rounded-full"
                   onError={(e) => {
                     e.currentTarget.src = "/mdi-real-logo-cropped.png";
                   }}
@@ -176,14 +184,14 @@ const Sidebar = ({
                 style={{ color: colors.gray[100] }}
                 className="font-display font-bold text-lg leading-tight"
               >
-                {role === 'admin' ? (user?.name === 'Sonu Kumar' ? 'Tony Stark' : (user?.name || 'Tony Stark')) : (user?.name || 'Rajeev Kumar')}
+                {role === 'admin' ? 'Sonu Kumar' : (user?.name || 'Rajeev Kumar')}
               </h3>
 
               <p
                 style={{ color: colors.greenAccent[500] }}
                 className="text-xs font-semibold mt-1"
               >
-                {role === 'admin' ? 'VP Fancy Admin' : `Student · ${user?.regNo || 'MDI-B2-456'}`}
+                {role === 'admin' ? 'Director' : `Student · ${user?.regNo || 'MDI-B2-456'}`}
               </p>
             </div>
           )}
@@ -217,7 +225,7 @@ const Sidebar = ({
                             ? `2px solid ${colors.blueAccent[500]}`
                             : '2px solid transparent',
                           borderRadius: '6px',
-                          backgroundColor: isActive ? 'transparent' : 'transparent',
+                          backgroundColor: 'transparent',
                         }}
                         className={`w-full flex items-center transition-all ${
                           isCollapsed

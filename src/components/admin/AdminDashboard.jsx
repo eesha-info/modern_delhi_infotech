@@ -819,11 +819,11 @@ const AdminDashboard = () => {
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                       <label style={{ color: colors.gray[300] }} className="text-xs block mb-1">Full Name</label>
-                      <input defaultValue="Tony Stark (Sonu Sir)" style={{ backgroundColor: colors.primary[500], color: colors.gray[100] }} className="w-full px-3 py-2 text-xs rounded border border-white/10 outline-none" />
+                      <input defaultValue="Sonu Kumar" style={{ backgroundColor: colors.primary[500], color: colors.gray[100] }} className="w-full px-3 py-2 text-xs rounded border border-white/10 outline-none" />
                     </div>
                     <div>
                       <label style={{ color: colors.gray[300] }} className="text-xs block mb-1">Designation</label>
-                      <input defaultValue="VP Fancy Admin / Institute Director" style={{ backgroundColor: colors.primary[500], color: colors.gray[100] }} className="w-full px-3 py-2 text-xs rounded border border-white/10 outline-none" />
+                      <input defaultValue="Director" style={{ backgroundColor: colors.primary[500], color: colors.gray[100] }} className="w-full px-3 py-2 text-xs rounded border border-white/10 outline-none" />
                     </div>
                     <div>
                       <label style={{ color: colors.gray[300] }} className="text-xs block mb-1">Direct Contact</label>

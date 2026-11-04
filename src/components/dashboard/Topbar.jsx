@@ -13,16 +13,19 @@ const Topbar = ({
   onToggleSidebar
 }) => {
   const { mode, toggleColorMode, colors } = useAppTheme();
+  const isDark = mode === 'dark';
 
   return (
     <div
       style={{
         backgroundColor: colors.primary[500],
+        borderColor: isDark ? 'rgba(255,255,255,0.06)' : '#e2e8f0',
       }}
-      className="h-16 px-4 sm:px-6 flex items-center justify-between border-b border-white/5 transition-colors"
+      className="h-16 px-4 sm:px-6 flex items-center justify-between border-b transition-colors"
     >
-      {/* Left: Mobile Menu Toggle & Search Bar */}
-      <div className="flex items-center gap-3">
+      {/* Left: Mobile Toggle, Real Emblem Logo, Delhi Infotech Name, and Search */}
+      <div className="flex items-center gap-3 sm:gap-4">
+        {/* Mobile menu toggle */}
         <button
           onClick={onToggleSidebar}
           style={{ color: colors.gray[100] }}
@@ -32,29 +35,58 @@ const Topbar = ({
           <Menu className="w-5 h-5" />
         </button>
 
-        {/* Search Input Box (Matching reference dashboard) */}
+        {/* Delhi Infotech Logo & Name on Top Navbar */}
+        <div className="flex items-center gap-2.5">
+          <div className="w-8 h-8 rounded-full overflow-hidden bg-white p-0.5 border border-slate-300/40 flex-shrink-0 shadow-sm">
+            <img
+              src="/mdi-real-logo-cropped.png"
+              alt="Delhi Infotech"
+              className="w-full h-full object-contain"
+              onError={(e) => {
+                e.currentTarget.src = "/logo-icon.svg";
+              }}
+            />
+          </div>
+          <div className="hidden xs:block">
+            <h1
+              style={{ color: colors.greenAccent[500] }}
+              className="font-display font-extrabold text-sm sm:text-base tracking-tight leading-none"
+            >
+              Delhi Infotech
+            </h1>
+            <span
+              style={{ color: isDark ? colors.gray[400] : '#64748b' }}
+              className="text-[10px] font-semibold hidden md:block mt-0.5"
+            >
+              Modern Computer Education
+            </span>
+          </div>
+        </div>
+
+        {/* Search Input Box */}
         <div
           style={{
             backgroundColor: colors.primary[400],
+            borderColor: isDark ? 'rgba(255,255,255,0.08)' : '#e2e8f0',
           }}
-          className="flex items-center rounded px-3 py-1.5 w-52 sm:w-64 shadow-xs"
+          className="flex items-center rounded-md px-3 py-1.5 w-40 sm:w-60 border shadow-xs ml-1"
         >
           <input
             type="text"
-            placeholder="Search"
+            placeholder="Search..."
             style={{
-              color: colors.gray[100],
+              color: isDark ? colors.gray[100] : '#0f172a',
             }}
             className="bg-transparent border-none outline-none text-xs flex-1 placeholder:text-slate-400"
           />
-          <button style={{ color: colors.gray[100] }} type="button" className="p-0.5 focus:outline-none">
+          <button style={{ color: colors.gray[300] }} type="button" className="p-0.5 focus:outline-none">
             <Search className="w-4 h-4" />
           </button>
         </div>
       </div>
 
       {/* Right: Actions (Theme Toggle, Notifications, Settings, Profile/Logout) */}
-      <div className="flex items-center gap-1.5 sm:gap-2">
+      <div className="flex items-center gap-1.5 sm:gap-3">
         {/* Dark Mode / Light Mode Toggle Button */}
         <button
           onClick={toggleColorMode}
@@ -65,7 +97,7 @@ const Topbar = ({
           {mode === 'dark' ? (
             <Sun className="w-5 h-5 text-amber-300" />
           ) : (
-            <Moon className="w-5 h-5" />
+            <Moon className="w-5 h-5 text-slate-700" />
           )}
         </button>
 
@@ -99,15 +131,35 @@ const Topbar = ({
           <span className="hidden md:inline">Website</span>
         </button>
 
-        {/* Sign Out / User Icon Button */}
-        <button
-          onClick={onLogout}
-          style={{ color: colors.redAccent[400] }}
-          className="p-2 rounded-md hover:opacity-80 transition-opacity focus:outline-none"
-          title="Sign Out"
-        >
-          <LogOut className="w-5 h-5" />
-        </button>
+        {/* Sonu Kumar User Badge & Logout */}
+        <div className="flex items-center gap-2 pl-2 border-l border-white/10">
+          <div className="w-8 h-8 rounded-full overflow-hidden border-2 border-[#4cceac]/60 shadow-xs flex-shrink-0 bg-black/10">
+            <img
+              src={role === 'admin' ? '/sonu-kumar.jpg' : (user?.avatar || '/mdi-real-logo-cropped.png')}
+              alt={role === 'admin' ? 'Sonu Kumar' : 'User'}
+              className="w-full h-full object-cover object-top rounded-full"
+              onError={(e) => {
+                e.currentTarget.src = "/mdi-real-logo-cropped.png";
+              }}
+            />
+          </div>
+          <div className="hidden lg:block text-left">
+            <div style={{ color: isDark ? colors.gray[100] : '#0f172a' }} className="text-xs font-bold leading-tight">
+              {role === 'admin' ? 'Sonu Kumar' : (user?.name || 'Student')}
+            </div>
+            <div style={{ color: colors.greenAccent[500] }} className="text-[10px] font-semibold leading-tight">
+              {role === 'admin' ? 'Director' : 'Student'}
+            </div>
+          </div>
+          <button
+            onClick={onLogout}
+            style={{ color: colors.redAccent[400] }}
+            className="p-1.5 rounded-md hover:opacity-80 transition-opacity focus:outline-none ml-1"
+            title="Sign Out"
+          >
+            <LogOut className="w-4 h-4" />
+          </button>
+        </div>
       </div>
     </div>
   );
