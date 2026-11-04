@@ -12,6 +12,15 @@
   }
 }
 
+/* Shared section eyebrow label */
+.section-eyebrow {
+  @apply inline-flex items-center gap-2 text-xs font-bold uppercase tracking-[0.18em] text-blue-700;
+}
+.section-eyebrow::before {
+  content: '';
+  @apply w-6 h-0.5 rounded-full bg-amber-400;
+}
+
 /* Custom glowing badge & gradient highlights */
 .gradient-text {
   @apply bg-clip-text text-transparent bg-gradient-to-r from-blue-700 via-indigo-600 to-blue-800;
@@ -34,10 +43,11 @@
   body * {
     visibility: hidden;
   }
-  #printable-invoice, #printable-invoice * {
+  #printable-invoice, #printable-invoice *,
+  #printable-certificate, #printable-certificate * {
     visibility: visible;
   }
-  #printable-invoice {
+  #printable-invoice, #printable-certificate {
     position: absolute;
     left: 0;
     top: 0;

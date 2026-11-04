@@ -3,7 +3,7 @@ import {
   LayoutGrid, Users, CheckSquare, Receipt, Mail, Clock,
   BookOpen, Keyboard, FileText, Award, Calendar, ExternalLink,
   Menu, X, User, HelpCircle, BarChart2, PieChart, TrendingUp,
-  Map, Activity
+  Map, Activity, IndianRupee, ClipboardList
 } from 'lucide-react';
 import { useAppTheme } from '../../context/ThemeContext';
 
@@ -29,18 +29,27 @@ const Sidebar = ({
       ]
     },
     {
-      title: 'Data',
+      title: 'Academics',
       items: [
-        { id: 'attendance', label: 'Take Attendance', icon: CheckSquare },
-        { id: 'students', label: 'Manage Team', icon: Users },
-        { id: 'enquiries', label: 'Contacts Information', icon: Mail },
+        { id: 'students', label: 'Student Enrollment', icon: Users },
+        { id: 'courses', label: 'Course Management', icon: BookOpen },
+        { id: 'batches', label: 'Batch Management', icon: Clock },
+        { id: 'attendance', label: 'Student Attendance', icon: CheckSquare },
+        { id: 'tests', label: 'Online Tests', icon: FileText },
+        { id: 'certificates', label: 'Certification', icon: Award },
+      ]
+    },
+    {
+      title: 'Finance & Leads',
+      items: [
+        { id: 'fees', label: 'Fee Management', icon: IndianRupee },
         { id: 'invoices', label: 'Invoices Balances', icon: Receipt },
+        { id: 'enquiries', label: 'Admission Enquiries', icon: Mail },
       ]
     },
     {
       title: 'Pages',
       items: [
-        { id: 'batches', label: 'Batches & Timings', icon: Clock },
         { id: 'profile', label: 'Profile Form', icon: User },
         { id: 'calendar', label: 'Calendar', icon: Calendar },
         { id: 'faq', label: 'FAQ Page', icon: HelpCircle },
@@ -75,6 +84,7 @@ const Sidebar = ({
     {
       title: 'Pages',
       items: [
+        { id: 'tests', label: 'Online Tests', icon: ClipboardList },
         { id: 'typing', label: 'Typing Speed Lab', icon: Keyboard },
         { id: 'materials', label: 'Study Materials', icon: FileText },
         { id: 'certificate', label: 'Digital Certificate', icon: Award },

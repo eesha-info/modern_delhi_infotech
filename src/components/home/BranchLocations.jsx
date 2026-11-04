@@ -6,22 +6,22 @@ const BranchLocations = ({ onOpenAdmission }) => {
   const [activeBranchId, setActiveBranchId] = useState('branch-2');
 
   return (
-    <section id="branches" className="py-20 bg-slate-50 border-t border-slate-200/80 relative">
+    <section id="branches" className="py-20 bg-slate-50 relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         <div className="text-center max-w-3xl mx-auto mb-14">
-          <span className="text-xs font-bold uppercase tracking-widest text-blue-700 bg-blue-100 px-3 py-1 rounded-full">
+          <span className="section-eyebrow">
             Visit Our Centres
           </span>
           <h2 className="text-3xl sm:text-4xl font-display font-extrabold text-slate-900 mt-3 tracking-tight">
             Two Modern Training Campuses in Madhepura
           </h2>
-          <p className="text-slate-600 text-sm sm:text-base mt-2">
+          <p className="text-slate-600 text-base mt-3 leading-relaxed">
             Both branches are equipped with high-speed computers, backup generators, and certified instructors.
           </p>
 
           {/* Branch Switch Tabs */}
-          <div className="flex justify-center gap-3 mt-8">
+          <div className="flex flex-wrap justify-center gap-3 mt-8">
             {instituteInfo.branches.map((b) => (
               <button
                 key={b.id}

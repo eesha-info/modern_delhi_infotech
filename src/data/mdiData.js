@@ -249,12 +249,14 @@ export const initialCourses = [
 ];
 
 export const initialBatches = [
-  { id: "B1", name: "Batch-1 (Early Morning)", timing: "08:00 AM – 09:30 AM", room: "Lab A", instructor: "Sonu Kumar", maxCapacity: 25, enrolled: 22, branch: "Branch 2" },
-  { id: "B2", name: "Batch-2 (Morning Prime)", timing: "09:30 AM – 11:00 AM", room: "Lab A", instructor: "Sonu Kumar", maxCapacity: 25, enrolled: 25, branch: "Branch 2" },
-  { id: "B3", name: "Batch-3 (Mid Day)", timing: "11:00 AM – 12:30 PM", room: "Lab B", instructor: "Vikash Sir", maxCapacity: 20, enrolled: 18, branch: "Branch 2" },
-  { id: "B4", name: "Batch-4 (Afternoon Girls Special)", timing: "02:00 PM – 03:30 PM", room: "Lab A", instructor: "Pooja Ma'am", maxCapacity: 20, enrolled: 16, branch: "Branch 2" },
-  { id: "B5", name: "Batch-5 (Evening Tally & Office)", timing: "03:30 PM – 05:00 PM", room: "Lab B", instructor: "Sonu Kumar", maxCapacity: 25, enrolled: 21, branch: "Branch 1" },
-  { id: "B6", name: "Batch-6 (Govt Typing Special)", timing: "05:00 PM – 06:30 PM", room: "Typing Lab", instructor: "Ramesh Sir", maxCapacity: 30, enrolled: 28, branch: "Branch 2" }
+  { id: "B1", name: "Batch-1 (Early Morning)", courseCode: "ADIT", days: "Daily", timing: "08:00 AM – 09:30 AM", room: "Lab A", instructor: "Sonu Kumar", maxCapacity: 25, enrolled: 22, branch: "Branch 2" },
+  { id: "B2", name: "Batch-2 (Morning Prime)", courseCode: "ADCA", days: "Daily", timing: "09:30 AM – 11:00 AM", room: "Lab A", instructor: "Sonu Kumar", maxCapacity: 25, enrolled: 25, branch: "Branch 2" },
+  { id: "B3", name: "Batch-3 (Mid Day)", courseCode: "DCA", days: "Daily", timing: "11:00 AM – 12:30 PM", room: "Lab B", instructor: "Vikash Sir", maxCapacity: 20, enrolled: 18, branch: "Branch 2" },
+  { id: "B4", name: "Batch-4 (Afternoon Girls Special)", courseCode: "ADCA", days: "Daily", timing: "02:00 PM – 03:30 PM", room: "Lab A", instructor: "Pooja Ma'am", maxCapacity: 20, enrolled: 16, branch: "Branch 2" },
+  { id: "B5", name: "Batch-5 (Evening Tally & Office)", courseCode: "TALLY", days: "Daily", timing: "03:30 PM – 05:00 PM", room: "Lab B", instructor: "Sonu Kumar", maxCapacity: 25, enrolled: 21, branch: "Branch 1" },
+  { id: "B6", name: "Batch-6 (Govt Typing Special)", courseCode: "TYPING", days: "Daily", timing: "05:00 PM – 06:30 PM", room: "Typing Lab", instructor: "Ramesh Sir", maxCapacity: 30, enrolled: 28, branch: "Branch 2" },
+  { id: "B7", name: "Batch-7 (DCA – MWF)", courseCode: "DCA", days: "MWF", timing: "12:30 PM – 02:00 PM", room: "Lab A", instructor: "Vikash Sir", maxCapacity: 20, enrolled: 0, branch: "Branch 2" },
+  { id: "B8", name: "Batch-8 (Tally – TTS)", courseCode: "TALLY", days: "TTS", timing: "12:30 PM – 02:00 PM", room: "Lab A", instructor: "Sonu Kumar", maxCapacity: 20, enrolled: 0, branch: "Branch 2" }
 ];
 
 export const initialStudents = [
@@ -767,3 +769,9 @@ export const typingPracticeTexts = [
   }
 ];
 
+
+// Photo gallery on the landing page. Add more photos to /public/gallery and list them here.
+export const galleryImages = [
+  { src: "/sonu-kumar.jpg", caption: "Sonu Kumar (Sonu Sir) – Founder & Director" },
+  { src: "/mdi-banner.png", caption: "Branch 2 – ADIT, ADCA, DCA, Tally & Typing", fit: "object-contain bg-white" }
+];

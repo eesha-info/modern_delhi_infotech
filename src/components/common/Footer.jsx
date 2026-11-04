@@ -4,7 +4,7 @@ import { instituteInfo, initialCourses } from '../../data/mdiData';
 
 const Footer = ({ onOpenAdmission, onOpenLogin, onOpenVerify }) => {
   return (
-    <footer className="bg-slate-950 text-slate-400 text-xs border-t border-slate-800 relative z-20">
+    <footer id="contact" className="bg-slate-950 text-slate-400 text-xs border-t border-slate-800 relative z-20">
       {/* Main Footer Container */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-8 lg:gap-10">

@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { initialCourses } from '../../data/mdiData';
+import { useData } from '../../context/DataContext';
 import { Clock, Award, CheckCircle2, ChevronRight, Sparkles, Info, Users, BookOpen } from 'lucide-react';
 import CourseDetailModal from './CourseDetailModal';
 
 const CourseCatalog = ({ onOpenAdmission }) => {
+  const { courses: initialCourses } = useData();
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [selectedCourseForDetail, setSelectedCourseForDetail] = useState(null);
 
@@ -14,19 +15,16 @@ const CourseCatalog = ({ onOpenAdmission }) => {
     : initialCourses.filter(c => c.category === selectedCategory);
 
   return (
-    <section id="courses" className="py-20 bg-slate-50 relative">
+    <section id="courses" className="pt-24 pb-20 bg-slate-50 relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Section Heading */}
         <div className="text-center max-w-3xl mx-auto mb-12">
-          <div className="inline-flex items-center gap-1.5 bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider mb-3">
-            <Sparkles className="w-3.5 h-3.5 text-blue-700" />
-            Job-Oriented Training Programs
-          </div>
-          <h2 className="text-3xl sm:text-4xl font-display font-extrabold text-slate-900 tracking-tight">
+          <span className="section-eyebrow">Job-Oriented Training Programs</span>
+          <h2 className="mt-3 text-3xl sm:text-4xl font-display font-extrabold text-slate-900 tracking-tight">
             Courses Offered at Modern Delhi Infotech
           </h2>
-          <p className="text-slate-600 text-sm sm:text-base mt-2">
+          <p className="text-slate-600 text-base mt-3 leading-relaxed">
             Each program combines 100% practical computer lab training, expert guidance by Sonu Sir, and government-recognized diplomas valid across India.
           </p>
 
@@ -68,7 +66,7 @@ const CourseCatalog = ({ onOpenAdmission }) => {
                   )}
                 </div>
 
-                <h3 className="text-lg font-bold text-slate-900 group-hover:text-blue-700 transition-colors line-clamp-1">
+                <h3 className="text-lg font-bold text-slate-900 group-hover:text-blue-700 transition-colors leading-snug line-clamp-2 min-h-[3.1rem]">
                   {course.name}
                 </h3>
                 <p className="text-xs text-slate-500 font-medium mt-0.5 line-clamp-1">

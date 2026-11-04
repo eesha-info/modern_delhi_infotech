@@ -8,7 +8,7 @@ const Logo = ({ size = "md", light = false }) => {
   };
 
   return (
-    <div className="flex items-center gap-3 flex-nowrap select-none">
+    <div className="flex items-center gap-2.5 sm:gap-3 flex-nowrap select-none min-w-0">
       {/* Real Authentic Emblem Logo */}
       <div className={`relative flex-shrink-0 ${sizeClasses[size] || sizeClasses.md} rounded-full overflow-hidden shadow-sm bg-white p-0.5 border border-slate-200`}>
         <img
@@ -24,7 +24,7 @@ const Logo = ({ size = "md", light = false }) => {
       {/* Brand Typography */}
       <div className="flex flex-col justify-center min-w-0">
         <div className="flex items-center gap-2">
-          <span className={`font-display font-extrabold tracking-tight text-base sm:text-lg leading-tight whitespace-nowrap ${
+          <span className={`font-display font-extrabold tracking-tight text-[15px] sm:text-lg leading-tight whitespace-nowrap ${
             light ? 'text-white' : 'text-slate-900'
           }`}>
             MODERN DELHI INFOTECH

@@ -14,6 +14,11 @@ import StatBox from '../dashboard/StatBox';
 import ProgressCircle from '../dashboard/ProgressCircle';
 import RevenueChart from '../dashboard/RevenueChart';
 import AdminTakeAttendance from './AdminTakeAttendance';
+import AdminCourses from './AdminCourses';
+import AdminBatches from './AdminBatches';
+import AdminFees from './AdminFees';
+import AdminTests from './AdminTests';
+import AdminCertificates from './AdminCertificates';
 
 const AdminDashboard = () => {
   const { user, logout, setActiveView } = useAuth();
@@ -31,6 +36,7 @@ const AdminDashboard = () => {
 
   // Tab State: 'dashboard' | 'attendance' | 'students' | 'invoices' | 'enquiries' | 'batches'
   const [activeTab, setActiveTab] = useState('dashboard');
+  const [attendanceBatchId, setAttendanceBatchId] = useState(null);
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
 
@@ -381,7 +387,7 @@ const AdminDashboard = () => {
 
           {/* ===================== TAB: ATTENDANCE (Batchwise) ===================== */}
           {activeTab === 'attendance' && (
-            <AdminTakeAttendance />
+            <AdminTakeAttendance initialBatchId={attendanceBatchId} />
           )}
 
           {/* ===================== TAB: STUDENTS ===================== */}
@@ -437,11 +443,9 @@ const AdminDashboard = () => {
                     className="rounded-md px-3 py-1.5 text-xs font-semibold outline-none cursor-pointer"
                   >
                     <option value="All">All Courses</option>
-                    <option value="ADIT">ADIT (12M)</option>
-                    <option value="ADCA">ADCA (12M)</option>
-                    <option value="DCA">DCA (6M)</option>
-                    <option value="TALLY">Tally Prime (3M)</option>
-                    <option value="TYPING">Beltron Typing (3M)</option>
+                    {courses.map((c) => (
+                      <option key={c.code} value={c.code}>{c.code} ({c.duration})</option>
+                    ))}
                   </select>
                 </div>
 
@@ -751,64 +755,18 @@ const AdminDashboard = () => {
 
           {/* ===================== TAB: BATCHES ===================== */}
           {activeTab === 'batches' && (
-            <div className="space-y-6">
-              <Header
-                title="BATCHES &amp; TIMINGS"
-                subtitle="Institute classroom slots across Branch 1 and Branch 2"
-              />
-
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-                {batches.map((batch) => (
-                  <div
-                    key={batch.id}
-                    style={{ backgroundColor: colors.primary[400] }}
-                    className="p-5 rounded-lg shadow-xs flex flex-col justify-between"
-                  >
-                    <div>
-                      <div className="flex items-center justify-between">
-                        <span
-                          style={{
-                            backgroundColor: colors.primary[500],
-                            color: colors.greenAccent[500]
-                          }}
-                          className="text-xs font-bold px-2 py-0.5 rounded"
-                        >
-                          {batch.id}
-                        </span>
-                        <span style={{ color: colors.gray[400] }} className="text-xs">
-                          {batch.branch}
-                        </span>
-                      </div>
-
-                      <h3 style={{ color: colors.gray[100] }} className="font-bold text-sm mt-3">
-                        {batch.name}
-                      </h3>
-
-                      <div style={{ color: colors.gray[300] }} className="mt-2 space-y-1 text-xs">
-                        <div>Timing: <strong style={{ color: colors.gray[100] }}>{batch.timing}</strong></div>
-                        <div>Room: <strong style={{ color: colors.gray[100] }}>{batch.room}</strong></div>
-                        <div>Mentor: <strong style={{ color: colors.gray[100] }}>{batch.instructor}</strong></div>
-                      </div>
-                    </div>
-
-                    <div className="mt-4 pt-3 border-t border-white/5 flex items-center justify-between">
-                      <span style={{ color: colors.gray[400] }} className="text-xs">
-                        Capacity: {batch.enrolled}/{batch.maxCapacity} PCs
-                      </span>
-                      <button
-                        onClick={() => setActiveTab('attendance')}
-                        style={{ color: colors.greenAccent[500] }}
-                        className="text-xs font-semibold hover:underline"
-                      >
-                        Take Attendance
-                      </button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-            </div>
+            <AdminBatches
+              onTakeAttendance={(batchId) => {
+                setAttendanceBatchId(batchId);
+                setActiveTab('attendance');
+              }}
+            />
           )}
+
+          {activeTab === 'courses' && <AdminCourses />}
+          {activeTab === 'fees' && <AdminFees />}
+          {activeTab === 'tests' && <AdminTests />}
+          {activeTab === 'certificates' && <AdminCertificates />}
 
           {/* ===================== TAB: PROFILE FORM ===================== */}
           {activeTab === 'profile' && (

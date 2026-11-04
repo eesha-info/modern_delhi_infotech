@@ -54,23 +54,23 @@ const TypingTestWidget = ({ onOpenAdmission }) => {
   };
 
   return (
-    <section id="typing-lab" className="py-20 bg-white border-t border-slate-200/80 relative">
+    <section id="typing-lab" className="py-20 bg-white relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Section Heading */}
         <div className="text-center max-w-3xl mx-auto mb-10">
-          <span className="text-xs font-bold uppercase tracking-widest text-blue-700 bg-blue-100 px-3 py-1 rounded-full">
+          <span className="section-eyebrow">
             Bihar Beltron &amp; Govt. Exam Lab
           </span>
           <h2 className="text-3xl sm:text-4xl font-display font-extrabold text-slate-900 mt-3 tracking-tight">
             Online Typing Speed Practice Simulation
           </h2>
-          <p className="text-slate-600 text-sm sm:text-base mt-2">
+          <p className="text-slate-600 text-base mt-3 leading-relaxed">
             Practice touch typing in Hindi (KrutiDev / Mangal) and English just like our classroom lab students!
           </p>
 
           {/* Language Switch */}
-          <div className="flex justify-center gap-2 mt-6">
+          <div className="flex flex-wrap justify-center gap-2 mt-6">
             <button
               onClick={() => { setSelectedLang('English'); handleReset(); }}
               className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${

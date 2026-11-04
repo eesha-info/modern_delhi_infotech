@@ -1,65 +1,36 @@
 import React from 'react';
-import { Users, Monitor, Award, Building, CheckCircle2, BookOpen } from 'lucide-react';
+import { Users, Monitor, Award, Building, BookOpen } from 'lucide-react';
 import { instituteInfo } from '../../data/mdiData';
 
 const StatsBanner = () => {
   const stats = [
-    {
-      icon: Users,
-      value: instituteInfo.stats.studentsTrained,
-      label: "Students Trained",
-      subtext: "Since 2017 in Madhepura"
-    },
-    {
-      icon: Monitor,
-      value: "80+ PCs",
-      label: "Modern Computer Labs",
-      subtext: "1-Student-1-PC Guarantee"
-    },
-    {
-      icon: Award,
-      value: "100% Govt.",
-      label: "Recognized Certification",
-      subtext: "Valid across India"
-    },
-    {
-      icon: Building,
-      value: "2 Branches",
-      label: "In Madhepura City",
-      subtext: "Adarsh Nagar & SBI Road"
-    },
-    {
-      icon: BookOpen,
-      value: "10+ Courses",
-      label: "Diploma & Certification",
-      subtext: "Basic to Advanced IT"
-    }
+    { icon: Users, value: instituteInfo.stats.studentsTrained, label: 'Students trained', subtext: 'Since 2017' },
+    { icon: Monitor, value: instituteInfo.stats.pcsInLab, label: 'Lab computers', subtext: 'One PC per student' },
+    { icon: Award, value: '100%', label: 'Govt. recognised', subtext: 'Valid across India' },
+    { icon: Building, value: '2', label: 'Branches', subtext: 'Adarsh Nagar & SBI Road' },
+    { icon: BookOpen, value: '10+', label: 'Courses', subtext: 'Basic to advanced IT' },
   ];
 
   return (
-    <section className="relative z-20 -mt-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div className="bg-white rounded-3xl shadow-xl shadow-slate-200/60 border border-slate-200/80 p-6 md:p-8">
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 divide-y md:divide-y-0 md:divide-x divide-slate-100">
-          {stats.map((s, index) => {
+    <section className="relative z-20 -mt-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="bg-white rounded-3xl shadow-xl shadow-slate-900/[0.08] border border-slate-200/80 px-6 py-8 md:px-10">
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-y-8 gap-x-4">
+          {stats.map((s, i) => {
             const Icon = s.icon;
             return (
               <div
                 key={s.label}
-                className={`flex flex-col items-center text-center ${
-                  index > 0 ? 'pt-4 md:pt-0 md:pl-4' : ''
-                }`}
+                className={`flex flex-col sm:flex-row items-center text-center sm:text-left gap-2 sm:gap-3 md:justify-center ${i === stats.length - 1 ? 'col-span-2 md:col-span-1 sm:justify-center' : ''}`}
               >
-                <div className="w-12 h-12 rounded-2xl bg-blue-50 text-blue-700 flex items-center justify-center mb-3">
-                  <Icon className="w-6 h-6" />
-                </div>
-                <div className="text-2xl sm:text-3xl font-display font-extrabold text-slate-900 tracking-tight">
-                  {s.value}
-                </div>
-                <div className="text-xs sm:text-sm font-bold text-slate-700 mt-0.5">
-                  {s.label}
-                </div>
-                <div className="text-[11px] text-slate-500 mt-0.5">
-                  {s.subtext}
+                <span className="w-11 h-11 rounded-2xl bg-blue-50 text-blue-700 flex items-center justify-center flex-shrink-0">
+                  <Icon className="w-5 h-5" />
+                </span>
+                <div className="min-w-0">
+                  <div className="text-2xl font-display font-extrabold text-slate-900 leading-none tracking-tight">
+                    {s.value}
+                  </div>
+                  <div className="text-xs font-bold text-slate-700 mt-1">{s.label}</div>
+                  <div className="text-[11px] text-slate-500 sm:truncate">{s.subtext}</div>
                 </div>
               </div>
             );
@@ -71,4 +42,3 @@ const StatsBanner = () => {
 };
 
 export default StatsBanner;
-

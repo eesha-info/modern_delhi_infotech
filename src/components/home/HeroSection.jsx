@@ -1,227 +1,145 @@
 import React from 'react';
-import { Award, CheckCircle, ArrowRight, Phone, Sparkles, Monitor, Users, ShieldCheck, Star, Keyboard, BookOpen } from 'lucide-react';
+import { Award, ArrowRight, Phone, Star, Monitor, ShieldCheck, Keyboard } from 'lucide-react';
 import { instituteInfo } from '../../data/mdiData';
 
-const HeroSection = ({ onOpenAdmission, onOpenLogin, onOpenVerify }) => {
-  return (
-    <section className="relative overflow-hidden bg-gradient-to-b from-slate-900 via-blue-950 to-brand-navyDark text-white pt-10 pb-20 lg:pt-14 lg:pb-24">
-      {/* Background Subtle Tech Ambient Grid */}
-      <div className="absolute inset-0 opacity-10 pointer-events-none bg-[radial-gradient(#38bdf8_1px,transparent_1px)] [background-size:24px_24px]"></div>
-      <div className="absolute top-10 right-10 w-96 h-96 bg-blue-600/15 rounded-full blur-3xl pointer-events-none"></div>
-      <div className="absolute bottom-10 left-10 w-96 h-96 bg-amber-500/10 rounded-full blur-3xl pointer-events-none"></div>
+const popularPrograms = ['ADIT', 'ADCA', 'DCA', 'Tally Prime + GST', 'Hindi & English Typing'];
 
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center">
-          
-          {/* Left Column: Heading, Badges, CTAs */}
-          <div className="lg:col-span-7 space-y-6 text-center lg:text-left">
-            
-            {/* Accreditation Badge */}
-            <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md border border-white/15 px-3.5 py-1.5 rounded-full text-xs font-semibold text-amber-300 shadow-sm">
-              <Award className="w-4 h-4 text-amber-400" />
-              <span>भारत सरकार से मान्यता प्राप्त • Regd. Govt. of India</span>
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 hidden sm:inline"></span>
-              <span className="text-blue-200 hidden sm:inline">Estd. 2017</span>
+const HeroSection = ({ onOpenAdmission }) => {
+  const phoneHref = `tel:${instituteInfo.contact.primaryPhone.replace(/\s+/g, '')}`;
+
+  return (
+    <section className="relative overflow-hidden bg-brand-navyDark text-white">
+      {/* Ambient background */}
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(37,99,235,0.35),transparent_55%),radial-gradient(ellipse_at_bottom_left,rgba(245,158,11,0.15),transparent_50%)] pointer-events-none" />
+      <div className="absolute inset-0 opacity-[0.07] pointer-events-none bg-[linear-gradient(to_right,#fff_1px,transparent_1px),linear-gradient(to_bottom,#fff_1px,transparent_1px)] [background-size:48px_48px] [mask-image:radial-gradient(ellipse_at_center,black_30%,transparent_75%)]" />
+
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-14 pb-28 lg:pt-20 lg:pb-36">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-14 lg:gap-10 items-center">
+
+          {/* Left: message + actions */}
+          <div className="lg:col-span-7 text-center lg:text-left">
+            <div className="inline-flex items-center gap-2 bg-white/[0.08] border border-white/15 pl-2 pr-3.5 py-1.5 rounded-full text-xs font-semibold">
+              <span className="inline-flex items-center gap-1 bg-amber-400 text-slate-950 px-2 py-0.5 rounded-full text-[10px] font-extrabold uppercase tracking-wide">
+                <Award className="w-3 h-3" />
+                Govt. Regd.
+              </span>
+              <span className="text-slate-200">Admissions open · Session 2026-27</span>
             </div>
 
-            {/* Main Title */}
-            <h1 className="text-3xl sm:text-5xl lg:text-5xl font-display font-extrabold tracking-tight leading-tight sm:leading-tight">
-              Premier Computer Education &amp;{' '}
-              <span className="bg-gradient-to-r from-yellow-300 via-amber-400 to-yellow-500 bg-clip-text text-transparent">
-                Practical IT Training
+            <h1 className="mt-6 text-4xl sm:text-5xl lg:text-[3.5rem] font-display font-extrabold tracking-tight leading-[1.1]">
+              Learn computers the{' '}
+              <span className="bg-gradient-to-r from-amber-300 to-amber-500 bg-clip-text text-transparent">
+                practical way
               </span>
-              <br />in Madhepura
+              , right here in Madhepura.
             </h1>
 
-            {/* Director honorific highlight */}
-            <div className="flex flex-wrap items-center justify-center lg:justify-start gap-2.5 text-xs sm:text-sm font-medium text-slate-300">
-              <span className="text-amber-400 font-bold text-base">मॉडर्न दिल्ली इन्फोटेक</span>
-              <span>•</span>
-              <span className="text-emerald-300 font-semibold bg-emerald-950/70 border border-emerald-500/40 px-2.5 py-0.5 rounded-md">
-                Directed by Sonu Kumar (Sonu Sir - BCA, MCA)
-              </span>
-            </div>
-
-            {/* Subtitle Description */}
-            <p className="text-sm sm:text-base text-slate-300 leading-relaxed max-w-2xl mx-auto lg:mx-0">
-              Empowering Bihar's students with guaranteed 1-Student-1-PC practical lab sessions, official government-recognized diplomas, and specialized preparation for Beltron, SSC, and private sector IT careers.
+            <p className="mt-5 text-base sm:text-lg text-slate-300 leading-relaxed max-w-xl mx-auto lg:mx-0">
+              Government-recognised diplomas, your own PC in every class, and personal guidance from
+              Sonu Sir (BCA, MCA) — from your first lesson to your Beltron, SSC or job interview.
             </p>
 
-            {/* Core Value Checkmarks */}
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 pt-1 text-xs font-semibold text-slate-200">
-              <div className="flex items-center gap-2">
-                <CheckCircle className="w-4 h-4 text-emerald-400 flex-shrink-0" />
-                <span>100% Practical Labs</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <CheckCircle className="w-4 h-4 text-emerald-400 flex-shrink-0" />
-                <span>1-Student-1-PC Guarantee</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <CheckCircle className="w-4 h-4 text-emerald-400 flex-shrink-0" />
-                <span>Govt. Valid Certificates</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <CheckCircle className="w-4 h-4 text-emerald-400 flex-shrink-0" />
-                <span>Hindi &amp; English Typing</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <CheckCircle className="w-4 h-4 text-emerald-400 flex-shrink-0" />
-                <span>Tally Prime with GST</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <CheckCircle className="w-4 h-4 text-emerald-400 flex-shrink-0" />
-                <span>AC Labs &amp; Power Backup</span>
-              </div>
-            </div>
-
-            {/* CTAs */}
-            <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3.5 pt-3">
+            <div className="mt-8 flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3">
               <button
                 onClick={onOpenAdmission}
-                className="w-full sm:w-auto px-7 py-3.5 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-display font-extrabold rounded-xl shadow-lg shadow-amber-500/25 flex items-center justify-center gap-2 transition-all transform hover:-translate-y-0.5 active:scale-95 text-sm"
+                className="w-full sm:w-auto px-7 py-3.5 bg-amber-400 hover:bg-amber-300 text-slate-950 font-display font-bold rounded-xl shadow-lg shadow-amber-500/20 flex items-center justify-center gap-2 transition-all hover:-translate-y-0.5 active:scale-95"
               >
-                <span>Apply for Admission</span>
+                Apply for Admission
                 <ArrowRight className="w-4 h-4" />
               </button>
-
               <a
                 href="#courses"
-                className="w-full sm:w-auto px-6 py-3.5 bg-white/10 hover:bg-white/15 text-white font-semibold rounded-xl border border-white/20 transition-all text-center flex items-center justify-center gap-2 text-sm backdrop-blur-sm"
+                className="w-full sm:w-auto px-7 py-3.5 bg-white/10 hover:bg-white/15 text-white font-semibold rounded-xl border border-white/20 transition-colors text-center"
               >
-                <span>Explore All Courses</span>
-              </a>
-
-              <a
-                href={`tel:${instituteInfo.contact.primaryPhone.replace(/\s+/g, '')}`}
-                className="w-full sm:w-auto px-4 py-3.5 text-slate-300 hover:text-white font-medium text-xs sm:text-sm flex items-center justify-center gap-2 hover:bg-white/5 rounded-xl transition-colors"
-              >
-                <Phone className="w-4 h-4 text-emerald-400" />
-                <span>+91 70500 12501</span>
+                Explore Courses
               </a>
             </div>
 
-            {/* Featured Course Badges */}
-            <div className="pt-2 flex flex-wrap items-center justify-center lg:justify-start gap-2">
-              <span className="text-xs text-slate-400 font-medium">Popular Programs:</span>
-              {['ADIT (12 Months)', 'ADCA (12 Months)', 'DCA (6 Months)', 'Tally Prime + GST', 'Typing Special'].map((c) => (
-                <a
-                  key={c}
-                  href="#courses"
-                  className="px-2.5 py-1 text-xs font-bold rounded-lg bg-blue-900/60 border border-blue-700/50 text-blue-200 hover:bg-blue-800 transition-colors"
-                >
-                  {c}
-                </a>
-              ))}
-            </div>
+            <a
+              href={phoneHref}
+              className="mt-4 inline-flex items-center gap-2 text-sm text-slate-300 hover:text-white transition-colors"
+            >
+              <Phone className="w-4 h-4 text-emerald-400" />
+              Or call Sonu Sir: <span className="font-bold text-white">{instituteInfo.contact.primaryPhone}</span>
+            </a>
 
+            {/* Social proof */}
+            <div className="mt-10 pt-8 border-t border-white/10 flex flex-wrap items-center justify-center lg:justify-start gap-x-8 gap-y-4">
+              <div className="flex items-center gap-3">
+                <span className="w-10 h-10 rounded-xl bg-amber-400/15 border border-amber-400/30 flex items-center justify-center">
+                  <Star className="w-5 h-5 fill-amber-400 text-amber-400" />
+                </span>
+                <div className="text-left">
+                  <div className="flex items-center gap-0.5">
+                    {[...Array(5)].map((_, i) => (
+                      <Star key={i} className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
+                    ))}
+                    <span className="ml-1.5 text-sm font-bold">4.9</span>
+                  </div>
+                  <p className="text-xs text-slate-400">{instituteInfo.stats.studentsTrained} students trained</p>
+                </div>
+              </div>
+              <div className="hidden sm:block w-px h-10 bg-white/10" />
+              <div className="text-left">
+                <p className="text-sm font-bold">Estd. 2017</p>
+                <p className="text-xs text-slate-400">2 branches in Madhepura</p>
+              </div>
+            </div>
           </div>
 
-          {/* Right Column: Clean Interactive Training Showcase Visual */}
+          {/* Right: real institute poster with floating highlights */}
           <div className="lg:col-span-5">
-            <div className="relative mx-auto max-w-lg lg:max-w-none">
-              
-              {/* Premium Interactive Lab Showcase Card */}
-              <div className="bg-slate-800/90 rounded-3xl p-6 sm:p-7 border border-white/15 shadow-2xl backdrop-blur-md relative overflow-hidden">
-                
-                {/* Visual Header */}
-                <div className="flex items-center justify-between pb-4 border-b border-white/10">
-                  <div className="flex items-center gap-3">
-                    <img
-                      src="/mdi-real-logo-cropped.png"
-                      alt="Modern Delhi Infotech Official Logo"
-                      className="w-12 h-12 object-contain rounded-full bg-white p-0.5 shadow-md flex-shrink-0"
-                    />
-                    <div>
-                      <h4 className="font-bold text-white text-sm">
-                        High-Tech Computer Training Centre
-                      </h4>
-                      <p className="text-[11px] text-emerald-400 font-semibold">
-                        Adarsh Nagar (Branch 2) &amp; SBI Road (Branch 1)
-                      </p>
-                    </div>
-                  </div>
-                  <span className="px-2.5 py-1 rounded-full text-[10px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/40 whitespace-nowrap">
-                    50+ PCs
-                  </span>
-                </div>
-
-                {/* Key Training Highlights */}
-                <div className="mt-5 space-y-3">
-                  <div className="p-3.5 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 transition-colors flex items-start gap-3">
-                    <div className="w-8 h-8 rounded-lg bg-blue-500/20 text-blue-300 flex items-center justify-center flex-shrink-0 mt-0.5">
-                      <Monitor className="w-4 h-4" />
-                    </div>
-                    <div>
-                      <h5 className="font-bold text-white text-xs">Dedicated 1:1 Computer Allocation</h5>
-                      <p className="text-[11px] text-slate-300 mt-0.5">
-                        Every student practices on their own PC with Windows 11, MS Office 2024, and Tally Prime.
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="p-3.5 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 transition-colors flex items-start gap-3">
-                    <div className="w-8 h-8 rounded-lg bg-emerald-500/20 text-emerald-300 flex items-center justify-center flex-shrink-0 mt-0.5">
-                      <Keyboard className="w-4 h-4" />
-                    </div>
-                    <div>
-                      <h5 className="font-bold text-white text-xs">Bihar Beltron Typing Test Setup</h5>
-                      <p className="text-[11px] text-slate-300 mt-0.5">
-                        KrutiDev 010 &amp; Mangal typing software simulating exact Civil Court &amp; Beltron exams.
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="p-3.5 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 transition-colors flex items-start gap-3">
-                    <div className="w-8 h-8 rounded-lg bg-amber-500/20 text-amber-300 flex items-center justify-center flex-shrink-0 mt-0.5">
-                      <Award className="w-4 h-4" />
-                    </div>
-                    <div>
-                      <h5 className="font-bold text-white text-xs">Govt. Recognized Certification</h5>
-                      <p className="text-[11px] text-slate-300 mt-0.5">
-                        Valid for all Central &amp; State government employment verification registries.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Direct Action Bar */}
-                <div className="mt-6 pt-4 border-t border-white/10 flex items-center justify-between gap-3">
-                  <button
-                    onClick={onOpenAdmission}
-                    className="flex-1 py-2.5 px-4 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-bold text-xs rounded-xl shadow transition-all flex items-center justify-center gap-1.5"
-                  >
-                    <span>Book a Free Lab Demo</span>
-                    <ArrowRight className="w-3.5 h-3.5" />
-                  </button>
-
-                  <a
-                    href="#branches"
-                    className="py-2.5 px-3 bg-white/10 hover:bg-white/15 text-white text-xs font-semibold rounded-xl border border-white/15 transition-colors"
-                  >
-                    Visit Campus
-                  </a>
-                </div>
-
+            <div className="relative mx-auto max-w-sm lg:max-w-md">
+              <div className="absolute -inset-4 bg-gradient-to-tr from-blue-600/40 to-amber-400/30 rounded-[2rem] blur-2xl" />
+              <div className="relative rounded-3xl bg-white p-2 shadow-2xl rotate-[1.5deg] hover:rotate-0 transition-transform duration-500">
+                <img
+                  src="/mdi-banner.png"
+                  alt="Modern Delhi Infotech Branch 2 — ADIT, ADCA, DCA, Tally and Hindi + English Typing courses by Sonu Sir"
+                  className="w-full h-auto rounded-2xl"
+                  loading="eager"
+                />
               </div>
 
-              {/* Floating review card */}
-              <div className="absolute -bottom-5 -left-5 bg-white text-slate-900 rounded-2xl p-3 shadow-xl border border-slate-200 hidden sm:flex items-center gap-3">
-                <div className="p-2 rounded-xl bg-amber-50 text-amber-600">
-                  <Star className="w-5 h-5 fill-amber-500 text-amber-500" />
-                </div>
+              <div className="absolute -left-4 sm:-left-10 top-10 bg-white text-slate-900 rounded-2xl px-4 py-3 shadow-xl flex items-center gap-3">
+                <span className="w-9 h-9 rounded-xl bg-blue-50 text-blue-700 flex items-center justify-center">
+                  <Monitor className="w-5 h-5" />
+                </span>
                 <div>
-                  <div className="flex items-center gap-1 text-sm font-extrabold">
-                    <span>4.9 / 5.0</span>
-                    <span className="text-xs text-slate-500 font-normal">(1,200+ Reviews)</span>
-                  </div>
-                  <p className="text-xs text-slate-600 font-medium">Trusted in Madhepura</p>
+                  <p className="text-sm font-extrabold leading-tight">1 Student = 1 PC</p>
+                  <p className="text-[11px] text-slate-500">{instituteInfo.stats.pcsInLab} computers in lab</p>
                 </div>
               </div>
 
+              <div className="absolute -right-3 sm:-right-8 bottom-24 bg-white text-slate-900 rounded-2xl px-4 py-3 shadow-xl flex items-center gap-3">
+                <span className="w-9 h-9 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center">
+                  <Keyboard className="w-5 h-5" />
+                </span>
+                <div>
+                  <p className="text-sm font-extrabold leading-tight">Beltron Typing Prep</p>
+                  <p className="text-[11px] text-slate-500">KrutiDev &amp; Mangal</p>
+                </div>
+              </div>
+
+              <div className="absolute left-6 -bottom-5 bg-slate-950 text-white rounded-2xl px-4 py-2.5 shadow-xl border border-white/10 flex items-center gap-2">
+                <ShieldCheck className="w-4 h-4 text-amber-400" />
+                <span className="text-xs font-bold">Certificates verifiable online</span>
+              </div>
             </div>
           </div>
+        </div>
 
+        {/* Popular programs */}
+        <div className="mt-16 flex flex-wrap items-center justify-center lg:justify-start gap-2">
+          <span className="text-xs text-slate-400 font-medium mr-1">Popular programs:</span>
+          {popularPrograms.map((c) => (
+            <a
+              key={c}
+              href="#courses"
+              className="px-3 py-1 text-xs font-semibold rounded-full bg-white/5 border border-white/15 text-slate-200 hover:bg-white/15 hover:text-white transition-colors"
+            >
+              {c}
+            </a>
+          ))}
         </div>
       </div>
     </section>

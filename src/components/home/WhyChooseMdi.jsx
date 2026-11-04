@@ -1,5 +1,5 @@
 import React from 'react';
-import { Monitor, Award, Keyboard, Zap, Receipt, ShieldCheck, HeartHandshake, Check } from 'lucide-react';
+import { Monitor, Award, Keyboard, Zap, Receipt, HeartHandshake } from 'lucide-react';
 
 const WhyChooseMdi = () => {
   const reasons = [
@@ -42,17 +42,17 @@ const WhyChooseMdi = () => {
   ];
 
   return (
-    <section id="why-us" className="py-20 bg-white border-t border-slate-200/80 relative">
+    <section id="why-us" className="py-20 bg-white relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         <div className="text-center max-w-3xl mx-auto mb-16">
-          <span className="text-xs font-extrabold uppercase tracking-widest text-blue-700 bg-blue-100 px-3 py-1 rounded-full">
+          <span className="section-eyebrow">
             The Modern Delhi Infotech Advantage
           </span>
           <h2 className="text-3xl sm:text-4xl font-display font-extrabold text-slate-900 mt-3 tracking-tight">
             Why Students & Parents in Madhepura Trust Us
           </h2>
-          <p className="text-slate-600 text-sm sm:text-base mt-2">
+          <p className="text-slate-600 text-base mt-3 leading-relaxed">
             We prioritize real practical skill, individual student attention, and honest education over mere certificate printing.
           </p>
         </div>
@@ -63,7 +63,7 @@ const WhyChooseMdi = () => {
             return (
               <div
                 key={r.title}
-                className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between group"
+                className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col group hover:-translate-y-1"
               >
                 <div>
                   <div className={`w-14 h-14 rounded-2xl bg-gradient-to-tr ${r.color} text-white flex items-center justify-center shadow-md mb-5 group-hover:scale-110 transition-transform`}>
@@ -77,10 +77,7 @@ const WhyChooseMdi = () => {
                   </p>
                 </div>
 
-                <div className="mt-6 pt-4 border-t border-slate-100 flex items-center gap-1.5 text-xs font-bold text-blue-700">
-                  <Check className="w-4 h-4 text-emerald-500" />
-                  <span>Standard at Both Branches</span>
-                </div>
+                
               </div>
             );
           })}

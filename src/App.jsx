@@ -19,6 +19,9 @@ import BranchLocations from './components/home/BranchLocations';
 import Testimonials from './components/home/Testimonials';
 import VerificationSection from './components/home/VerificationSection';
 import AdmissionModal from './components/home/AdmissionModal';
+import FinalCta from './components/home/FinalCta';
+import DownloadsSection from './components/home/DownloadsSection';
+import GallerySection from './components/home/GallerySection';
 
 // Modals & Dashboards
 import LoginModal from './components/auth/LoginModal';
@@ -73,7 +76,7 @@ const MainAppContent = () => {
 
   // Default: Public Responsive Landing Page
   return (
-    <div className="min-h-screen flex flex-col bg-white relative selection:bg-blue-700 selection:text-white">
+    <div id="top" className="min-h-screen flex flex-col bg-white relative selection:bg-blue-700 selection:text-white">
       
       {/* 1. Top Notice Bar */}
       <TopNoticeBar onOpenAdmission={() => handleOpenAdmission(null)} />
@@ -113,11 +116,24 @@ const MainAppContent = () => {
         {/* Campuses in Madhepura (Branch 2 & Branch 1) */}
         <BranchLocations onOpenAdmission={handleOpenAdmission} />
 
+        {/* Photo Gallery */}
+        <GallerySection onOpenAdmission={() => handleOpenAdmission(null)} />
+
         {/* Student Testimonials */}
         <Testimonials />
 
         {/* Student Roll / Certificate Verification */}
         <VerificationSection />
+
+        {/* Downloads */}
+        <DownloadsSection
+          onOpenAdmission={() => handleOpenAdmission(null)}
+          onOpenLogin={() => setIsLoginOpen(true)}
+          onOpenVerify={handleOpenVerify}
+        />
+
+        {/* Closing Call-to-Action */}
+        <FinalCta onOpenAdmission={() => handleOpenAdmission(null)} />
 
       </main>
 

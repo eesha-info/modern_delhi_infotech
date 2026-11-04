@@ -7,13 +7,13 @@ import { useData } from '../../context/DataContext';
 import { useAppTheme } from '../../context/ThemeContext';
 import Header from '../dashboard/Header';
 
-const AdminTakeAttendance = () => {
+const AdminTakeAttendance = ({ initialBatchId = null }) => {
   const { batches, students, attendanceData, markBatchAttendance } = useData();
   const { colors, mode } = useAppTheme();
   const isDark = mode === 'dark';
 
   // State
-  const [selectedBatchId, setSelectedBatchId] = useState('B1');
+  const [selectedBatchId, setSelectedBatchId] = useState(initialBatchId || 'B1');
   const [selectedDate, setSelectedDate] = useState(() => {
     const today = new Date();
     return today.toISOString().split('T')[0]; // '2026-11-04'

@@ -6,7 +6,8 @@ const VerificationSection = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResult, setSearchResult] = useState(null);
   const [hasSearched, setHasSearched] = useState(false);
-  const { students, setActiveInvoice, invoices } = useData();
+  const { students, setActiveInvoice, invoices, certificates } = useData();
+  const foundCert = searchResult && certificates.find((c) => c.regNo === searchResult.regNo);
 
   const handleVerify = (e) => {
     e.preventDefault();
@@ -30,17 +31,17 @@ const VerificationSection = () => {
   };
 
   return (
-    <section id="verification" className="py-20 bg-slate-50 border-t border-slate-200/80 relative">
+    <section id="verification" className="py-20 bg-white relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         <div className="max-w-3xl mx-auto text-center mb-10">
-          <span className="text-xs font-bold uppercase tracking-widest text-blue-700 bg-blue-100 px-3 py-1 rounded-full">
+          <span className="section-eyebrow">
             Online Student Verification Portal
           </span>
           <h2 className="text-3xl sm:text-4xl font-display font-extrabold text-slate-900 mt-3 tracking-tight">
             Verify Student Registration & Certificate
           </h2>
-          <p className="text-slate-600 text-sm sm:text-base mt-2">
+          <p className="text-slate-600 text-base mt-3 leading-relaxed">
             Employers, government verification cells, and students can authenticate diplomas by entering the Registration Number.
           </p>
         </div>
@@ -65,7 +66,7 @@ const VerificationSection = () => {
           </form>
 
           {/* Quick Demo Hint */}
-          <div className="flex items-center justify-center gap-2 mt-3 text-xs text-slate-500">
+          <div className="flex flex-wrap items-center justify-center gap-x-2 gap-y-1 mt-3 text-xs text-slate-500">
             <span>Try specimen Reg No:</span>
             <button
               type="button"
@@ -134,6 +135,20 @@ const VerificationSection = () => {
                     <span className="text-slate-400 block">Session</span>
                     <span className="font-semibold text-slate-800">{searchResult.session}</span>
                   </div>
+                </div>
+
+                {/* Certificate status */}
+                <div className={`mt-5 rounded-xl px-4 py-3 text-xs border ${foundCert ? 'bg-emerald-50 border-emerald-200 text-emerald-800' : 'bg-slate-50 border-slate-200 text-slate-600'}`}>
+                  {foundCert ? (
+                    <span className="flex flex-wrap items-center gap-x-2 gap-y-1">
+                      <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+                      <strong>Certificate issued</strong>
+                      <span className="font-mono">{foundCert.certificateNo}</span>
+                      <span>· Grade {foundCert.grade} ({foundCert.percent}%) · {foundCert.issueDate}</span>
+                    </span>
+                  ) : (
+                    <span>Course certificate: not issued yet (course in progress).</span>
+                  )}
                 </div>
 
                 {/* Bottom Actions */}

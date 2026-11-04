@@ -4,18 +4,18 @@ import { instituteInfo } from '../../data/mdiData';
 
 const DirectorMessage = ({ onOpenAdmission }) => {
   return (
-    <section id="director" className="py-20 bg-slate-50/70 border-t border-slate-200/80 relative">
+    <section id="director" className="py-20 bg-slate-50 relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Section Heading */}
         <div className="text-center max-w-3xl mx-auto mb-12">
-          <span className="text-xs font-bold uppercase tracking-widest text-amber-700 bg-amber-100 px-3 py-1 rounded-full">
+          <span className="section-eyebrow">
             Leadership &amp; Mentorship
           </span>
           <h2 className="text-3xl sm:text-4xl font-display font-extrabold text-slate-900 mt-3 tracking-tight">
             Director's Desk
           </h2>
-          <p className="text-slate-600 text-sm sm:text-base mt-2">
+          <p className="text-slate-600 text-base mt-3 leading-relaxed">
             Personal mentorship and practical career guidance from our founder, Sonu Kumar (BCA, MCA).
           </p>
         </div>
@@ -29,17 +29,13 @@ const DirectorMessage = ({ onOpenAdmission }) => {
             <div className="lg:col-span-5 flex flex-col items-center text-center">
               <div className="relative">
                 {/* Profile Badge */}
-                <div className="w-44 h-44 sm:w-52 sm:h-52 rounded-3xl p-1 bg-gradient-to-tr from-blue-700 via-indigo-600 to-amber-500 shadow-lg">
-                  <div className="w-full h-full rounded-[22px] bg-slate-900 flex flex-col items-center justify-center p-6 text-center border-2 border-white/20">
-                    <div className="w-20 h-20 rounded-full bg-gradient-to-r from-blue-600 to-indigo-600 flex items-center justify-center text-white font-display font-extrabold text-2xl shadow-md mb-2">
-                      SK
-                    </div>
-                    <span className="text-amber-400 font-extrabold text-lg">Sonu Kumar</span>
-                    <span className="text-white text-xs font-semibold">"Sonu Sir"</span>
-                    <span className="text-[11px] text-blue-200 mt-1 font-mono bg-blue-950 px-2 py-0.5 rounded border border-blue-800">
-                      BCA, MCA
-                    </span>
-                  </div>
+                <div className="w-56 h-72 sm:w-64 sm:h-80 rounded-3xl p-1 bg-gradient-to-tr from-blue-700 via-indigo-600 to-amber-500 shadow-xl">
+                  <img
+                    src="/sonu-kumar.jpg"
+                    alt="Sonu Kumar (Sonu Sir), Founder & Director, Modern Delhi Infotech"
+                    className="w-full h-full object-cover object-top rounded-[22px]"
+                    loading="lazy"
+                  />
                 </div>
 
                 <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 bg-amber-500 text-slate-950 px-3.5 py-1 rounded-full font-bold text-xs tracking-wider uppercase shadow whitespace-nowrap">
