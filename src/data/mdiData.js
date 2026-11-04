@@ -248,16 +248,25 @@ export const initialCourses = [
   }
 ];
 
+// All batches are 1 hour. Each hour can run two batches of the same type on alternate days:
+// MWF (Mon/Wed/Fri) and TTS (Tue/Thu/Sat). Students attend 3 days theory + 3 days lab.
+// capacity = classroom seats (Theory) or PCs (Lab).
 export const initialBatches = [
-  { id: "B1", name: "Batch-1 (Early Morning)", courseCode: "ADIT", days: "Daily", timing: "08:00 AM – 09:30 AM", room: "Lab A", instructor: "Sonu Kumar", maxCapacity: 25, enrolled: 22, branch: "Branch 2" },
-  { id: "B2", name: "Batch-2 (Morning Prime)", courseCode: "ADCA", days: "Daily", timing: "09:30 AM – 11:00 AM", room: "Lab A", instructor: "Sonu Kumar", maxCapacity: 25, enrolled: 25, branch: "Branch 2" },
-  { id: "B3", name: "Batch-3 (Mid Day)", courseCode: "DCA", days: "Daily", timing: "11:00 AM – 12:30 PM", room: "Lab B", instructor: "Vikash Sir", maxCapacity: 20, enrolled: 18, branch: "Branch 2" },
-  { id: "B4", name: "Batch-4 (Afternoon Girls Special)", courseCode: "ADCA", days: "Daily", timing: "02:00 PM – 03:30 PM", room: "Lab A", instructor: "Pooja Ma'am", maxCapacity: 20, enrolled: 16, branch: "Branch 2" },
-  { id: "B5", name: "Batch-5 (Evening Tally & Office)", courseCode: "TALLY", days: "Daily", timing: "03:30 PM – 05:00 PM", room: "Lab B", instructor: "Sonu Kumar", maxCapacity: 25, enrolled: 21, branch: "Branch 1" },
-  { id: "B6", name: "Batch-6 (Govt Typing Special)", courseCode: "TYPING", days: "Daily", timing: "05:00 PM – 06:30 PM", room: "Typing Lab", instructor: "Ramesh Sir", maxCapacity: 30, enrolled: 28, branch: "Branch 2" },
-  { id: "B7", name: "Batch-7 (DCA – MWF)", courseCode: "DCA", days: "MWF", timing: "12:30 PM – 02:00 PM", room: "Lab A", instructor: "Vikash Sir", maxCapacity: 20, enrolled: 0, branch: "Branch 2" },
-  { id: "B8", name: "Batch-8 (Tally – TTS)", courseCode: "TALLY", days: "TTS", timing: "12:30 PM – 02:00 PM", room: "Lab A", instructor: "Sonu Kumar", maxCapacity: 20, enrolled: 0, branch: "Branch 2" }
+  { id: "B1", name: "ADIT Theory – Morning MWF", type: "Theory", courseCode: "ADIT", days: "MWF", timing: "07:00 AM – 08:00 AM", room: "Classroom 1", instructor: "Sonu Kumar", maxCapacity: 30, branch: "Branch 2" },
+  { id: "B2", name: "ADCA Theory – Morning TTS", type: "Theory", courseCode: "ADCA", days: "TTS", timing: "07:00 AM – 08:00 AM", room: "Classroom 1", instructor: "Sonu Kumar", maxCapacity: 30, branch: "Branch 2" },
+  { id: "B3", name: "DCA Theory – MWF", type: "Theory", courseCode: "DCA", days: "MWF", timing: "08:00 AM – 09:00 AM", room: "Classroom 1", instructor: "Vikash Sir", maxCapacity: 30, branch: "Branch 2" },
+  { id: "B4", name: "ADCA Theory – TTS", type: "Theory", courseCode: "ADCA", days: "TTS", timing: "08:00 AM – 09:00 AM", room: "Classroom 1", instructor: "Pooja Ma'am", maxCapacity: 30, branch: "Branch 2" },
+  { id: "B5", name: "Tally Theory – MWF", type: "Theory", courseCode: "TALLY", days: "MWF", timing: "09:00 AM – 10:00 AM", room: "Classroom 1", instructor: "Sonu Kumar", maxCapacity: 30, branch: "Branch 1" },
+  { id: "B6", name: "Typing Theory – TTS", type: "Theory", courseCode: "TYPING", days: "TTS", timing: "09:00 AM – 10:00 AM", room: "Classroom 2", instructor: "Ramesh Sir", maxCapacity: 30, branch: "Branch 2" },
+  { id: "B7", name: "ADIT Lab – Morning TTS", type: "Lab", courseCode: "ADIT", days: "TTS", timing: "07:00 AM – 08:00 AM", room: "Lab A", instructor: "Vikash Sir", maxCapacity: 20, branch: "Branch 2" },
+  { id: "B8", name: "ADCA Lab – Morning MWF", type: "Lab", courseCode: "ADCA", days: "MWF", timing: "07:00 AM – 08:00 AM", room: "Lab A", instructor: "Pooja Ma'am", maxCapacity: 20, branch: "Branch 2" },
+  { id: "B9", name: "DCA Lab – TTS", type: "Lab", courseCode: "DCA", days: "TTS", timing: "08:00 AM – 09:00 AM", room: "Lab A", instructor: "Vikash Sir", maxCapacity: 20, branch: "Branch 2" },
+  { id: "B10", name: "Tally Lab – TTS", type: "Lab", courseCode: "TALLY", days: "TTS", timing: "09:00 AM – 10:00 AM", room: "Lab B", instructor: "Sonu Kumar", maxCapacity: 20, branch: "Branch 1" },
+  { id: "B11", name: "Typing Lab – MWF", type: "Lab", courseCode: "TYPING", days: "MWF", timing: "09:00 AM – 10:00 AM", room: "Typing Lab", instructor: "Ramesh Sir", maxCapacity: 20, branch: "Branch 2" }
 ];
+
+// Default capacity used when creating a new batch (editable in Batch Management).
+export const defaultBatchSettings = { theoryCapacity: 30, labCapacity: 20 };
 
 export const initialStudents = [
   {
@@ -276,7 +285,9 @@ export const initialStudents = [
     courseName: "Advanced Diploma in Information Technology",
     duration: "12 Months",
     batchNo: "Batch-1",
-    batchTime: "08:00 AM – 09:30 AM",
+    batchTime: "07:00 AM – 08:00 AM",
+    labBatchNo: "Batch-7",
+    labBatchTime: "07:00 AM – 08:00 AM",
     admissionDate: "31-Oct-2026",
     session: "2026-27",
     totalFee: 12000,
@@ -307,7 +318,9 @@ export const initialStudents = [
     courseName: "Advanced Diploma in Computer Applications",
     duration: "12 Months",
     batchNo: "Batch-2",
-    batchTime: "09:30 AM – 11:00 AM",
+    batchTime: "07:00 AM – 08:00 AM",
+    labBatchNo: "Batch-8",
+    labBatchTime: "07:00 AM – 08:00 AM",
     admissionDate: "15-Aug-2026",
     session: "2026-27",
     totalFee: 10500,
@@ -338,7 +351,9 @@ export const initialStudents = [
     courseName: "Tally Prime with GST & E-Way Bill",
     duration: "3 Months",
     batchNo: "Batch-5",
-    batchTime: "03:30 PM – 05:00 PM",
+    batchTime: "09:00 AM – 10:00 AM",
+    labBatchNo: "Batch-10",
+    labBatchTime: "09:00 AM – 10:00 AM",
     admissionDate: "10-Sep-2026",
     session: "2026-27",
     totalFee: 4500,
@@ -369,7 +384,9 @@ export const initialStudents = [
     courseName: "Hindi + English Professional Typing",
     duration: "3 Months",
     batchNo: "Batch-6",
-    batchTime: "05:00 PM – 06:30 PM",
+    batchTime: "09:00 AM – 10:00 AM",
+    labBatchNo: "Batch-11",
+    labBatchTime: "09:00 AM – 10:00 AM",
     admissionDate: "01-Oct-2026",
     session: "2026-27",
     totalFee: 2500,
@@ -400,7 +417,9 @@ export const initialStudents = [
     courseName: "Advanced Diploma in Information Technology",
     duration: "12 Months",
     batchNo: "Batch-1",
-    batchTime: "08:00 AM – 09:30 AM",
+    batchTime: "07:00 AM – 08:00 AM",
+    labBatchNo: "Batch-7",
+    labBatchTime: "07:00 AM – 08:00 AM",
     admissionDate: "01-Nov-2026",
     session: "2026-27",
     totalFee: 12000,
@@ -431,7 +450,9 @@ export const initialStudents = [
     courseName: "Advanced Diploma in Information Technology",
     duration: "12 Months",
     batchNo: "Batch-1",
-    batchTime: "08:00 AM – 09:30 AM",
+    batchTime: "07:00 AM – 08:00 AM",
+    labBatchNo: "Batch-7",
+    labBatchTime: "07:00 AM – 08:00 AM",
     admissionDate: "01-Nov-2026",
     session: "2026-27",
     totalFee: 12000,
@@ -462,7 +483,9 @@ export const initialStudents = [
     courseName: "Advanced Diploma in Computer Applications",
     duration: "12 Months",
     batchNo: "Batch-2",
-    batchTime: "09:30 AM – 11:00 AM",
+    batchTime: "07:00 AM – 08:00 AM",
+    labBatchNo: "Batch-8",
+    labBatchTime: "07:00 AM – 08:00 AM",
     admissionDate: "18-Aug-2026",
     session: "2026-27",
     totalFee: 10500,
@@ -493,7 +516,9 @@ export const initialStudents = [
     courseName: "Diploma in Computer Applications",
     duration: "6 Months",
     batchNo: "Batch-3",
-    batchTime: "11:00 AM – 12:30 PM",
+    batchTime: "08:00 AM – 09:00 AM",
+    labBatchNo: "Batch-9",
+    labBatchTime: "08:00 AM – 09:00 AM",
     admissionDate: "05-Sep-2026",
     session: "2026-27",
     totalFee: 5500,
@@ -560,7 +585,7 @@ export const initialInvoices = [
       name: "Advanced Diploma in Information Technology",
       duration: "12 Months",
       batchNo: "Batch-1",
-      batchTime: "08:00 AM – 09:30 AM",
+      batchTime: "07:00 AM – 08:00 AM",
       admission: "31-Oct-2026"
     },
     feeParticulars: {
@@ -624,7 +649,7 @@ export const initialInvoices = [
       name: "Advanced Diploma in Computer Applications",
       duration: "12 Months",
       batchNo: "Batch-2",
-      batchTime: "09:30 AM – 11:00 AM",
+      batchTime: "07:00 AM – 08:00 AM",
       admission: "15-Aug-2026"
     },
     feeParticulars: {

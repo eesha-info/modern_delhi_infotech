@@ -10,8 +10,6 @@ import { useAppTheme } from '../../context/ThemeContext';
 import Topbar from '../dashboard/Topbar';
 import Sidebar from '../dashboard/Sidebar';
 import Header from '../dashboard/Header';
-import StatBox from '../dashboard/StatBox';
-import ProgressCircle from '../dashboard/ProgressCircle';
 import RevenueChart from '../dashboard/RevenueChart';
 import AdminTakeAttendance from './AdminTakeAttendance';
 import AdminCourses from './AdminCourses';
@@ -19,6 +17,7 @@ import AdminBatches from './AdminBatches';
 import AdminFees from './AdminFees';
 import AdminTests from './AdminTests';
 import AdminCertificates from './AdminCertificates';
+import AdminHome from './AdminHome';
 
 const AdminDashboard = () => {
   const { user, logout, setActiveView } = useAuth();
@@ -29,6 +28,7 @@ const AdminDashboard = () => {
     batches,
     courses,
     setActiveInvoice,
+    studentsInBatch,
     addStudent,
     updateEnquiryStatus
   } = useData();
@@ -55,8 +55,10 @@ const AdminDashboard = () => {
     courseName: 'Advanced Diploma in Information Technology',
     duration: '12 Months',
     branchCode: '2',
-    batchNo: 'Batch-1',
-    batchTime: '08:00 AM – 09:30 AM',
+    batchNo: 'Unassigned',
+    batchTime: '',
+    labBatchNo: 'Unassigned',
+    labBatchTime: '',
     totalFee: 12000,
     paidFee: 6000,
     paymentMode: 'Cash'
@@ -78,9 +80,17 @@ const AdminDashboard = () => {
     return matchesSearch && matchesCourse;
   });
 
+  // Theory and Lab batches must not run at the same hour on the same days
+  const enrollTheory = batches.find((b) => `Batch-${b.id.replace('B', '')}` === newStudent.batchNo);
+  const enrollLab = batches.find((b) => `Batch-${b.id.replace('B', '')}` === newStudent.labBatchNo);
+  const enrollBatchError =
+    enrollTheory && enrollLab && enrollTheory.timing === enrollLab.timing && enrollTheory.days === enrollLab.days
+      ? `Theory ${enrollTheory.id} and Lab ${enrollLab.id} are at the same time on the same days. Pick a different Lab batch.`
+      : '';
+
   const handleCreateStudent = (e) => {
     e.preventDefault();
-    if (!newStudent.name || !newStudent.mobile) return;
+    if (!newStudent.name || !newStudent.mobile || enrollBatchError) return;
 
     addStudent(newStudent);
     setIsAddStudentOpen(false);
@@ -93,8 +103,10 @@ const AdminDashboard = () => {
       courseName: 'Advanced Diploma in Information Technology',
       duration: '12 Months',
       branchCode: '2',
-      batchNo: 'Batch-1',
-      batchTime: '08:00 AM – 09:30 AM',
+      batchNo: 'Unassigned',
+      batchTime: '',
+      labBatchNo: 'Unassigned',
+      labBatchTime: '',
       totalFee: 12000,
       paidFee: 6000,
       paymentMode: 'Cash'
@@ -148,241 +160,16 @@ const AdminDashboard = () => {
         {/* Main Body */}
         <main className="p-6 flex-1 space-y-6">
           
-          {/* ===================== TAB: DASHBOARD ===================== */}
+          {/* ===================== TAB: DASHBOARD (live institute overview) ===================== */}
           {activeTab === 'dashboard' && (
-            <div className="space-y-6">
-              
-              {/* Header Title + Download Reports Action Button (Exact layout in screenshot!) */}
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                <Header
-                  title="DASHBOARD"
-                  subtitle="Welcome to your dashboard"
-                />
-
-                <div className="flex items-center gap-3">
-                  <button
-                    onClick={() => setActiveTab('attendance')}
-                    style={{
-                      backgroundColor: colors.blueAccent[700],
-                      color: '#ffffff',
-                    }}
-                    className="inline-flex items-center gap-2 px-4 py-2.5 rounded-md text-xs font-bold shadow-xs hover:opacity-90 transition-opacity"
-                  >
-                    <Download className="w-4 h-4" />
-                    <span className="uppercase tracking-wider">DOWNLOAD REPORTS</span>
-                  </button>
-                </div>
-              </div>
-
-              {/* ROW 1: 4 Stat Boxes (Exact layout & styling from screenshot!) */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-                <StatBox
-                  title="11,361"
-                  subtitle="Email Sent"
-                  progress={0.75}
-                  increase="+14%"
-                  icon={Mail}
-                />
-                <StatBox
-                  title="431,225"
-                  subtitle="Sales Obtained"
-                  progress={0.5}
-                  increase="+21%"
-                  icon={Receipt}
-                />
-                <StatBox
-                  title="32,441"
-                  subtitle="New Clients"
-                  progress={0.3}
-                  increase="+5%"
-                  icon={Users}
-                />
-                <StatBox
-                  title="1,325,134"
-                  subtitle="Traffic Received"
-                  progress={0.8}
-                  increase="+43%"
-                  icon={Clock}
-                />
-              </div>
-
-              {/* ROW 2: Revenue Generated Multi-Line Chart (8 cols) & Recent Transactions (4 cols) */}
-              <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
-                
-                {/* 8 Cols: Revenue Generated Multi-curve SVG Chart */}
-                <div className="lg:col-span-8">
-                  <RevenueChart totalRevenue={totalRevenue} />
-                </div>
-
-                {/* 4 Cols: Recent Transactions Box */}
-                <div
-                  style={{ backgroundColor: colors.primary[400] }}
-                  className="lg:col-span-4 rounded-lg p-5 shadow-xs flex flex-col justify-between"
-                >
-                  <div className="pb-3 border-b border-white/5 flex items-center justify-between">
-                    <h4
-                      style={{ color: colors.gray[100] }}
-                      className="font-bold text-sm font-display uppercase tracking-wider"
-                    >
-                      Recent Transactions
-                    </h4>
-                    <span style={{ color: colors.greenAccent[500] }} className="text-xs font-semibold">
-                      {invoices.length} Invoiced
-                    </span>
-                  </div>
-
-                  {/* Transactions List */}
-                  <div className="divide-y divide-white/5 overflow-y-auto max-h-80 text-xs">
-                    {invoices.slice(0, 6).map((inv, idx) => (
-                      <div key={idx} className="py-3 flex items-center justify-between gap-2">
-                        <div>
-                          <div
-                            style={{ color: colors.greenAccent[500] }}
-                            className="font-mono font-bold text-xs"
-                          >
-                            {inv.invoiceNo}
-                          </div>
-                          <div style={{ color: colors.gray[100] }} className="font-semibold text-xs mt-0.5">
-                            {inv.student?.name}
-                          </div>
-                          <div style={{ color: colors.gray[400] }} className="text-[10px]">
-                            {inv.date}
-                          </div>
-                        </div>
-
-                        {/* Amount Pill (Exact green pill in screenshot!) */}
-                        <div className="flex flex-col items-end gap-1">
-                          <span
-                            style={{
-                              backgroundColor: colors.greenAccent[500],
-                              color: '#ffffff',
-                            }}
-                            className="px-2.5 py-1 rounded text-xs font-bold font-mono"
-                          >
-                            ₹{(inv.totalPaid || 0).toLocaleString()}
-                          </span>
-                          <button
-                            onClick={() => setActiveInvoice(inv)}
-                            style={{ color: colors.blueAccent[400] }}
-                            className="text-[10px] hover:underline"
-                          >
-                            View PDF
-                          </button>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-              </div>
-
-              {/* ROW 3: Campaign (4 cols), Sales Quantity (4 cols), Geography / Batches (4 cols) */}
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
-                
-                {/* Campaign Card with Center Progress Circle */}
-                <div
-                  style={{ backgroundColor: colors.primary[400] }}
-                  className="rounded-lg p-5 shadow-xs flex flex-col justify-between"
-                >
-                  <h4 style={{ color: colors.gray[100] }} className="font-bold text-sm font-display">
-                    Campaign
-                  </h4>
-
-                  <div className="flex flex-col items-center justify-center my-4">
-                    <ProgressCircle progress={0.74} size={115} />
-                    <div style={{ color: colors.greenAccent[500] }} className="text-lg font-bold mt-3">
-                      ₹{totalRevenue.toLocaleString()} Revenue
-                    </div>
-                    <p style={{ color: colors.gray[300] }} className="text-xs text-center mt-1">
-                      74% of Session 2026-27 admission target achieved
-                    </p>
-                  </div>
-                </div>
-
-                {/* Sales Quantity / Course Admissions Bar Box */}
-                <div
-                  style={{ backgroundColor: colors.primary[400] }}
-                  className="rounded-lg p-5 shadow-xs flex flex-col justify-between"
-                >
-                  <h4 style={{ color: colors.gray[100] }} className="font-bold text-sm font-display">
-                    Course Admissions
-                  </h4>
-
-                  <div className="space-y-3 my-4 text-xs">
-                    {courses.slice(0, 4).map((c, i) => {
-                      const count = students.filter(s => s.courseCode === c.code).length;
-                      const percent = Math.min(100, Math.round((count / 10) * 100));
-                      return (
-                        <div key={i}>
-                          <div className="flex items-center justify-between mb-1">
-                            <span style={{ color: colors.gray[100] }} className="font-semibold">{c.code}</span>
-                            <span style={{ color: colors.gray[300] }}>{count} Enrolled</span>
-                          </div>
-                          <div style={{ backgroundColor: colors.primary[500] }} className="w-full h-2 rounded-full overflow-hidden">
-                            <div
-                              style={{
-                                backgroundColor: i % 2 === 0 ? colors.greenAccent[500] : colors.blueAccent[500],
-                                width: `${percent}%`
-                              }}
-                              className="h-full rounded-full"
-                            ></div>
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-
-                {/* Batches Occupancy Box */}
-                <div
-                  style={{ backgroundColor: colors.primary[400] }}
-                  className="rounded-lg p-5 shadow-xs flex flex-col justify-between"
-                >
-                  <div className="flex items-center justify-between">
-                    <h4 style={{ color: colors.gray[100] }} className="font-bold text-sm font-display">
-                      Lab Batches &amp; Timings
-                    </h4>
-                    <button
-                      onClick={() => setActiveTab('attendance')}
-                      style={{ color: colors.greenAccent[500] }}
-                      className="text-xs hover:underline"
-                    >
-                      Mark Attendance
-                    </button>
-                  </div>
-
-                  <div className="space-y-2.5 my-3 text-xs">
-                    {batches.slice(0, 4).map((b) => (
-                      <div
-                        key={b.id}
-                        style={{ backgroundColor: colors.primary[500] }}
-                        className="p-2.5 rounded-md flex items-center justify-between"
-                      >
-                        <div>
-                          <div style={{ color: colors.gray[100] }} className="font-bold">
-                            {b.id} · {b.name.split('(')[0]}
-                          </div>
-                          <div style={{ color: colors.gray[400] }} className="text-[10px]">
-                            {b.timing} · {b.room}
-                          </div>
-                        </div>
-                        <span
-                          style={{
-                            backgroundColor: colors.primary[400],
-                            color: colors.greenAccent[500]
-                          }}
-                          className="px-2 py-0.5 rounded text-[11px] font-bold"
-                        >
-                          {b.enrolled}/{b.maxCapacity} PCs
-                        </span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-              </div>
-
-            </div>
+            <AdminHome
+              user={user}
+              onRegisterStudent={() => setIsAddStudentOpen(true)}
+              onNavigate={(tab, batchId) => {
+                if (tab === 'attendance' && batchId) setAttendanceBatchId(batchId);
+                setActiveTab(tab);
+              }}
+            />
           )}
 
           {/* ===================== TAB: ATTENDANCE (Batchwise) ===================== */}
@@ -513,7 +300,10 @@ const AdminDashboard = () => {
                               {st.courseCode}
                             </div>
                             <div style={{ color: colors.gray[400] }} className="text-[11px]">
-                              {st.batchNo} ({st.batchTime})
+                              Theory: {st.batchNo && st.batchNo !== 'Unassigned' ? `B${st.batchNo.replace('Batch-', '')} · ${st.batchDays || ''} ${st.batchTime?.split(' – ')[0] || ''}` : '—'}
+                            </div>
+                            <div style={{ color: colors.gray[400] }} className="text-[11px]">
+                              Lab: {st.labBatchNo && st.labBatchNo !== 'Unassigned' ? `B${st.labBatchNo.replace('Batch-', '')} · ${st.labBatchDays || ''} ${st.labBatchTime?.split(' – ')[0] || ''}` : '—'}
                             </div>
                           </td>
 
@@ -702,7 +492,7 @@ const AdminDashboard = () => {
                             {enq.name}
                           </td>
                           <td style={{ color: colors.gray[100] }} className="py-3.5 px-4 font-mono">
-                            {enq.phone}
+                            {enq.phone || enq.mobile}
                           </td>
                           <td className="py-3.5 px-4">
                             <span
@@ -732,7 +522,7 @@ const AdminDashboard = () => {
                           </td>
                           <td className="py-3.5 px-4 text-right">
                             <a
-                              href={`tel:${enq.phone}`}
+                              href={`tel:${enq.phone || enq.mobile}`}
                               style={{
                                 backgroundColor: colors.greenAccent[600],
                                 color: '#ffffff'
@@ -1087,34 +877,43 @@ const AdminDashboard = () => {
                   </select>
                 </div>
 
-                <div>
-                  <label style={{ color: colors.gray[300] }} className="text-xs block mb-1">
-                    Select Batch Timing
-                  </label>
-                  <select
-                    value={newStudent.batchNo}
-                    onChange={(e) => {
-                      const batchObj = batches.find(b => `Batch-${b.id.replace('B', '')}` === e.target.value);
-                      setNewStudent({
-                        ...newStudent,
-                        batchNo: e.target.value,
-                        batchTime: batchObj?.timing || '08:00 AM – 09:30 AM'
-                      });
-                    }}
-                    style={{
-                      backgroundColor: colors.primary[500],
-                      color: colors.gray[100]
-                    }}
-                    className="w-full rounded-md px-3 py-2 text-xs outline-none cursor-pointer"
-                  >
-                    {batches.map(b => (
-                      <option key={b.id} value={`Batch-${b.id.replace('B', '')}`}>
-                        {b.name} ({b.timing})
-                      </option>
-                    ))}
-                  </select>
-                </div>
+                {[
+                  { type: 'Theory', key: 'batchNo', timeKey: 'batchTime', label: 'Theory batch (3 days)' },
+                  { type: 'Lab', key: 'labBatchNo', timeKey: 'labBatchTime', label: 'Lab batch (3 days)' },
+                ].map(({ type, key, timeKey, label }) => {
+                  const options = batches
+                    .filter((b) => (b.type || 'Theory') === type)
+                    .sort((x, y) => Number(y.courseCode === newStudent.courseCode) - Number(x.courseCode === newStudent.courseCode));
+                  return (
+                    <div key={type}>
+                      <label style={{ color: colors.gray[300] }} className="text-xs block mb-1">{label}</label>
+                      <select
+                        value={newStudent[key]}
+                        onChange={(e) => {
+                          const batchObj = batches.find((b) => `Batch-${b.id.replace('B', '')}` === e.target.value);
+                          setNewStudent({ ...newStudent, [key]: e.target.value, [timeKey]: batchObj?.timing || '' });
+                        }}
+                        style={{ backgroundColor: colors.primary[500], color: colors.gray[100] }}
+                        className="w-full rounded-md px-3 py-2 text-xs outline-none cursor-pointer"
+                      >
+                        <option value="Unassigned">Assign later</option>
+                        {options.map((b) => {
+                          const filled = studentsInBatch(b.id).length;
+                          const full = filled >= b.maxCapacity;
+                          return (
+                            <option key={b.id} value={`Batch-${b.id.replace('B', '')}`} disabled={full}>
+                              {b.id} · {b.courseCode} · {b.days} · {b.timing.split(' – ')[0]} ({filled}/{b.maxCapacity}){full ? ' – FULL' : ''}
+                            </option>
+                          );
+                        })}
+                      </select>
+                    </div>
+                  );
+                })}
               </div>
+              {enrollBatchError && (
+                <p className="text-xs font-semibold text-rose-400">{enrollBatchError}</p>
+              )}
 
               {/* Fee particulars */}
               <div

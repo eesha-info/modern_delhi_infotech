@@ -116,8 +116,16 @@ const StudentVerifier = ({ autoFocus = false }) => {
                     <span className="font-bold text-slate-900">{searchResult.courseCode} ({searchResult.duration})</span>
                   </div>
                   <div>
-                    <span className="text-slate-400 block">Batch Timing</span>
-                    <span className="font-semibold text-slate-800">{searchResult.batchTime}</span>
+                    <span className="text-slate-400 block">Theory Batch</span>
+                    <span className="font-semibold text-slate-800">
+                      {searchResult.batchNo && searchResult.batchNo !== 'Unassigned' ? `${searchResult.batchDays ? searchResult.batchDays + ' · ' : ''}${searchResult.batchTime}` : 'Not assigned'}
+                    </span>
+                  </div>
+                  <div>
+                    <span className="text-slate-400 block">Lab Batch</span>
+                    <span className="font-semibold text-slate-800">
+                      {searchResult.labBatchNo && searchResult.labBatchNo !== 'Unassigned' ? `${searchResult.labBatchDays ? searchResult.labBatchDays + ' · ' : ''}${searchResult.labBatchTime}` : 'Not assigned'}
+                    </span>
                   </div>
                   <div>
                     <span className="text-slate-400 block">Session</span>

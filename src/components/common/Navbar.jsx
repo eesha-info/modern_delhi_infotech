@@ -69,12 +69,6 @@ const Navbar = ({ onOpenLogin, onOpenAdmission, onOpenVerify }) => {
     },
     { id: 'download', label: 'Download', href: '#downloads' },
     {
-      id: 'franchise', label: 'Franchise', children: [
-        { label: 'Franchise Enquiry', href: '#contact' },
-        { label: 'Our Branches', href: '#branches' },
-      ],
-    },
-    {
       id: 'gallery', label: 'Gallery', children: [
         { label: 'Photo Gallery', href: '#gallery' },
         { label: 'Campus & Labs', href: '#branches' },
@@ -256,7 +250,7 @@ const Navbar = ({ onOpenLogin, onOpenAdmission, onOpenVerify }) => {
                 </button>
 
                 {item.children && isOpen && (
-                  <div className={`absolute top-full ${item.id === 'gallery' || item.id === 'franchise' ? 'right-0' : 'left-0'} pt-0 z-40`}>
+                  <div className={`absolute top-full ${item.id === 'gallery' ? 'right-0' : 'left-0'} pt-0 z-40`}>
                     <ul className={`bg-white rounded-b-lg shadow-2xl border-t-[3px] border-amber-400 py-2 ${item.wide ? 'w-[26rem] grid grid-cols-1' : 'w-64'}`}>
                       {item.children.map((c) => (
                         <li key={c.label}>

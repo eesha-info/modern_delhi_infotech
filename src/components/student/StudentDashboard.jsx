@@ -30,6 +30,9 @@ const StudentDashboard = () => {
   // Prefer the live record so batch changes / payments made by the admin show up immediately
   const student = students.find((s) => s.regNo === user?.regNo) || user;
   const myCertificate = certificates.find((c) => c.regNo === student?.regNo);
+  const batchLabel = (no, time, days) => (no && no !== 'Unassigned' ? `${days ? days + ' · ' : ''}${time || ''}` : 'Not assigned');
+  const theoryLabel = batchLabel(student?.batchNo, student?.batchTime, student?.batchDays);
+  const labLabel = batchLabel(student?.labBatchNo, student?.labBatchTime, student?.labBatchDays);
   const courseCode = student?.courseCode || 'ADIT';
   const studentCourse = courses.find(c => c.code === courseCode) || courses[0];
   const studentInvoice = invoices.find(i => i.student?.regNo === student?.regNo) || invoices[0];
@@ -43,16 +46,25 @@ const StudentDashboard = () => {
     { title: "Computer Fundamentals & Windows 11 Shortcuts", size: "1.9 MB", format: "PDF", category: "Basics" }
   ];
 
+  // Which class a given weekday is: Theory on the theory batch's days, otherwise Lab
+  const THEORY_DAYS = { MWF: ['Mon', 'Wed', 'Fri'], TTS: ['Tue', 'Thu', 'Sat'] };
+  const classFor = (day) => {
+    const theoryDays = THEORY_DAYS[student?.batchDays] || THEORY_DAYS.MWF;
+    return theoryDays.includes(day)
+      ? `Theory · ${student?.batchTime || '—'}`
+      : `Lab · ${student?.labBatchTime || '—'}`;
+  };
+
   // Personal attendance history mock data for this student
   const attendanceHistory = [
-    { date: "04 Nov 2026", day: "Wednesday", batch: student?.batchTime || "08:00 AM - 09:30 AM", pc: student?.pcNumber || "PC-04", status: "Present", remark: "On time" },
-    { date: "03 Nov 2026", day: "Tuesday", batch: student?.batchTime || "08:00 AM - 09:30 AM", pc: student?.pcNumber || "PC-04", status: "Present", remark: "Tally Lab Practice" },
-    { date: "02 Nov 2026", day: "Monday", batch: student?.batchTime || "08:00 AM - 09:30 AM", pc: student?.pcNumber || "PC-04", status: "Present", remark: "Typing Speed Test 42 WPM" },
-    { date: "31 Oct 2026", day: "Saturday", batch: student?.batchTime || "08:00 AM - 09:30 AM", pc: student?.pcNumber || "PC-04", status: "Present", remark: "Theory & Lab" },
-    { date: "30 Oct 2026", day: "Friday", batch: student?.batchTime || "08:00 AM - 09:30 AM", pc: student?.pcNumber || "PC-04", status: "Late", remark: "Permitted by Sonu Sir" },
-    { date: "29 Oct 2026", day: "Thursday", batch: student?.batchTime || "08:00 AM - 09:30 AM", pc: student?.pcNumber || "PC-04", status: "Present", remark: "Excel Formulas" },
-    { date: "28 Oct 2026", day: "Wednesday", batch: student?.batchTime || "08:00 AM - 09:30 AM", pc: student?.pcNumber || "PC-04", status: "Present", remark: "MS PowerPoint presentation" },
-    { date: "27 Oct 2026", day: "Tuesday", batch: student?.batchTime || "08:00 AM - 09:30 AM", pc: student?.pcNumber || "PC-04", status: "Absent", remark: "Medical leave" }
+    { date: "04 Nov 2026", day: "Wednesday", batch: classFor("Wed"), pc: student?.pcNumber || "PC-04", status: "Present", remark: "On time" },
+    { date: "03 Nov 2026", day: "Tuesday", batch: classFor("Tue"), pc: student?.pcNumber || "PC-04", status: "Present", remark: "Tally Lab Practice" },
+    { date: "02 Nov 2026", day: "Monday", batch: classFor("Mon"), pc: student?.pcNumber || "PC-04", status: "Present", remark: "Typing Speed Test 42 WPM" },
+    { date: "31 Oct 2026", day: "Saturday", batch: classFor("Sat"), pc: student?.pcNumber || "PC-04", status: "Present", remark: "Theory & Lab" },
+    { date: "30 Oct 2026", day: "Friday", batch: classFor("Fri"), pc: student?.pcNumber || "PC-04", status: "Late", remark: "Permitted by Sonu Sir" },
+    { date: "29 Oct 2026", day: "Thursday", batch: classFor("Thu"), pc: student?.pcNumber || "PC-04", status: "Present", remark: "Excel Formulas" },
+    { date: "28 Oct 2026", day: "Wednesday", batch: classFor("Wed"), pc: student?.pcNumber || "PC-04", status: "Present", remark: "MS PowerPoint presentation" },
+    { date: "27 Oct 2026", day: "Tuesday", batch: classFor("Tue"), pc: student?.pcNumber || "PC-04", status: "Absent", remark: "Medical leave" }
   ];
 
   return (
@@ -222,8 +234,12 @@ const StudentDashboard = () => {
                         <strong style={{ color: colors.greenAccent[500] }} className="font-mono">{student?.pcNumber || 'PC-04'}</strong>
                       </div>
                       <div>
-                        <span style={{ color: colors.gray[400] }} className="block text-[10px]">Batch Time:</span>
-                        <span style={{ color: colors.gray[300] }}>{student?.batchTime || '08:00 AM – 09:30 AM'}</span>
+                        <span style={{ color: colors.gray[400] }} className="block text-[10px]">Theory Batch:</span>
+                        <span style={{ color: colors.gray[300] }}>{theoryLabel}</span>
+                      </div>
+                      <div>
+                        <span style={{ color: colors.gray[400] }} className="block text-[10px]">Lab Batch:</span>
+                        <span style={{ color: colors.gray[300] }}>{labLabel}</span>
                       </div>
                       <div>
                         <span style={{ color: colors.gray[400] }} className="block text-[10px]">Branch:</span>
@@ -501,7 +517,7 @@ const StudentDashboard = () => {
             <div className="space-y-6">
               <Header
                 title="MY ATTENDANCE"
-                subtitle={`Batch ${student?.batchNo || 'Batch-1'} (${student?.batchTime || '08:00 AM – 09:30 AM'})`}
+                subtitle={`Theory: ${theoryLabel}  |  Lab: ${labLabel}`}
               />
 
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">

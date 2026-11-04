@@ -8,7 +8,7 @@ import { useAppTheme } from '../../context/ThemeContext';
 import Header from '../dashboard/Header';
 
 const AdminTakeAttendance = ({ initialBatchId = null }) => {
-  const { batches, students, attendanceData, markBatchAttendance } = useData();
+  const { batches, students, attendanceData, markBatchAttendance, studentsInBatch } = useData();
   const { colors, mode } = useAppTheme();
   const isDark = mode === 'dark';
 
@@ -29,10 +29,8 @@ const AdminTakeAttendance = ({ initialBatchId = null }) => {
   const activeBatch = batches.find(b => b.id === selectedBatchId) || batches[0];
 
   // Students belonging to the selected batch
-  const batchStudents = students.filter(s => {
-    const batchNum = selectedBatchId.replace('B', '');
-    return s.batchNo === `Batch-${batchNum}` || s.batchNo?.includes(selectedBatchId);
-  });
+  // (Theory batches match a student's batchNo, Lab batches their labBatchNo)
+  const batchStudents = studentsInBatch(selectedBatchId);
 
   // Load existing attendance for this batch + date if already recorded
   useEffect(() => {
@@ -189,10 +187,7 @@ const AdminTakeAttendance = ({ initialBatchId = null }) => {
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
             {batches.map((batch) => {
               const isSelected = selectedBatchId === batch.id;
-              const batchNum = batch.id.replace('B', '');
-              const countInBatch = students.filter(
-                s => s.batchNo === `Batch-${batchNum}` || s.batchNo?.includes(batch.id)
-              ).length;
+              const countInBatch = studentsInBatch(batch.id).length;
 
               return (
                 <button
@@ -255,7 +250,7 @@ const AdminTakeAttendance = ({ initialBatchId = null }) => {
                     }}
                     className="text-[10px] mt-0.5 truncate font-medium"
                   >
-                    {batch.timing}
+                    {batch.timing.split(' – ')[0]} · {batch.days} · {batch.type || 'Theory'}
                   </p>
                 </button>
               );

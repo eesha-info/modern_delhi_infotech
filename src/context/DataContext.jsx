@@ -3,6 +3,7 @@ import {
   instituteInfo,
   initialCourses,
   initialBatches,
+  defaultBatchSettings,
   initialStudents,
   initialInvoices,
   initialNotices,
@@ -64,9 +65,15 @@ export const DataProvider = ({ children }) => {
     return saved ? JSON.parse(saved) : initialEnquiries;
   });
 
-  const [batches, setBatches] = useState(() =>
-    load('mdi_batches', initialBatches).map((b) => ({ days: 'Daily', ...b }))
-  );
+  // v2 layout: 1-hour Theory/Lab batches on MWF or TTS. Older saved batches are replaced once.
+  // v3 adds a separate Lab batch per student (Theory + Lab).
+  const BATCH_LAYOUT_VERSION = '3';
+  const [needsBatchMigration] = useState(() => load('mdi_batch_layout', null) !== BATCH_LAYOUT_VERSION);
+  const [batches, setBatches] = useState(() => {
+    if (load('mdi_batch_layout', null) !== BATCH_LAYOUT_VERSION) return initialBatches;
+    return load('mdi_batches', initialBatches).map((b) => ({ type: 'Theory', ...b }));
+  });
+  const [batchSettings, setBatchSettings] = useState(() => load('mdi_batch_settings', defaultBatchSettings));
 
   const [questions, setQuestions] = useState(() => load('mdi_questions', initialQuestions));
   const [tests, setTests] = useState(() => load('mdi_tests', initialTests));
@@ -106,7 +113,43 @@ export const DataProvider = ({ children }) => {
     localStorage.setItem('mdi_attendance', JSON.stringify(attendanceData));
   }, [attendanceData]);
 
-  useEffect(() => { localStorage.setItem('mdi_batches', JSON.stringify(batches)); }, [batches]);
+  useEffect(() => {
+    localStorage.setItem('mdi_batches', JSON.stringify(batches));
+    localStorage.setItem('mdi_batch_layout', JSON.stringify(BATCH_LAYOUT_VERSION));
+  }, [batches]);
+  useEffect(() => { localStorage.setItem('mdi_batch_settings', JSON.stringify(batchSettings)); }, [batchSettings]);
+
+  // One-time: give students saved before v3 their seeded Lab batch (or Unassigned)
+  useEffect(() => {
+    if (!needsBatchMigration) return;
+    setStudents((prev) =>
+      prev.map((s) => {
+        if (s.labBatchNo !== undefined) return s;
+        const seed = initialStudents.find((x) => x.regNo === s.regNo);
+        return { ...s, labBatchNo: seed?.labBatchNo || 'Unassigned', labBatchTime: seed?.labBatchTime || '' };
+      })
+    );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Keep each student's displayed Theory/Lab timings in step with the batches they belong to
+  useEffect(() => {
+    const byNo = (no) => batches.find((x) => `Batch-${x.id.replace(/^B/, '')}` === no);
+    setStudents((prev) => {
+      let changed = false;
+      const next = prev.map((s) => {
+        let out = s;
+        const t = byNo(s.batchNo);
+        if (t && (s.batchTime !== t.timing || s.batchDays !== t.days)) out = { ...out, batchTime: t.timing, batchDays: t.days };
+        const l = byNo(s.labBatchNo);
+        if (l && (s.labBatchTime !== l.timing || s.labBatchDays !== l.days)) out = { ...out, labBatchTime: l.timing, labBatchDays: l.days };
+        if (out !== s) changed = true;
+        return out;
+      });
+      return changed ? next : prev;
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [batches]);
   useEffect(() => { localStorage.setItem('mdi_questions', JSON.stringify(questions)); }, [questions]);
   useEffect(() => { localStorage.setItem('mdi_tests', JSON.stringify(tests)); }, [tests]);
   useEffect(() => { localStorage.setItem('mdi_test_results', JSON.stringify(testResults)); }, [testResults]);
@@ -142,29 +185,53 @@ export const DataProvider = ({ children }) => {
   const deleteCourse = (id) => setCourses((prev) => prev.filter((c) => c.id !== id));
 
   /* ---------------- Batch Management ---------------- */
-  // Students are linked to a batch via batchNo "Batch-<n>" where batch id is "B<n>".
+  // Students link to batches via "Batch-<n>" (batch id "B<n>"):
+  //   batchNo    -> their Theory batch
+  //   labBatchNo -> their Lab batch
   const batchNoFor = (batchId) => `Batch-${batchId.replace(/^B/, '')}`;
-  const studentsInBatch = (batchId) =>
-    students.filter((s) => s.batchNo === batchNoFor(batchId) || s.batchNo?.includes(batchId));
+  const isLab = (b) => (b?.type || 'Theory') === 'Lab';
+  const linkField = (b) => (isLab(b) ? 'labBatchNo' : 'batchNo');
+  const batchByNo = (no) => batches.find((b) => batchNoFor(b.id) === no) || null;
 
-  // Returns the batch that clashes (same branch + room + time, overlapping days), or null.
-  const findBatchClash = (candidate) =>
-    batches.find(
-      (b) =>
-        b.id !== candidate.id &&
-        b.branch === candidate.branch &&
-        b.room.trim().toLowerCase() === candidate.room.trim().toLowerCase() &&
-        b.timing === candidate.timing &&
-        daysOverlap(b.days, candidate.days)
-    ) || null;
+  const studentsInBatch = (batchId) => {
+    const b = batches.find((x) => x.id === batchId);
+    if (!b) return [];
+    const f = linkField(b);
+    return students.filter((s) => s[f] === batchNoFor(batchId));
+  };
+
+  // { theory, lab } batch objects for a student
+  const studentBatches = (s) => ({ theory: batchByNo(s?.batchNo), lab: batchByNo(s?.labBatchNo) });
+
+  // Checks a student against their *other* batch (Theory vs Lab):
+  //   'clash'    – same hour on overlapping days (impossible to attend both)
+  //   'sameDays' – both on the same day pattern (3 theory + 3 lab days expects MWF/TTS opposite)
+  const findAssignIssue = (student, batch) => {
+    const other = isLab(batch) ? batchByNo(student.batchNo) : batchByNo(student.labBatchNo);
+    if (!other) return null;
+    if (other.timing === batch.timing && daysOverlap(other.days, batch.days)) return { kind: 'clash', batch: other };
+    if (other.days === batch.days) return { kind: 'sameDays', batch: other };
+    return null;
+  };
+
+  const sameSlot = (a, b) => a.branch === b.branch && a.timing === b.timing && daysOverlap(a.days, b.days);
+
+  // Returns { kind: 'duplicate' | 'room', batch } if the candidate conflicts with an existing batch, else null.
+  // duplicate = a batch of the same type already runs in this branch, hour and day pattern.
+  // room      = a different batch already uses this room at this hour on these days.
+  const findBatchConflict = (candidate) => {
+    const others = batches.filter((b) => b.id !== candidate.id);
+    const dup = others.find((b) => sameSlot(b, candidate) && (b.type || 'Theory') === (candidate.type || 'Theory'));
+    if (dup) return { kind: 'duplicate', batch: dup };
+    const room = others.find(
+      (b) => sameSlot(b, candidate) && b.room.trim().toLowerCase() === candidate.room.trim().toLowerCase()
+    );
+    return room ? { kind: 'room', batch: room } : null;
+  };
 
   const saveBatch = (batch) => {
     if (batch.id) {
       setBatches((prev) => prev.map((b) => (b.id === batch.id ? { ...b, ...batch } : b)));
-      // keep students' displayed batch timing in sync
-      setStudents((prev) =>
-        prev.map((s) => (s.batchNo === batchNoFor(batch.id) ? { ...s, batchTime: batch.timing } : s))
-      );
       return batch;
     }
     const nextNum = batches.reduce((m, b) => Math.max(m, Number(b.id.replace(/\D/g, '')) || 0), 0) + 1;
@@ -175,19 +242,29 @@ export const DataProvider = ({ children }) => {
 
   const deleteBatch = (id) => {
     setBatches((prev) => prev.filter((b) => b.id !== id));
+    const no = batchNoFor(id);
     setStudents((prev) =>
-      prev.map((s) => (s.batchNo === batchNoFor(id) ? { ...s, batchNo: 'Unassigned', batchTime: '' } : s))
+      prev.map((s) => {
+        let out = s;
+        if (s.batchNo === no) out = { ...out, batchNo: 'Unassigned', batchTime: '', batchDays: '' };
+        if (s.labBatchNo === no) out = { ...out, labBatchNo: 'Unassigned', labBatchTime: '', labBatchDays: '' };
+        return out;
+      })
     );
   };
 
-  const assignStudentToBatch = (studentId, batchId) => {
-    const batch = batches.find((b) => b.id === batchId);
+  // Assign a student to a batch; the batch's type decides whether it becomes their Theory or Lab batch.
+  // Pass batchId = null with type ('Theory' | 'Lab') to unassign that slot.
+  const assignStudentToBatch = (studentId, batchId, type = 'Theory') => {
+    const batch = batchId ? batches.find((b) => b.id === batchId) : null;
+    const lab = batch ? isLab(batch) : type === 'Lab';
+    const [noKey, timeKey, daysKey] = lab ? ['labBatchNo', 'labBatchTime', 'labBatchDays'] : ['batchNo', 'batchTime', 'batchDays'];
     setStudents((prev) =>
       prev.map((s) =>
         s.id === studentId
           ? batch
-            ? { ...s, batchNo: batchNoFor(batchId), batchTime: batch.timing, batchDays: batch.days }
-            : { ...s, batchNo: 'Unassigned', batchTime: '', batchDays: '' }
+            ? { ...s, [noKey]: batchNoFor(batch.id), [timeKey]: batch.timing, [daysKey]: batch.days }
+            : { ...s, [noKey]: 'Unassigned', [timeKey]: '', [daysKey]: '' }
           : s
       )
     );
@@ -420,7 +497,11 @@ export const DataProvider = ({ children }) => {
         deleteBatch,
         assignStudentToBatch,
         studentsInBatch,
-        findBatchClash,
+        studentBatches,
+        findAssignIssue,
+        findBatchConflict,
+        batchSettings,
+        setBatchSettings,
         // Fees
         recordPayment,
         // Online tests

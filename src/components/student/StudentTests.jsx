@@ -11,9 +11,10 @@ const StudentTests = ({ student }) => {
   const [lastResult, setLastResult] = useState(null);
   const [now, setNow] = useState(Date.now());
 
-  const batchId = student?.batchNo?.startsWith('Batch-') ? `B${student.batchNo.replace('Batch-', '')}` : null;
+  const toId = (no) => (no?.startsWith('Batch-') ? `B${no.replace('Batch-', '')}` : null);
+  const myBatchIds = [toId(student?.batchNo), toId(student?.labBatchNo)].filter(Boolean);
   const available = tests.filter(
-    (t) => t.status === 'Published' && t.courseCode === student?.courseCode && (t.batchId === 'ALL' || t.batchId === batchId)
+    (t) => t.status === 'Published' && t.courseCode === student?.courseCode && (t.batchId === 'ALL' || myBatchIds.includes(t.batchId))
   );
   const myResults = testResults.filter((r) => r.regNo === student?.regNo);
 
