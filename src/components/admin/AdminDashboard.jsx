@@ -31,6 +31,7 @@ const AdminDashboard = () => {
 
   // Tab State: 'dashboard' | 'attendance' | 'students' | 'invoices' | 'enquiries' | 'batches'
   const [activeTab, setActiveTab] = useState('dashboard');
+  const [isCollapsed, setIsCollapsed] = useState(false);
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
 
   // Student Search & Filter
@@ -108,14 +109,20 @@ const AdminDashboard = () => {
         role="admin"
         activeTab={activeTab}
         setActiveTab={setActiveTab}
+        isCollapsed={isCollapsed}
+        setIsCollapsed={setIsCollapsed}
         mobileOpen={mobileSidebarOpen}
         setMobileOpen={setMobileSidebarOpen}
         user={user}
         onViewWebsite={() => setActiveView('landing')}
       />
 
-      {/* 2. Main Content Wrapper (offset by lg:ml-64) */}
-      <div className="flex-1 lg:ml-64 flex flex-col min-w-0">
+      {/* 2. Main Content Wrapper (Smoothly shifts when sidebar collapses) */}
+      <div
+        className={`flex-1 flex flex-col min-w-0 transition-all duration-300 ease-in-out ${
+          isCollapsed ? 'lg:ml-[72px]' : 'lg:ml-64'
+        }`}
+      >
         
         {/* Topbar with Mode Toggle & Search */}
         <Topbar
@@ -123,7 +130,13 @@ const AdminDashboard = () => {
           role="admin"
           onLogout={logout}
           onViewWebsite={() => setActiveView('landing')}
-          onToggleSidebar={() => setMobileSidebarOpen(!mobileSidebarOpen)}
+          onToggleSidebar={() => {
+            if (typeof window !== 'undefined' && window.innerWidth < 1024) {
+              setMobileSidebarOpen(!mobileSidebarOpen);
+            } else {
+              setIsCollapsed(!isCollapsed);
+            }
+          }}
         />
 
         {/* Main Body */}
@@ -794,6 +807,193 @@ const AdminDashboard = () => {
                 ))}
               </div>
 
+            </div>
+          )}
+
+          {/* ===================== TAB: PROFILE FORM ===================== */}
+          {activeTab === 'profile' && (
+            <div className="space-y-6">
+              <Header title="PROFILE FORM" subtitle="Create and edit mentor & institute administrator details" />
+              <div style={{ backgroundColor: colors.primary[400] }} className="p-6 rounded-lg shadow-xs max-w-3xl">
+                <form className="space-y-4" onSubmit={(e) => { e.preventDefault(); alert("Profile details saved successfully!"); }}>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                      <label style={{ color: colors.gray[300] }} className="text-xs block mb-1">Full Name</label>
+                      <input defaultValue="Tony Stark (Sonu Sir)" style={{ backgroundColor: colors.primary[500], color: colors.gray[100] }} className="w-full px-3 py-2 text-xs rounded border border-white/10 outline-none" />
+                    </div>
+                    <div>
+                      <label style={{ color: colors.gray[300] }} className="text-xs block mb-1">Designation</label>
+                      <input defaultValue="VP Fancy Admin / Institute Director" style={{ backgroundColor: colors.primary[500], color: colors.gray[100] }} className="w-full px-3 py-2 text-xs rounded border border-white/10 outline-none" />
+                    </div>
+                    <div>
+                      <label style={{ color: colors.gray[300] }} className="text-xs block mb-1">Direct Contact</label>
+                      <input defaultValue="+91 70500 12501" style={{ backgroundColor: colors.primary[500], color: colors.gray[100] }} className="w-full px-3 py-2 text-xs rounded border border-white/10 outline-none" />
+                    </div>
+                    <div>
+                      <label style={{ color: colors.gray[300] }} className="text-xs block mb-1">Qualifications</label>
+                      <input defaultValue="BCA, MCA · 10+ Years Experience" style={{ backgroundColor: colors.primary[500], color: colors.gray[100] }} className="w-full px-3 py-2 text-xs rounded border border-white/10 outline-none" />
+                    </div>
+                  </div>
+                  <div>
+                    <label style={{ color: colors.gray[300] }} className="text-xs block mb-1">Branch Address</label>
+                    <input defaultValue="Near Janseva Nursing Home, Adarsh Nagar, Madhepura, Bihar - 852113" style={{ backgroundColor: colors.primary[500], color: colors.gray[100] }} className="w-full px-3 py-2 text-xs rounded border border-white/10 outline-none" />
+                  </div>
+                  <div className="pt-2">
+                    <button type="submit" style={{ backgroundColor: colors.blueAccent[700], color: '#fff' }} className="px-5 py-2 rounded text-xs font-bold uppercase tracking-wider hover:opacity-90">
+                      Save Profile
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          )}
+
+          {/* ===================== TAB: CALENDAR ===================== */}
+          {activeTab === 'calendar' && (
+            <div className="space-y-6">
+              <Header title="CALENDAR" subtitle="Institute daily lab batches and academic calendar" />
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+                <div style={{ backgroundColor: colors.primary[400] }} className="p-5 rounded-lg col-span-1 space-y-4">
+                  <h4 style={{ color: colors.gray[100] }} className="font-bold text-sm">Upcoming Events &amp; Exams</h4>
+                  <div className="space-y-2 text-xs">
+                    <div style={{ backgroundColor: colors.primary[500] }} className="p-3 rounded border-l-4 border-[#4cceac]">
+                      <div className="font-bold">ADIT 1st Term Practical Exam</div>
+                      <div style={{ color: colors.gray[400] }}>Nov 15, 2026 · Lab A</div>
+                    </div>
+                    <div style={{ backgroundColor: colors.primary[500] }} className="p-3 rounded border-l-4 border-[#6870fa]">
+                      <div className="font-bold">Beltron Typing Speed Evaluation</div>
+                      <div style={{ color: colors.gray[400] }}>Nov 20, 2026 · Lab B</div>
+                    </div>
+                    <div style={{ backgroundColor: colors.primary[500] }} className="p-3 rounded border-l-4 border-amber-400">
+                      <div className="font-bold">Tally Prime GST Practical Test</div>
+                      <div style={{ color: colors.gray[400] }}>Nov 25, 2026 · Lab A</div>
+                    </div>
+                  </div>
+                </div>
+                <div style={{ backgroundColor: colors.primary[400] }} className="p-5 rounded-lg col-span-2">
+                  <h4 style={{ color: colors.gray[100] }} className="font-bold text-sm mb-4">Weekly Batch Timetable</h4>
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-left text-xs">
+                      <thead>
+                        <tr style={{ color: colors.gray[300], borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
+                          <th className="py-2">Batch</th>
+                          <th className="py-2">Time</th>
+                          <th className="py-2">Course</th>
+                          <th className="py-2">Lab Room</th>
+                          <th className="py-2">Mentor</th>
+                        </tr>
+                      </thead>
+                      <tbody style={{ color: colors.gray[200] }} className="divide-y divide-white/5">
+                        <tr><td className="py-2.5 font-bold text-[#4cceac]">Batch 1</td><td>08:00 AM – 09:30 AM</td><td>ADIT</td><td>Lab A (Branch 2)</td><td>Sonu Kumar</td></tr>
+                        <tr><td className="py-2.5 font-bold text-[#4cceac]">Batch 2</td><td>09:30 AM – 11:00 AM</td><td>ADCA</td><td>Lab A (Branch 2)</td><td>Sonu Kumar</td></tr>
+                        <tr><td className="py-2.5 font-bold text-[#4cceac]">Batch 3</td><td>11:00 AM – 12:30 PM</td><td>Tally Prime</td><td>Lab B (Branch 2)</td><td>Sonu Kumar</td></tr>
+                        <tr><td className="py-2.5 font-bold text-[#4cceac]">Batch 4</td><td>02:00 PM – 03:30 PM</td><td>Hindi Typing</td><td>Typing Lab</td><td>Faculty Lead</td></tr>
+                        <tr><td className="py-2.5 font-bold text-[#4cceac]">Batch 5</td><td>03:30 PM – 05:00 PM</td><td>DCA &amp; Fundamentals</td><td>Lab A (Branch 2)</td><td>Sonu Kumar</td></tr>
+                        <tr><td className="py-2.5 font-bold text-[#4cceac]">Batch 6</td><td>05:00 PM – 06:30 PM</td><td>ADIT Advanced</td><td>Lab A (Branch 2)</td><td>Sonu Kumar</td></tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* ===================== TAB: FAQ ===================== */}
+          {activeTab === 'faq' && (
+            <div className="space-y-6">
+              <Header title="FAQ PAGE" subtitle="Frequently Asked Questions by Students &amp; Parents" />
+              <div className="space-y-3 max-w-4xl">
+                {[
+                  { q: "Is Modern Delhi Infotech registered with the Government?", a: "Yes, Modern Delhi Infotech is registered under the Govt. of India and ISO certified (Estd. 2017). Certificates issued are recognized for state and central government employment registrations." },
+                  { q: "What is the qualification and background of Director Sonu Sir?", a: "Sonu Sir holds BCA and MCA degrees and has over 10+ years of professional teaching experience in software, computer applications, and accounting." },
+                  { q: "Can students pay course fees in installments?", a: "Yes, students can pay their fees in convenient 2 to 3 monthly installments. Official computerized invoices with GST calculations and dues tracking are issued upon each payment." },
+                  { q: "Does MDI provide Hindi and English typing for Bihar Beltron / High Court exams?", a: "Yes, our dedicated Typing Lab runs KrutiDev 010 and Mangal Remington Gail keyboard layouts with timer-based evaluation matching official exam patterns." }
+                ].map((item, idx) => (
+                  <div key={idx} style={{ backgroundColor: colors.primary[400] }} className="p-4 rounded-lg shadow-xs">
+                    <h4 style={{ color: colors.greenAccent[500] }} className="font-bold text-sm mb-1">{item.q}</h4>
+                    <p style={{ color: colors.gray[300] }} className="text-xs leading-relaxed">{item.a}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* ===================== TAB: BAR / PIE / LINE / GEOGRAPHY CHARTS ===================== */}
+          {(activeTab === 'bar' || activeTab === 'pie' || activeTab === 'line' || activeTab === 'geography') && (
+            <div className="space-y-6">
+              <Header
+                title={activeTab.toUpperCase() + " CHART"}
+                subtitle={`Interactive ${activeTab} data visualization of institute performance metrics`}
+              />
+              <div style={{ backgroundColor: colors.primary[400] }} className="p-6 rounded-lg shadow-xs min-h-[350px] flex flex-col justify-center items-center">
+                {activeTab === 'bar' && (
+                  <div className="w-full max-w-2xl space-y-4">
+                    <div className="text-xs font-bold mb-2" style={{ color: colors.gray[100] }}>Student Enrollment by Course</div>
+                    {[
+                      { name: 'ADIT (12 Months)', count: 48, pct: '85%', color: '#4cceac' },
+                      { name: 'ADCA (12 Months)', count: 36, pct: '65%', color: '#6870fa' },
+                      { name: 'DCA (6 Months)', count: 24, pct: '45%', color: '#e2726e' },
+                      { name: 'Tally Prime (3 Months)', count: 20, pct: '38%', color: '#f59e0b' },
+                      { name: 'Typing English/Hindi', count: 30, pct: '55%', color: '#38bdf8' },
+                    ].map((bar, i) => (
+                      <div key={i} className="space-y-1">
+                        <div className="flex justify-between text-xs" style={{ color: colors.gray[200] }}>
+                          <span>{bar.name}</span>
+                          <span className="font-bold">{bar.count} students</span>
+                        </div>
+                        <div className="w-full bg-black/20 rounded-full h-3 overflow-hidden">
+                          <div className="h-full rounded-full transition-all duration-500" style={{ width: bar.pct, backgroundColor: bar.color }} />
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+                {activeTab === 'pie' && (
+                  <div className="w-full max-w-md flex flex-col items-center space-y-6">
+                    <div className="w-48 h-48 rounded-full flex items-center justify-center relative" style={{ background: 'conic-gradient(#4cceac 0% 55%, #6870fa 55% 80%, #f59e0b 80% 100%)' }}>
+                      <div className="w-32 h-32 rounded-full flex flex-col items-center justify-center" style={{ backgroundColor: colors.primary[400] }}>
+                        <span className="text-xl font-bold" style={{ color: colors.gray[100] }}>100%</span>
+                        <span className="text-[10px]" style={{ color: colors.gray[400] }}>Fee Inflow</span>
+                      </div>
+                    </div>
+                    <div className="grid grid-cols-3 gap-4 text-xs text-center w-full">
+                      <div className="p-2 rounded" style={{ backgroundColor: colors.primary[500] }}>
+                        <span className="block font-bold text-[#4cceac]">55%</span>
+                        <span style={{ color: colors.gray[300] }}>Online UPI</span>
+                      </div>
+                      <div className="p-2 rounded" style={{ backgroundColor: colors.primary[500] }}>
+                        <span className="block font-bold text-[#6870fa]">25%</span>
+                        <span style={{ color: colors.gray[300] }}>Cash Counter</span>
+                      </div>
+                      <div className="p-2 rounded" style={{ backgroundColor: colors.primary[500] }}>
+                        <span className="block font-bold text-amber-400">20%</span>
+                        <span style={{ color: colors.gray[300] }}>Balance Dues</span>
+                      </div>
+                    </div>
+                  </div>
+                )}
+                {activeTab === 'line' && (
+                  <div className="w-full">
+                    <RevenueChart totalRevenue={totalRevenue} />
+                  </div>
+                )}
+                {activeTab === 'geography' && (
+                  <div className="w-full max-w-xl text-center space-y-4">
+                    <Map className="w-16 h-16 mx-auto text-[#4cceac]" />
+                    <h4 style={{ color: colors.gray[100] }} className="font-bold text-base">Regional Outreach in Kosi Division</h4>
+                    <p style={{ color: colors.gray[300] }} className="text-xs max-w-md mx-auto">
+                      Enrolling students from Madhepura Town, Singheshwar, Murliganj, Kumarkhand, Bihariganj, Shankarpur, and adjoining Saharsa &amp; Supaul areas.
+                    </p>
+                    <div className="flex flex-wrap justify-center gap-2 pt-2">
+                      {['Madhepura City (62%)', 'Singheshwar (14%)', 'Murliganj (10%)', 'Shankarpur (8%)', 'Saharsa (6%)'].map((loc, i) => (
+                        <span key={i} className="px-3 py-1 text-xs rounded-full" style={{ backgroundColor: colors.primary[500], color: colors.greenAccent[500] }}>
+                          {loc}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
           )}
 

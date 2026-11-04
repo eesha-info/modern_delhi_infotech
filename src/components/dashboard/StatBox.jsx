@@ -51,3 +51,4 @@ const StatBox = ({ title, subtitle, icon: Icon, progress = 0.75, increase = '+14
 };
 
 export default StatBox;
+

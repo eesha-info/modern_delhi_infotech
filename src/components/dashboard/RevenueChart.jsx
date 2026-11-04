@@ -146,3 +146,4 @@ const RevenueChart = ({ totalRevenue = 1480000 }) => {
 };
 
 export default RevenueChart;
+

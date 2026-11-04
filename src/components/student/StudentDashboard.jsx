@@ -22,6 +22,7 @@ const StudentDashboard = () => {
 
   // Tab State: 'dashboard' | 'attendance' | 'syllabus' | 'invoices' | 'typing' | 'materials' | 'certificate'
   const [activeTab, setActiveTab] = useState('dashboard');
+  const [isCollapsed, setIsCollapsed] = useState(false);
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
 
   const student = user;
@@ -63,6 +64,8 @@ const StudentDashboard = () => {
         role="student"
         activeTab={activeTab}
         setActiveTab={setActiveTab}
+        isCollapsed={isCollapsed}
+        setIsCollapsed={setIsCollapsed}
         mobileOpen={mobileSidebarOpen}
         setMobileOpen={setMobileSidebarOpen}
         user={user}
@@ -70,7 +73,11 @@ const StudentDashboard = () => {
       />
 
       {/* 2. Main Content Wrapper */}
-      <div className="flex-1 lg:ml-64 flex flex-col min-w-0">
+      <div
+        className={`flex-1 flex flex-col min-w-0 transition-all duration-300 ease-in-out ${
+          isCollapsed ? 'lg:ml-[72px]' : 'lg:ml-64'
+        }`}
+      >
         
         {/* Topbar with Mode Toggle & Search */}
         <Topbar
@@ -78,7 +85,13 @@ const StudentDashboard = () => {
           role="student"
           onLogout={logout}
           onViewWebsite={() => setActiveView('landing')}
-          onToggleSidebar={() => setMobileSidebarOpen(!mobileSidebarOpen)}
+          onToggleSidebar={() => {
+            if (typeof window !== 'undefined' && window.innerWidth < 1024) {
+              setMobileSidebarOpen(!mobileSidebarOpen);
+            } else {
+              setIsCollapsed(!isCollapsed);
+            }
+          }}
         />
 
         {/* Main Body */}
