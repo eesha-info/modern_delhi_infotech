@@ -1,15 +1,18 @@
 import React, { useState } from 'react';
 import {
-  Users, Receipt, FileText, Calendar, Bell, PlusCircle, Search, Filter,
-  Phone, Mail, CheckCircle2, AlertCircle, TrendingUp, DollarSign, ArrowLeft,
-  LogOut, Shield, Download, Printer, UserPlus, Eye, X, CheckSquare, Clock,
-  ChevronRight, ExternalLink, Sparkles
+  Users, Receipt, Mail, Clock, Download,
+  Printer, UserPlus, CheckSquare, PlusCircle, Search, Phone,
+  Check, X, FileText
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { useData } from '../../context/DataContext';
-import ArgonSidebar from '../dashboard/ArgonSidebar';
-import ArgonNavbar from '../dashboard/ArgonNavbar';
-import ArgonHeaderCards from '../dashboard/ArgonHeaderCards';
+import { useAppTheme } from '../../context/ThemeContext';
+import Topbar from '../dashboard/Topbar';
+import Sidebar from '../dashboard/Sidebar';
+import Header from '../dashboard/Header';
+import StatBox from '../dashboard/StatBox';
+import ProgressCircle from '../dashboard/ProgressCircle';
+import RevenueChart from '../dashboard/RevenueChart';
 import AdminTakeAttendance from './AdminTakeAttendance';
 
 const AdminDashboard = () => {
@@ -24,6 +27,7 @@ const AdminDashboard = () => {
     addStudent,
     updateEnquiryStatus
   } = useData();
+  const { colors, mode } = useAppTheme();
 
   // Tab State: 'dashboard' | 'attendance' | 'students' | 'invoices' | 'enquiries' | 'batches'
   const [activeTab, setActiveTab] = useState('dashboard');
@@ -67,14 +71,12 @@ const AdminDashboard = () => {
     return matchesSearch && matchesCourse;
   });
 
-  // Create Student Handler
   const handleCreateStudent = (e) => {
     e.preventDefault();
     if (!newStudent.name || !newStudent.mobile) return;
 
     addStudent(newStudent);
     setIsAddStudentOpen(false);
-    // Reset Form
     setNewStudent({
       name: '',
       fatherName: '',
@@ -93,341 +95,272 @@ const AdminDashboard = () => {
     setActiveTab('students');
   };
 
-  const getTabTitle = (tab) => {
-    switch (tab) {
-      case 'dashboard': return 'Institute Overview';
-      case 'attendance': return 'Batchwise Attendance';
-      case 'students': return 'Students Directory';
-      case 'invoices': return 'Fee Invoices & GST';
-      case 'enquiries': return 'Website Admission Leads';
-      case 'batches': return 'Lab Batches & Timings';
-      default: return 'Admin Dashboard';
-    }
-  };
-
   return (
-    <div className="min-h-screen bg-[#f8f9fe] flex font-sans antialiased text-slate-800">
-      
-      {/* 1. Argon Left Fixed Sidebar */}
-      <ArgonSidebar
+    <div
+      style={{
+        backgroundColor: colors.primary[500],
+        color: colors.gray[100],
+      }}
+      className="min-h-screen flex font-sans antialiased transition-colors"
+    >
+      {/* 1. Left Fixed Sidebar */}
+      <Sidebar
         role="admin"
         activeTab={activeTab}
         setActiveTab={setActiveTab}
         mobileOpen={mobileSidebarOpen}
         setMobileOpen={setMobileSidebarOpen}
+        user={user}
         onViewWebsite={() => setActiveView('landing')}
       />
 
-      {/* 2. Right Main Layout Area */}
+      {/* 2. Main Content Wrapper (offset by lg:ml-64) */}
       <div className="flex-1 lg:ml-64 flex flex-col min-w-0">
         
-        {/* Argon Signature Primary Blue Header */}
-        <header className="bg-[#5e72e4] pb-28 pt-4 shadow-xs relative">
-          
-          {/* Argon Navbar */}
-          <ArgonNavbar
-            activeTabTitle={getTabTitle(activeTab)}
-            user={user}
-            role="admin"
-            onLogout={logout}
-            onViewWebsite={() => setActiveView('landing')}
-            onOpenMobileSidebar={() => setMobileSidebarOpen(true)}
-          />
+        {/* Topbar with Mode Toggle & Search */}
+        <Topbar
+          user={user}
+          role="admin"
+          onLogout={logout}
+          onViewWebsite={() => setActiveView('landing')}
+          onToggleSidebar={() => setMobileSidebarOpen(!mobileSidebarOpen)}
+        />
 
-          {/* Argon 4 Header Metric Cards */}
-          <div className="px-4 sm:px-6 lg:px-8 mt-5">
-            <ArgonHeaderCards
-              role="admin"
-              stats={{
-                totalStudents,
-                totalRevenue,
-                totalBatches: batches.length
-              }}
-              user={user}
-            />
-          </div>
-        </header>
-
-        {/* 3. Main Body Content (Floats over header with negative margin -mt-16) */}
-        <main className="-mt-16 relative z-10 px-4 sm:px-6 lg:px-8 space-y-6 pb-12 flex-1">
+        {/* Main Body */}
+        <main className="p-6 flex-1 space-y-6">
           
           {/* ===================== TAB: DASHBOARD ===================== */}
           {activeTab === 'dashboard' && (
             <div className="space-y-6">
               
-              {/* Quick Action Attendance Card (Clean & subtle, not screaming neon) */}
-              <div className="bg-white rounded-2xl p-6 shadow-xs border border-slate-200/80 flex flex-col md:flex-row md:items-center justify-between gap-4">
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-xl bg-slate-100 text-[#5e72e4] flex items-center justify-center flex-shrink-0">
-                    <CheckSquare className="w-6 h-6" />
-                  </div>
-                  <div>
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">
-                      Attendance Hub
-                    </span>
-                    <h3 className="text-base font-bold text-slate-900 mt-0.5">
-                      Take Daily Batch Attendance
-                    </h3>
-                    <p className="text-xs text-slate-500 max-w-xl">
-                      Record student physical attendance for Batch 1 to Batch 6 in real time with individual lab PC tracking.
-                    </p>
-                  </div>
-                </div>
+              {/* Header Title + Download Reports Action Button (Exact layout in screenshot!) */}
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <Header
+                  title="DASHBOARD"
+                  subtitle="Welcome to your dashboard"
+                />
 
                 <div className="flex items-center gap-3">
                   <button
                     onClick={() => setActiveTab('attendance')}
-                    className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#5e72e4] hover:bg-[#4b5ec9] text-white font-bold text-xs shadow-xs transition-colors"
+                    style={{
+                      backgroundColor: colors.blueAccent[700],
+                      color: '#ffffff',
+                    }}
+                    className="inline-flex items-center gap-2 px-4 py-2.5 rounded-md text-xs font-bold shadow-xs hover:opacity-90 transition-opacity"
                   >
-                    <CheckSquare className="w-4 h-4" />
-                    <span>Launch Attendance Register</span>
-                  </button>
-                  <button
-                    onClick={() => setIsAddStudentOpen(true)}
-                    className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-semibold text-xs border border-slate-200 transition-colors"
-                  >
-                    <UserPlus className="w-4 h-4 text-slate-600" />
-                    <span>New Student</span>
+                    <Download className="w-4 h-4" />
+                    <span className="uppercase tracking-wider">DOWNLOAD REPORTS</span>
                   </button>
                 </div>
               </div>
 
-              {/* Grid: Recent Students Roster & Recent GST Invoices */}
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {/* ROW 1: 4 Stat Boxes (Exact layout & styling from screenshot!) */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+                <StatBox
+                  title="11,361"
+                  subtitle="Email Sent"
+                  progress={0.75}
+                  increase="+14%"
+                  icon={Mail}
+                />
+                <StatBox
+                  title="431,225"
+                  subtitle="Sales Obtained"
+                  progress={0.5}
+                  increase="+21%"
+                  icon={Receipt}
+                />
+                <StatBox
+                  title="32,441"
+                  subtitle="New Clients"
+                  progress={0.3}
+                  increase="+5%"
+                  icon={Users}
+                />
+                <StatBox
+                  title="1,325,134"
+                  subtitle="Traffic Received"
+                  progress={0.8}
+                  increase="+43%"
+                  icon={Clock}
+                />
+              </div>
+
+              {/* ROW 2: Revenue Generated Multi-Line Chart (8 cols) & Recent Transactions (4 cols) */}
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
                 
-                {/* Recent Students Table Card */}
-                <div className="bg-white rounded-2xl shadow-xs border border-slate-200/80 overflow-hidden flex flex-col justify-between">
-                  <div>
-                    <div className="p-5 border-b border-slate-100 flex items-center justify-between">
-                      <div>
-                        <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">
-                          Admissions
-                        </span>
-                        <h3 className="text-sm font-bold text-slate-900 mt-0.5">
-                          Recent Enrolled Students
-                        </h3>
-                      </div>
-                      <button
-                        onClick={() => setActiveTab('students')}
-                        className="text-xs font-semibold text-[#5e72e4] hover:underline flex items-center gap-1"
-                      >
-                        <span>View All ({students.length})</span>
-                        <ChevronRight className="w-3.5 h-3.5" />
-                      </button>
-                    </div>
-
-                    <div className="overflow-x-auto">
-                      <table className="w-full text-left border-collapse">
-                        <thead>
-                          <tr className="bg-slate-50 border-b border-slate-100 text-[10px] font-bold uppercase text-slate-500 tracking-wider">
-                            <th className="py-2.5 px-4">Student</th>
-                            <th className="py-2.5 px-4">Course</th>
-                            <th className="py-2.5 px-4">Batch</th>
-                            <th className="py-2.5 px-4">Payment</th>
-                          </tr>
-                        </thead>
-                        <tbody className="divide-y divide-slate-100 text-xs">
-                          {students.slice(0, 5).map((st) => (
-                            <tr key={st.id} className="hover:bg-slate-50/70 transition-colors">
-                              <td className="py-3 px-4">
-                                <div className="flex items-center gap-2.5">
-                                  <img
-                                    src={st.avatar}
-                                    alt={st.name}
-                                    className="w-8 h-8 rounded-full object-cover border border-slate-200"
-                                    onError={(e) => {
-                                      e.currentTarget.src = "/logo-icon.svg";
-                                    }}
-                                  />
-                                  <div>
-                                    <div className="font-bold text-slate-900 truncate max-w-[130px]">
-                                      {st.name}
-                                    </div>
-                                    <div className="text-[10px] font-mono text-slate-500">
-                                      {st.regNo}
-                                    </div>
-                                  </div>
-                                </div>
-                              </td>
-                              <td className="py-3 px-4">
-                                <span className="font-semibold text-slate-800">{st.courseCode}</span>
-                              </td>
-                              <td className="py-3 px-4 text-[11px] text-slate-600">
-                                {st.batchNo}
-                              </td>
-                              <td className="py-3 px-4">
-                                <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${
-                                  st.paymentStatus === 'FULLY PAID'
-                                    ? 'bg-emerald-50 text-emerald-700'
-                                    : 'bg-amber-50 text-amber-700'
-                                }`}>
-                                  {st.paymentStatus}
-                                </span>
-                              </td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
-
-                  <div className="p-3 bg-slate-50 border-t border-slate-100 text-center">
-                    <button
-                      onClick={() => setIsAddStudentOpen(true)}
-                      className="text-xs font-semibold text-[#5e72e4] hover:underline inline-flex items-center gap-1.5"
-                    >
-                      <PlusCircle className="w-3.5 h-3.5" />
-                      <span>Register Another Student</span>
-                    </button>
-                  </div>
+                {/* 8 Cols: Revenue Generated Multi-curve SVG Chart */}
+                <div className="lg:col-span-8">
+                  <RevenueChart totalRevenue={totalRevenue} />
                 </div>
 
-                {/* Recent GST Invoices Card */}
-                <div className="bg-white rounded-2xl shadow-xs border border-slate-200/80 overflow-hidden flex flex-col justify-between">
-                  <div>
-                    <div className="p-5 border-b border-slate-100 flex items-center justify-between">
-                      <div>
-                        <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">
-                          Accounting & Tax
-                        </span>
-                        <h3 className="text-sm font-bold text-slate-900 mt-0.5">
-                          Recent GST Tax Invoices
-                        </h3>
-                      </div>
-                      <button
-                        onClick={() => setActiveTab('invoices')}
-                        className="text-xs font-semibold text-[#5e72e4] hover:underline flex items-center gap-1"
-                      >
-                        <span>All Invoices ({invoices.length})</span>
-                        <ChevronRight className="w-3.5 h-3.5" />
-                      </button>
-                    </div>
-
-                    <div className="overflow-x-auto">
-                      <table className="w-full text-left border-collapse">
-                        <thead>
-                          <tr className="bg-slate-50 border-b border-slate-100 text-[10px] font-bold uppercase text-slate-500 tracking-wider">
-                            <th className="py-2.5 px-4">Invoice #</th>
-                            <th className="py-2.5 px-4">Student</th>
-                            <th className="py-2.5 px-4">Total</th>
-                            <th className="py-2.5 px-4 text-right">Action</th>
-                          </tr>
-                        </thead>
-                        <tbody className="divide-y divide-slate-100 text-xs">
-                          {invoices.slice(0, 5).map((inv, idx) => (
-                            <tr key={idx} className="hover:bg-slate-50/70 transition-colors">
-                              <td className="py-3 px-4">
-                                <span className="font-mono font-bold text-slate-900 text-[11px] block">
-                                  {inv.invoiceNo}
-                                </span>
-                                <span className="text-[10px] text-slate-400">{inv.date}</span>
-                              </td>
-                              <td className="py-3 px-4">
-                                <div className="font-bold text-slate-800">{inv.student?.name}</div>
-                                <div className="text-[10px] text-slate-500">{inv.course?.code}</div>
-                              </td>
-                              <td className="py-3 px-4">
-                                <div className="font-bold text-slate-900">
-                                  ₹{(inv.totalCourseFee || 0).toLocaleString()}
-                                </div>
-                                <div className="text-[10px] text-slate-500">
-                                  Paid: ₹{(inv.totalPaid || 0).toLocaleString()}
-                                </div>
-                              </td>
-                              <td className="py-3 px-4 text-right">
-                                <button
-                                  onClick={() => setActiveInvoice(inv)}
-                                  className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-semibold bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 transition-colors"
-                                  title="View Authentic PDF Replica"
-                                >
-                                  <Printer className="w-3 h-3 text-slate-500" />
-                                  <span>Print / View</span>
-                                </button>
-                              </td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
+                {/* 4 Cols: Recent Transactions Box */}
+                <div
+                  style={{ backgroundColor: colors.primary[400] }}
+                  className="lg:col-span-4 rounded-lg p-5 shadow-xs flex flex-col justify-between"
+                >
+                  <div className="pb-3 border-b border-white/5 flex items-center justify-between">
+                    <h4
+                      style={{ color: colors.gray[100] }}
+                      className="font-bold text-sm font-display uppercase tracking-wider"
+                    >
+                      Recent Transactions
+                    </h4>
+                    <span style={{ color: colors.greenAccent[500] }} className="text-xs font-semibold">
+                      {invoices.length} Invoiced
+                    </span>
                   </div>
 
-                  <div className="p-3 bg-slate-50 border-t border-slate-100 flex items-center justify-between text-xs px-4">
-                    <span className="text-slate-500">
-                      Total Collected: <strong className="text-slate-900">₹{totalRevenue.toLocaleString()}</strong>
-                    </span>
-                    <span className="text-slate-500">
-                      Pending Dues: <strong className="text-rose-600">₹{totalDues.toLocaleString()}</strong>
-                    </span>
+                  {/* Transactions List */}
+                  <div className="divide-y divide-white/5 overflow-y-auto max-h-80 text-xs">
+                    {invoices.slice(0, 6).map((inv, idx) => (
+                      <div key={idx} className="py-3 flex items-center justify-between gap-2">
+                        <div>
+                          <div
+                            style={{ color: colors.greenAccent[500] }}
+                            className="font-mono font-bold text-xs"
+                          >
+                            {inv.invoiceNo}
+                          </div>
+                          <div style={{ color: colors.gray[100] }} className="font-semibold text-xs mt-0.5">
+                            {inv.student?.name}
+                          </div>
+                          <div style={{ color: colors.gray[400] }} className="text-[10px]">
+                            {inv.date}
+                          </div>
+                        </div>
+
+                        {/* Amount Pill (Exact green pill in screenshot!) */}
+                        <div className="flex flex-col items-end gap-1">
+                          <span
+                            style={{
+                              backgroundColor: colors.greenAccent[500],
+                              color: '#ffffff',
+                            }}
+                            className="px-2.5 py-1 rounded text-xs font-bold font-mono"
+                          >
+                            ₹{(inv.totalPaid || 0).toLocaleString()}
+                          </span>
+                          <button
+                            onClick={() => setActiveInvoice(inv)}
+                            style={{ color: colors.blueAccent[400] }}
+                            className="text-[10px] hover:underline"
+                          >
+                            View PDF
+                          </button>
+                        </div>
+                      </div>
+                    ))}
                   </div>
                 </div>
 
               </div>
 
-              {/* Batches Quick Status Grid */}
-              <div className="bg-white rounded-2xl p-6 shadow-xs border border-slate-200/80">
-                <div className="flex items-center justify-between mb-4">
-                  <div>
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">
-                      Institute Batches
-                    </span>
-                    <h3 className="text-base font-bold text-slate-900 mt-0.5">
-                      Classroom Batches & Lab Utilization
-                    </h3>
+              {/* ROW 3: Campaign (4 cols), Sales Quantity (4 cols), Geography / Batches (4 cols) */}
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+                
+                {/* Campaign Card with Center Progress Circle */}
+                <div
+                  style={{ backgroundColor: colors.primary[400] }}
+                  className="rounded-lg p-5 shadow-xs flex flex-col justify-between"
+                >
+                  <h4 style={{ color: colors.gray[100] }} className="font-bold text-sm font-display">
+                    Campaign
+                  </h4>
+
+                  <div className="flex flex-col items-center justify-center my-4">
+                    <ProgressCircle progress={0.74} size={115} />
+                    <div style={{ color: colors.greenAccent[500] }} className="text-lg font-bold mt-3">
+                      ₹{totalRevenue.toLocaleString()} Revenue
+                    </div>
+                    <p style={{ color: colors.gray[300] }} className="text-xs text-center mt-1">
+                      74% of Session 2026-27 admission target achieved
+                    </p>
                   </div>
-                  <button
-                    onClick={() => setActiveTab('batches')}
-                    className="text-xs font-semibold text-[#5e72e4] hover:underline"
-                  >
-                    View Batches Schedule →
-                  </button>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {batches.map((b) => {
-                    const percentage = Math.round((b.enrolled / b.maxCapacity) * 100);
-                    return (
-                      <div
-                        key={b.id}
-                        className="p-4 rounded-xl border border-slate-200 bg-white hover:bg-slate-50/50 transition-colors"
-                      >
-                        <div className="flex items-center justify-between">
-                          <span className="text-xs font-bold text-slate-800 bg-slate-100 px-2 py-0.5 rounded">
-                            {b.id}
-                          </span>
-                          <span className="text-[10px] text-slate-500">
-                            {b.branch} · {b.room}
-                          </span>
-                        </div>
-                        <h4 className="font-bold text-xs text-slate-900 mt-2 truncate">
-                          {b.name}
-                        </h4>
-                        <div className="text-[11px] text-slate-500 mt-0.5 flex items-center gap-1">
-                          <Clock className="w-3 h-3 text-slate-400" />
-                          <span>{b.timing}</span>
-                        </div>
+                {/* Sales Quantity / Course Admissions Bar Box */}
+                <div
+                  style={{ backgroundColor: colors.primary[400] }}
+                  className="rounded-lg p-5 shadow-xs flex flex-col justify-between"
+                >
+                  <h4 style={{ color: colors.gray[100] }} className="font-bold text-sm font-display">
+                    Course Admissions
+                  </h4>
 
-                        {/* Capacity meter */}
-                        <div className="mt-3">
-                          <div className="flex items-center justify-between text-[10px] text-slate-500 mb-1">
-                            <span>Occupancy</span>
-                            <span className="text-slate-800 font-bold">{b.enrolled} / {b.maxCapacity} Seats ({percentage}%)</span>
+                  <div className="space-y-3 my-4 text-xs">
+                    {courses.slice(0, 4).map((c, i) => {
+                      const count = students.filter(s => s.courseCode === c.code).length;
+                      const percent = Math.min(100, Math.round((count / 10) * 100));
+                      return (
+                        <div key={i}>
+                          <div className="flex items-center justify-between mb-1">
+                            <span style={{ color: colors.gray[100] }} className="font-semibold">{c.code}</span>
+                            <span style={{ color: colors.gray[300] }}>{count} Enrolled</span>
                           </div>
-                          <div className="w-full bg-slate-100 h-1.5 rounded-full overflow-hidden">
+                          <div style={{ backgroundColor: colors.primary[500] }} className="w-full h-2 rounded-full overflow-hidden">
                             <div
-                              className="bg-[#5e72e4] h-full rounded-full"
-                              style={{ width: `${percentage}%` }}
+                              style={{
+                                backgroundColor: i % 2 === 0 ? colors.greenAccent[500] : colors.blueAccent[500],
+                                width: `${percent}%`
+                              }}
+                              className="h-full rounded-full"
                             ></div>
                           </div>
                         </div>
-
-                        <div className="mt-3 pt-2.5 border-t border-slate-100 flex items-center justify-between text-[11px]">
-                          <span className="text-slate-400">Instructor:</span>
-                          <span className="font-semibold text-slate-800">{b.instructor}</span>
-                        </div>
-                      </div>
-                    );
-                  })}
+                      );
+                    })}
+                  </div>
                 </div>
+
+                {/* Batches Occupancy Box */}
+                <div
+                  style={{ backgroundColor: colors.primary[400] }}
+                  className="rounded-lg p-5 shadow-xs flex flex-col justify-between"
+                >
+                  <div className="flex items-center justify-between">
+                    <h4 style={{ color: colors.gray[100] }} className="font-bold text-sm font-display">
+                      Lab Batches &amp; Timings
+                    </h4>
+                    <button
+                      onClick={() => setActiveTab('attendance')}
+                      style={{ color: colors.greenAccent[500] }}
+                      className="text-xs hover:underline"
+                    >
+                      Mark Attendance
+                    </button>
+                  </div>
+
+                  <div className="space-y-2.5 my-3 text-xs">
+                    {batches.slice(0, 4).map((b) => (
+                      <div
+                        key={b.id}
+                        style={{ backgroundColor: colors.primary[500] }}
+                        className="p-2.5 rounded-md flex items-center justify-between"
+                      >
+                        <div>
+                          <div style={{ color: colors.gray[100] }} className="font-bold">
+                            {b.id} · {b.name.split('(')[0]}
+                          </div>
+                          <div style={{ color: colors.gray[400] }} className="text-[10px]">
+                            {b.timing} · {b.room}
+                          </div>
+                        </div>
+                        <span
+                          style={{
+                            backgroundColor: colors.primary[400],
+                            color: colors.greenAccent[500]
+                          }}
+                          className="px-2 py-0.5 rounded text-[11px] font-bold"
+                        >
+                          {b.enrolled}/{b.maxCapacity} PCs
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
               </div>
 
             </div>
@@ -441,47 +374,54 @@ const AdminDashboard = () => {
           {/* ===================== TAB: STUDENTS ===================== */}
           {activeTab === 'students' && (
             <div className="space-y-6">
-              
-              <div className="bg-white rounded-2xl p-6 shadow-xs border border-slate-200/80 flex flex-col md:flex-row md:items-center justify-between gap-4">
-                <div>
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">
-                    Student Administration
-                  </span>
-                  <h2 className="text-xl font-display font-bold text-slate-900 mt-0.5">
-                    Registered Students Roster
-                  </h2>
-                  <p className="text-xs text-slate-500 mt-1">
-                    Manage enrollment records, batch allocations, and student dues.
-                  </p>
-                </div>
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <Header
+                  title="STUDENTS ROSTER"
+                  subtitle="Managing all registered students and lab allocations"
+                />
 
                 <button
                   onClick={() => setIsAddStudentOpen(true)}
-                  className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#5e72e4] hover:bg-[#4b5ec9] text-white font-bold text-xs shadow-xs transition-colors"
+                  style={{
+                    backgroundColor: colors.blueAccent[700],
+                    color: '#ffffff',
+                  }}
+                  className="inline-flex items-center gap-2 px-4 py-2.5 rounded-md text-xs font-bold hover:opacity-90 transition-opacity"
                 >
                   <UserPlus className="w-4 h-4" />
-                  <span>+ Register New Student</span>
+                  <span>REGISTER NEW STUDENT</span>
                 </button>
               </div>
 
-              {/* Filters & Search Bar */}
-              <div className="bg-white rounded-2xl shadow-xs border border-slate-200/80 p-4 flex flex-col md:flex-row items-center justify-between gap-4">
+              {/* Filters */}
+              <div
+                style={{ backgroundColor: colors.primary[400] }}
+                className="p-4 rounded-lg flex flex-col md:flex-row items-center justify-between gap-4"
+              >
                 <div className="flex items-center gap-3 w-full md:w-auto">
-                  <div className="relative w-full md:w-72">
-                    <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                  <div
+                    style={{ backgroundColor: colors.primary[500] }}
+                    className="flex items-center rounded-md px-3 py-1.5 w-72"
+                  >
                     <input
                       type="text"
                       placeholder="Search by name, roll no, mobile..."
                       value={studentSearch}
                       onChange={(e) => setStudentSearch(e.target.value)}
-                      className="w-full bg-slate-50 border border-slate-200 rounded-xl pl-9 pr-3 py-2 text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:bg-white focus:border-[#5e72e4]"
+                      style={{ color: colors.gray[100] }}
+                      className="bg-transparent border-none outline-none text-xs flex-1 placeholder:text-slate-400"
                     />
+                    <Search className="w-4 h-4 text-slate-400" />
                   </div>
 
                   <select
                     value={courseFilter}
                     onChange={(e) => setCourseFilter(e.target.value)}
-                    className="bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-semibold text-slate-700 focus:outline-none focus:bg-white focus:border-[#5e72e4] cursor-pointer"
+                    style={{
+                      backgroundColor: colors.primary[500],
+                      color: colors.gray[100],
+                    }}
+                    className="rounded-md px-3 py-1.5 text-xs font-semibold outline-none cursor-pointer"
                   >
                     <option value="All">All Courses</option>
                     <option value="ADIT">ADIT (12M)</option>
@@ -492,103 +432,113 @@ const AdminDashboard = () => {
                   </select>
                 </div>
 
-                <span className="text-xs text-slate-500">
+                <span style={{ color: colors.gray[300] }} className="text-xs">
                   Showing {filteredStudents.length} of {students.length} students
                 </span>
               </div>
 
-              {/* Students Data Table */}
-              <div className="bg-white rounded-2xl shadow-xs border border-slate-200/80 overflow-hidden">
+              {/* Students Data Grid Table */}
+              <div
+                style={{ backgroundColor: colors.primary[400] }}
+                className="rounded-lg overflow-hidden shadow-xs"
+              >
                 <div className="overflow-x-auto">
-                  <table className="w-full text-left border-collapse">
+                  <table className="w-full text-left border-collapse text-xs">
                     <thead>
-                      <tr className="bg-slate-50 border-b border-slate-100 text-[11px] font-bold uppercase text-slate-500 tracking-wider">
+                      <tr
+                        style={{
+                          backgroundColor: colors.primary[500],
+                          color: colors.gray[300]
+                        }}
+                        className="text-[11px] font-bold uppercase tracking-wider border-b border-white/5"
+                      >
                         <th className="py-3 px-4">Student</th>
-                        <th className="py-3 px-4">Contact</th>
-                        <th className="py-3 px-4">Course & Batch</th>
+                        <th className="py-3 px-4">Father Name &amp; Contact</th>
+                        <th className="py-3 px-4">Course &amp; Batch</th>
                         <th className="py-3 px-4">PC Station</th>
                         <th className="py-3 px-4">Fee Dues</th>
                         <th className="py-3 px-4 text-right">Actions</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-slate-100 text-xs">
+                    <tbody className="divide-y divide-white/5">
                       {filteredStudents.map((st) => (
-                        <tr key={st.id} className="hover:bg-slate-50/70 transition-colors">
-                          {/* Student */}
+                        <tr key={st.id} className="hover:opacity-90 transition-opacity">
                           <td className="py-3.5 px-4">
                             <div className="flex items-center gap-3">
                               <img
                                 src={st.avatar}
                                 alt={st.name}
-                                className="w-9 h-9 rounded-full object-cover border border-slate-200 flex-shrink-0"
+                                className="w-9 h-9 rounded-full object-cover border border-white/10"
                                 onError={(e) => {
                                   e.currentTarget.src = "/logo-icon.svg";
                                 }}
                               />
                               <div>
-                                <div className="font-bold text-slate-900">
+                                <div style={{ color: colors.gray[100] }} className="font-bold text-sm">
                                   {st.name}
                                 </div>
-                                <div className="flex items-center gap-1.5 mt-0.5">
-                                  <span className="font-mono text-[10px] text-slate-600 bg-slate-100 px-1.5 py-0.2 rounded">
-                                    {st.regNo}
-                                  </span>
-                                  <span className="text-[10px] text-slate-400">
-                                    Roll: {st.rollNo}
-                                  </span>
+                                <div style={{ color: colors.greenAccent[500] }} className="font-mono text-[10px]">
+                                  {st.regNo} (Roll: {st.rollNo})
                                 </div>
                               </div>
                             </div>
                           </td>
 
-                          {/* Contact */}
                           <td className="py-3.5 px-4">
-                            <div className="text-slate-800 font-medium">{st.fatherName}</div>
-                            <div className="text-[11px] text-slate-500 mt-0.5 flex items-center gap-1">
-                              <Phone className="w-3 h-3 text-slate-400" />
-                              <a href={`tel:${st.mobile}`} className="hover:underline">
-                                {st.mobile}
-                              </a>
+                            <div style={{ color: colors.gray[100] }}>{st.fatherName}</div>
+                            <div style={{ color: colors.gray[400] }} className="text-[11px] mt-0.5">
+                              {st.mobile}
                             </div>
                           </td>
 
-                          {/* Course & Batch */}
                           <td className="py-3.5 px-4">
-                            <div className="font-bold text-slate-900">{st.courseCode}</div>
-                            <div className="text-[11px] text-slate-500">{st.batchNo} ({st.batchTime})</div>
+                            <div style={{ color: colors.gray[100] }} className="font-bold">
+                              {st.courseCode}
+                            </div>
+                            <div style={{ color: colors.gray[400] }} className="text-[11px]">
+                              {st.batchNo} ({st.batchTime})
+                            </div>
                           </td>
 
-                          {/* PC Station */}
                           <td className="py-3.5 px-4">
-                            <span className="font-mono text-slate-700 bg-slate-50 px-2 py-0.5 rounded text-[11px] border border-slate-200">
+                            <span
+                              style={{
+                                backgroundColor: colors.primary[500],
+                                color: colors.gray[100]
+                              }}
+                              className="font-mono px-2 py-0.5 rounded text-[11px]"
+                            >
                               {st.pcNumber || 'PC-01'}
                             </span>
                           </td>
 
-                          {/* Fee Dues */}
                           <td className="py-3.5 px-4">
-                            <div className="font-bold text-slate-900">
+                            <div style={{ color: colors.gray[100] }} className="font-bold">
                               ₹{(st.totalFee || 0).toLocaleString()}
                             </div>
-                            <span className={`inline-block px-2 py-0.5 rounded text-[10px] font-bold mt-0.5 ${
-                              st.balanceDues === 0
-                                ? 'bg-emerald-50 text-emerald-700'
-                                : 'bg-amber-50 text-amber-700'
-                            }`}>
+                            <span
+                              style={{
+                                color: st.balanceDues === 0 ? colors.greenAccent[500] : colors.redAccent[400]
+                              }}
+                              className="text-[10px] font-bold block"
+                            >
                               {st.balanceDues === 0 ? 'FULLY PAID' : `Due: ₹${st.balanceDues}`}
                             </span>
                           </td>
 
-                          {/* Action */}
                           <td className="py-3.5 px-4 text-right">
                             <button
                               onClick={() => {
-                                const matchingInvoice = invoices.find(inv => inv.student?.regNo === st.regNo) || invoices[0];
-                                setActiveInvoice(matchingInvoice);
+                                const matching = invoices.find(inv => inv.student?.regNo === st.regNo) || invoices[0];
+                                setActiveInvoice(matching);
                               }}
-                              className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-semibold bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 transition-colors"
+                              style={{
+                                backgroundColor: colors.primary[500],
+                                color: colors.gray[100]
+                              }}
+                              className="inline-flex items-center gap-1 px-3 py-1.5 rounded-md text-xs font-semibold hover:opacity-80 transition-opacity"
                             >
-                              <Printer className="w-3.5 h-3.5 text-slate-500" />
+                              <Printer className="w-3.5 h-3.5 text-slate-400" />
                               <span>Invoice</span>
                             </button>
                           </td>
@@ -605,109 +555,84 @@ const AdminDashboard = () => {
           {/* ===================== TAB: INVOICES ===================== */}
           {activeTab === 'invoices' && (
             <div className="space-y-6">
-              
-              <div className="bg-white rounded-2xl p-6 shadow-xs border border-slate-200/80 flex flex-col md:flex-row md:items-center justify-between gap-4">
-                <div>
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">
-                    Fee Management & Taxation
-                  </span>
-                  <h2 className="text-xl font-display font-bold text-slate-900 mt-0.5">
-                    GST Tax Invoices & Billing
-                  </h2>
-                  <p className="text-xs text-slate-500 mt-1">
-                    Official tax invoices compliant with Government of India and Bihar GST regulations.
-                  </p>
-                </div>
+              <Header
+                title="INVOICES BALANCES"
+                subtitle="Official GST Tax Invoices and student fee installment tracking"
+              />
 
-                <div className="flex items-center gap-4 text-xs font-semibold">
-                  <div className="px-3.5 py-2 bg-slate-50 rounded-xl border border-slate-200">
-                    <span className="text-slate-400 block text-[10px] uppercase font-bold">Total Invoiced</span>
-                    <strong className="text-slate-900 text-sm">
-                      ₹{invoices.reduce((acc, i) => acc + (i.totalCourseFee || 0), 0).toLocaleString()}
-                    </strong>
-                  </div>
-                  <div className="px-3.5 py-2 bg-emerald-50 rounded-xl border border-emerald-200">
-                    <span className="text-emerald-700 block text-[10px] uppercase font-bold">Collected</span>
-                    <strong className="text-emerald-800 text-sm">
-                      ₹{totalRevenue.toLocaleString()}
-                    </strong>
-                  </div>
-                </div>
-              </div>
-
-              {/* Invoices List */}
-              <div className="bg-white rounded-2xl shadow-xs border border-slate-200/80 overflow-hidden">
+              <div
+                style={{ backgroundColor: colors.primary[400] }}
+                className="rounded-lg overflow-hidden shadow-xs"
+              >
                 <div className="overflow-x-auto">
-                  <table className="w-full text-left border-collapse">
+                  <table className="w-full text-left border-collapse text-xs">
                     <thead>
-                      <tr className="bg-slate-50 border-b border-slate-100 text-[11px] font-bold uppercase text-slate-500 tracking-wider">
-                        <th className="py-3 px-4">Tax Invoice #</th>
-                        <th className="py-3 px-4">Student Name</th>
-                        <th className="py-3 px-4">Course Program</th>
-                        <th className="py-3 px-4">Amount & GST</th>
+                      <tr
+                        style={{
+                          backgroundColor: colors.primary[500],
+                          color: colors.gray[300]
+                        }}
+                        className="text-[11px] font-bold uppercase tracking-wider border-b border-white/5"
+                      >
+                        <th className="py-3 px-4">Invoice #</th>
+                        <th className="py-3 px-4">Student</th>
+                        <th className="py-3 px-4">Course</th>
+                        <th className="py-3 px-4">Total</th>
                         <th className="py-3 px-4">Status</th>
-                        <th className="py-3 px-4 text-right">Authentic PDF</th>
+                        <th className="py-3 px-4 text-right">Print PDF</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-slate-100 text-xs">
+                    <tbody className="divide-y divide-white/5">
                       {invoices.map((inv, idx) => (
-                        <tr key={idx} className="hover:bg-slate-50/70 transition-colors">
-                          {/* Invoice No */}
+                        <tr key={idx} className="hover:opacity-90 transition-opacity">
                           <td className="py-3.5 px-4">
-                            <span className="font-mono font-bold text-slate-900 text-xs block">
+                            <span style={{ color: colors.greenAccent[500] }} className="font-mono font-bold block">
                               {inv.invoiceNo}
                             </span>
-                            <span className="text-[10px] text-slate-400 mt-0.5 block">
-                              Date: {inv.date} · {inv.session}
-                            </span>
+                            <span style={{ color: colors.gray[400] }} className="text-[10px]">{inv.date}</span>
                           </td>
 
-                          {/* Student */}
                           <td className="py-3.5 px-4">
-                            <div className="font-bold text-slate-900">{inv.student?.name}</div>
-                            <div className="text-[10px] text-slate-500">{inv.student?.regNo}</div>
+                            <div style={{ color: colors.gray[100] }} className="font-bold">{inv.student?.name}</div>
+                            <div style={{ color: colors.gray[400] }} className="text-[10px]">{inv.student?.regNo}</div>
                           </td>
 
-                          {/* Course */}
                           <td className="py-3.5 px-4">
-                            <div className="font-semibold text-slate-800">{inv.course?.code}</div>
-                            <div className="text-[10px] text-slate-500">{inv.course?.name}</div>
+                            <div style={{ color: colors.gray[100] }}>{inv.course?.code}</div>
+                            <div style={{ color: colors.gray[400] }} className="text-[10px]">{inv.course?.name}</div>
                           </td>
 
-                          {/* Total */}
                           <td className="py-3.5 px-4">
-                            <div className="font-bold text-slate-900">
+                            <div style={{ color: colors.gray[100] }} className="font-bold">
                               ₹{(inv.totalCourseFee || 0).toLocaleString()}
                             </div>
-                            <div className="text-[10px] text-slate-400">
-                              Excl GST: ₹{(inv.feeParticulars?.actualPriceExclGst || 0).toLocaleString()}
+                            <div style={{ color: colors.gray[400] }} className="text-[10px]">
+                              Paid: ₹{(inv.totalPaid || 0).toLocaleString()}
                             </div>
                           </td>
 
-                          {/* Status */}
                           <td className="py-3.5 px-4">
-                            <span className={`inline-block px-2 py-0.5 rounded text-[10px] font-bold ${
-                              inv.status === 'FULLY PAID'
-                                ? 'bg-emerald-50 text-emerald-700'
-                                : 'bg-amber-50 text-amber-700'
-                            }`}>
+                            <span
+                              style={{
+                                color: inv.status === 'FULLY PAID' ? colors.greenAccent[500] : colors.redAccent[400]
+                              }}
+                              className="text-[10px] font-bold block"
+                            >
                               {inv.status}
                             </span>
-                            {inv.balanceDues > 0 && (
-                              <div className="text-[10px] text-rose-600 font-semibold mt-0.5">
-                                Due: ₹{inv.balanceDues}
-                              </div>
-                            )}
                           </td>
 
-                          {/* Action */}
                           <td className="py-3.5 px-4 text-right">
                             <button
                               onClick={() => setActiveInvoice(inv)}
-                              className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 rounded-lg text-xs font-semibold transition-colors"
+                              style={{
+                                backgroundColor: colors.blueAccent[700],
+                                color: '#ffffff'
+                              }}
+                              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-semibold hover:opacity-90 transition-opacity"
                             >
-                              <Printer className="w-3.5 h-3.5 text-slate-500" />
-                              <span>View / Print PDF</span>
+                              <Printer className="w-3.5 h-3.5" />
+                              <span>View PDF</span>
                             </button>
                           </td>
                         </tr>
@@ -723,53 +648,53 @@ const AdminDashboard = () => {
           {/* ===================== TAB: ENQUIRIES ===================== */}
           {activeTab === 'enquiries' && (
             <div className="space-y-6">
-              
-              <div className="bg-white rounded-2xl p-6 shadow-xs border border-slate-200/80 flex flex-col md:flex-row md:items-center justify-between gap-4">
-                <div>
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">
-                    Public Website Inquiries
-                  </span>
-                  <h2 className="text-xl font-display font-bold text-slate-900 mt-0.5">
-                    Admission Leads & Inquiries
-                  </h2>
-                  <p className="text-xs text-slate-500 mt-1">
-                    Potential students who submitted admission inquiries through the public website.
-                  </p>
-                </div>
+              <Header
+                title="WEBSITE LEADS"
+                subtitle="Inquiries submitted via the Modern Delhi Infotech public portal"
+              />
 
-                <span className="px-3 py-1 bg-slate-100 text-slate-700 text-xs font-semibold rounded-xl border border-slate-200">
-                  {newEnquiriesCount} New Leads
-                </span>
-              </div>
-
-              {/* Enquiries Table */}
-              <div className="bg-white rounded-2xl shadow-xs border border-slate-200/80 overflow-hidden">
+              <div
+                style={{ backgroundColor: colors.primary[400] }}
+                className="rounded-lg overflow-hidden shadow-xs"
+              >
                 <div className="overflow-x-auto">
-                  <table className="w-full text-left border-collapse">
+                  <table className="w-full text-left border-collapse text-xs">
                     <thead>
-                      <tr className="bg-slate-50 border-b border-slate-100 text-[11px] font-bold uppercase text-slate-500 tracking-wider">
+                      <tr
+                        style={{
+                          backgroundColor: colors.primary[500],
+                          color: colors.gray[300]
+                        }}
+                        className="text-[11px] font-bold uppercase tracking-wider border-b border-white/5"
+                      >
                         <th className="py-3 px-4">Date</th>
                         <th className="py-3 px-4">Applicant</th>
-                        <th className="py-3 px-4">Phone Number</th>
+                        <th className="py-3 px-4">Phone</th>
                         <th className="py-3 px-4">Course</th>
                         <th className="py-3 px-4">Status</th>
-                        <th className="py-3 px-4 text-right">Quick Call</th>
+                        <th className="py-3 px-4 text-right">Action</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-slate-100 text-xs">
+                    <tbody className="divide-y divide-white/5">
                       {enquiries.map((enq) => (
-                        <tr key={enq.id} className="hover:bg-slate-50/70 transition-colors">
-                          <td className="py-3.5 px-4 text-slate-500">
+                        <tr key={enq.id} className="hover:opacity-90 transition-opacity">
+                          <td style={{ color: colors.gray[400] }} className="py-3.5 px-4">
                             {enq.date}
                           </td>
-                          <td className="py-3.5 px-4 font-bold text-slate-900">
+                          <td style={{ color: colors.gray[100] }} className="py-3.5 px-4 font-bold">
                             {enq.name}
                           </td>
-                          <td className="py-3.5 px-4 font-mono text-slate-700">
+                          <td style={{ color: colors.gray[100] }} className="py-3.5 px-4 font-mono">
                             {enq.phone}
                           </td>
                           <td className="py-3.5 px-4">
-                            <span className="px-2 py-0.5 rounded bg-slate-100 text-slate-700 font-semibold text-[11px]">
+                            <span
+                              style={{
+                                backgroundColor: colors.primary[500],
+                                color: colors.greenAccent[500]
+                              }}
+                              className="px-2 py-0.5 rounded text-[11px] font-semibold"
+                            >
                               {enq.course || 'ADIT'}
                             </span>
                           </td>
@@ -777,13 +702,11 @@ const AdminDashboard = () => {
                             <select
                               value={enq.status}
                               onChange={(e) => updateEnquiryStatus(enq.id, e.target.value)}
-                              className={`text-[11px] font-semibold rounded-lg px-2.5 py-1 border focus:outline-none cursor-pointer ${
-                                enq.status === 'New'
-                                  ? 'bg-blue-50 border-blue-200 text-blue-700'
-                                  : enq.status === 'Contacted'
-                                  ? 'bg-amber-50 border-amber-200 text-amber-700'
-                                  : 'bg-emerald-50 border-emerald-200 text-emerald-700'
-                              }`}
+                              style={{
+                                backgroundColor: colors.primary[500],
+                                color: colors.gray[100]
+                              }}
+                              className="text-[11px] font-semibold rounded-md px-2 py-1 outline-none cursor-pointer"
                             >
                               <option value="New">New</option>
                               <option value="Contacted">Contacted</option>
@@ -793,10 +716,14 @@ const AdminDashboard = () => {
                           <td className="py-3.5 px-4 text-right">
                             <a
                               href={`tel:${enq.phone}`}
-                              className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white hover:bg-slate-50 text-slate-700 rounded-lg text-xs font-semibold border border-slate-200 transition-colors"
+                              style={{
+                                backgroundColor: colors.greenAccent[600],
+                                color: '#ffffff'
+                              }}
+                              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-semibold hover:opacity-90 transition-opacity"
                             >
-                              <Phone className="w-3.5 h-3.5 text-slate-500" />
-                              <span>Call Now</span>
+                              <Phone className="w-3.5 h-3.5" />
+                              <span>Call</span>
                             </a>
                           </td>
                         </tr>
@@ -812,103 +739,59 @@ const AdminDashboard = () => {
           {/* ===================== TAB: BATCHES ===================== */}
           {activeTab === 'batches' && (
             <div className="space-y-6">
-              
-              <div className="bg-white rounded-2xl p-6 shadow-xs border border-slate-200/80 flex flex-col md:flex-row md:items-center justify-between gap-4">
-                <div>
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">
-                    Institute Schedule
-                  </span>
-                  <h2 className="text-xl font-display font-bold text-slate-900 mt-0.5">
-                    Batches, Timings & Lab Rooms
-                  </h2>
-                  <p className="text-xs text-slate-500 mt-1">
-                    Manage 6 institute time slots across Branch 1 and Branch 2 with dedicated mentor assignments.
-                  </p>
-                </div>
+              <Header
+                title="BATCHES &amp; TIMINGS"
+                subtitle="Institute classroom slots across Branch 1 and Branch 2"
+              />
 
-                <button
-                  onClick={() => setActiveTab('attendance')}
-                  className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#5e72e4] hover:bg-[#4b5ec9] text-white font-bold text-xs shadow-xs transition-colors"
-                >
-                  <CheckSquare className="w-4 h-4" />
-                  <span>Take Attendance for a Batch</span>
-                </button>
-              </div>
-
-              {/* Batches Grid */}
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-                {batches.map((batch) => {
-                  const percentage = Math.round((batch.enrolled / batch.maxCapacity) * 100);
-                  const enrolledList = students.filter(
-                    s => s.batchNo === `Batch-${batch.id.replace('B', '')}` || s.batchNo?.includes(batch.id)
-                  );
-
-                  return (
-                    <div
-                      key={batch.id}
-                      className="bg-white rounded-2xl p-5 shadow-xs border border-slate-200/80 hover:shadow-sm transition-shadow flex flex-col justify-between"
-                    >
-                      <div>
-                        <div className="flex items-center justify-between">
-                          <span className="text-xs font-bold px-2 py-0.5 rounded bg-slate-100 text-slate-800">
-                            {batch.id}
-                          </span>
-                          <span className="text-xs text-slate-500">
-                            {batch.branch}
-                          </span>
-                        </div>
-
-                        <h3 className="font-bold text-sm text-slate-900 mt-3">
-                          {batch.name}
-                        </h3>
-
-                        <div className="mt-2 space-y-1 text-xs text-slate-600">
-                          <div className="flex items-center gap-1.5">
-                            <Clock className="w-3.5 h-3.5 text-slate-400" />
-                            <span>{batch.timing}</span>
-                          </div>
-                          <div className="flex items-center gap-1.5">
-                            <Users className="w-3.5 h-3.5 text-slate-400" />
-                            <span>Instructor: <strong>{batch.instructor}</strong></span>
-                          </div>
-                          <div className="flex items-center gap-1.5">
-                            <CheckSquare className="w-3.5 h-3.5 text-slate-400" />
-                            <span>Room: <strong>{batch.room}</strong></span>
-                          </div>
-                        </div>
-
-                        {/* Occupancy bar */}
-                        <div className="mt-4 pt-3 border-t border-slate-100">
-                          <div className="flex items-center justify-between text-xs mb-1">
-                            <span className="text-slate-400 text-[11px]">Lab Capacity</span>
-                            <span className="text-slate-800 font-bold text-xs">{batch.enrolled} / {batch.maxCapacity} PCs</span>
-                          </div>
-                          <div className="w-full bg-slate-100 h-1.5 rounded-full overflow-hidden">
-                            <div
-                              className="bg-[#5e72e4] h-full rounded-full"
-                              style={{ width: `${percentage}%` }}
-                            ></div>
-                          </div>
-                        </div>
+                {batches.map((batch) => (
+                  <div
+                    key={batch.id}
+                    style={{ backgroundColor: colors.primary[400] }}
+                    className="p-5 rounded-lg shadow-xs flex flex-col justify-between"
+                  >
+                    <div>
+                      <div className="flex items-center justify-between">
+                        <span
+                          style={{
+                            backgroundColor: colors.primary[500],
+                            color: colors.greenAccent[500]
+                          }}
+                          className="text-xs font-bold px-2 py-0.5 rounded"
+                        >
+                          {batch.id}
+                        </span>
+                        <span style={{ color: colors.gray[400] }} className="text-xs">
+                          {batch.branch}
+                        </span>
                       </div>
 
-                      <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between">
-                        <span className="text-[11px] text-slate-500">
-                          {enrolledList.length} Students
-                        </span>
-                        <button
-                          onClick={() => {
-                            setActiveTab('attendance');
-                          }}
-                          className="text-xs font-semibold text-[#5e72e4] hover:underline flex items-center gap-1"
-                        >
-                          <span>Mark Attendance</span>
-                          <ChevronRight className="w-3.5 h-3.5" />
-                        </button>
+                      <h3 style={{ color: colors.gray[100] }} className="font-bold text-sm mt-3">
+                        {batch.name}
+                      </h3>
+
+                      <div style={{ color: colors.gray[300] }} className="mt-2 space-y-1 text-xs">
+                        <div>Timing: <strong style={{ color: colors.gray[100] }}>{batch.timing}</strong></div>
+                        <div>Room: <strong style={{ color: colors.gray[100] }}>{batch.room}</strong></div>
+                        <div>Mentor: <strong style={{ color: colors.gray[100] }}>{batch.instructor}</strong></div>
                       </div>
                     </div>
-                  );
-                })}
+
+                    <div className="mt-4 pt-3 border-t border-white/5 flex items-center justify-between">
+                      <span style={{ color: colors.gray[400] }} className="text-xs">
+                        Capacity: {batch.enrolled}/{batch.maxCapacity} PCs
+                      </span>
+                      <button
+                        onClick={() => setActiveTab('attendance')}
+                        style={{ color: colors.greenAccent[500] }}
+                        className="text-xs font-semibold hover:underline"
+                      >
+                        Take Attendance
+                      </button>
+                    </div>
+                  </div>
+                ))}
               </div>
 
             </div>
@@ -919,30 +802,31 @@ const AdminDashboard = () => {
 
       {/* ===================== MODAL: REGISTER NEW STUDENT ===================== */}
       {isAddStudentOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-xs animate-fadeIn">
-          <div className="bg-white rounded-2xl max-w-xl w-full p-6 shadow-xl border border-slate-200 max-h-[90vh] overflow-y-auto">
-            <div className="flex items-center justify-between pb-4 border-b border-slate-100">
-              <div>
-                <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">
-                  New Admission
-                </span>
-                <h3 className="text-base font-bold text-slate-900">
-                  Register New Student & Issue Invoice
-                </h3>
-              </div>
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-xs animate-fadeIn">
+          <div
+            style={{
+              backgroundColor: colors.primary[400],
+              color: colors.gray[100]
+            }}
+            className="rounded-lg max-w-xl w-full p-6 shadow-xl border border-white/10 max-h-[90vh] overflow-y-auto"
+          >
+            <div className="flex items-center justify-between pb-4 border-b border-white/5">
+              <h3 style={{ color: colors.gray[100] }} className="text-base font-bold">
+                Register New Student &amp; Issue Invoice
+              </h3>
               <button
                 onClick={() => setIsAddStudentOpen(false)}
-                className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700"
+                style={{ color: colors.gray[300] }}
+                className="p-1 hover:opacity-75"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
             <form onSubmit={handleCreateStudent} className="mt-4 space-y-4">
-              
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="text-xs font-bold text-slate-700 block mb-1">
+                  <label style={{ color: colors.gray[300] }} className="text-xs block mb-1">
                     Student Full Name *
                   </label>
                   <input
@@ -951,12 +835,16 @@ const AdminDashboard = () => {
                     placeholder="e.g. Ramesh Kumar"
                     value={newStudent.name}
                     onChange={(e) => setNewStudent({ ...newStudent, name: e.target.value })}
-                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-800 focus:outline-none focus:bg-white focus:border-[#5e72e4]"
+                    style={{
+                      backgroundColor: colors.primary[500],
+                      color: colors.gray[100]
+                    }}
+                    className="w-full rounded-md px-3 py-2 text-xs outline-none focus:ring-1 focus:ring-teal-400"
                   />
                 </div>
 
                 <div>
-                  <label className="text-xs font-bold text-slate-700 block mb-1">
+                  <label style={{ color: colors.gray[300] }} className="text-xs block mb-1">
                     Father's Name *
                   </label>
                   <input
@@ -965,14 +853,18 @@ const AdminDashboard = () => {
                     placeholder="e.g. Suresh Prasad"
                     value={newStudent.fatherName}
                     onChange={(e) => setNewStudent({ ...newStudent, fatherName: e.target.value })}
-                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-800 focus:outline-none focus:bg-white focus:border-[#5e72e4]"
+                    style={{
+                      backgroundColor: colors.primary[500],
+                      color: colors.gray[100]
+                    }}
+                    className="w-full rounded-md px-3 py-2 text-xs outline-none focus:ring-1 focus:ring-teal-400"
                   />
                 </div>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="text-xs font-bold text-slate-700 block mb-1">
+                  <label style={{ color: colors.gray[300] }} className="text-xs block mb-1">
                     Mobile Number *
                   </label>
                   <input
@@ -981,18 +873,26 @@ const AdminDashboard = () => {
                     placeholder="+91 94312 00000"
                     value={newStudent.mobile}
                     onChange={(e) => setNewStudent({ ...newStudent, mobile: e.target.value })}
-                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-800 focus:outline-none focus:bg-white focus:border-[#5e72e4]"
+                    style={{
+                      backgroundColor: colors.primary[500],
+                      color: colors.gray[100]
+                    }}
+                    className="w-full rounded-md px-3 py-2 text-xs outline-none focus:ring-1 focus:ring-teal-400"
                   />
                 </div>
 
                 <div>
-                  <label className="text-xs font-bold text-slate-700 block mb-1">
+                  <label style={{ color: colors.gray[300] }} className="text-xs block mb-1">
                     Branch Allocation
                   </label>
                   <select
                     value={newStudent.branchCode}
                     onChange={(e) => setNewStudent({ ...newStudent, branchCode: e.target.value })}
-                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-800 focus:outline-none focus:bg-white focus:border-[#5e72e4] cursor-pointer"
+                    style={{
+                      backgroundColor: colors.primary[500],
+                      color: colors.gray[100]
+                    }}
+                    className="w-full rounded-md px-3 py-2 text-xs outline-none cursor-pointer"
                   >
                     <option value="2">Branch 2 (Near Janseva Nursing Home)</option>
                     <option value="1">Branch 1 (SBI Road)</option>
@@ -1002,7 +902,7 @@ const AdminDashboard = () => {
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="text-xs font-bold text-slate-700 block mb-1">
+                  <label style={{ color: colors.gray[300] }} className="text-xs block mb-1">
                     Select Course Program
                   </label>
                   <select
@@ -1017,7 +917,11 @@ const AdminDashboard = () => {
                         paidFee: (selected?.fee || 12000) / 2
                       });
                     }}
-                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-800 focus:outline-none focus:bg-white focus:border-[#5e72e4] cursor-pointer"
+                    style={{
+                      backgroundColor: colors.primary[500],
+                      color: colors.gray[100]
+                    }}
+                    className="w-full rounded-md px-3 py-2 text-xs outline-none cursor-pointer"
                   >
                     {courses.map(c => (
                       <option key={c.code} value={c.code}>{c.code} - {c.name}</option>
@@ -1026,7 +930,7 @@ const AdminDashboard = () => {
                 </div>
 
                 <div>
-                  <label className="text-xs font-bold text-slate-700 block mb-1">
+                  <label style={{ color: colors.gray[300] }} className="text-xs block mb-1">
                     Select Batch Timing
                   </label>
                   <select
@@ -1039,7 +943,11 @@ const AdminDashboard = () => {
                         batchTime: batchObj?.timing || '08:00 AM – 09:30 AM'
                       });
                     }}
-                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-800 focus:outline-none focus:bg-white focus:border-[#5e72e4] cursor-pointer"
+                    style={{
+                      backgroundColor: colors.primary[500],
+                      color: colors.gray[100]
+                    }}
+                    className="w-full rounded-md px-3 py-2 text-xs outline-none cursor-pointer"
                   >
                     {batches.map(b => (
                       <option key={b.id} value={`Batch-${b.id.replace('B', '')}`}>
@@ -1051,58 +959,70 @@ const AdminDashboard = () => {
               </div>
 
               {/* Fee particulars */}
-              <div className="p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-3">
-                <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">
-                  Fee & Initial Installment
-                </span>
-
+              <div
+                style={{ backgroundColor: colors.primary[500] }}
+                className="p-4 rounded-md space-y-3"
+              >
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="text-[11px] text-slate-600 block mb-1">
+                    <label style={{ color: colors.gray[300] }} className="text-[11px] block mb-1">
                       Total Course Fee (₹)
                     </label>
                     <input
                       type="number"
                       value={newStudent.totalFee}
                       onChange={(e) => setNewStudent({ ...newStudent, totalFee: Number(e.target.value) })}
-                      className="w-full bg-white border border-slate-200 rounded-lg px-3 py-1.5 text-xs font-bold text-slate-900 focus:outline-none"
+                      style={{
+                        backgroundColor: colors.primary[400],
+                        color: colors.gray[100]
+                      }}
+                      className="w-full rounded-md px-3 py-1.5 text-xs font-bold outline-none"
                     />
                   </div>
 
                   <div>
-                    <label className="text-[11px] text-slate-600 block mb-1">
+                    <label style={{ color: colors.gray[300] }} className="text-[11px] block mb-1">
                       Initial Paid Amount (₹)
                     </label>
                     <input
                       type="number"
                       value={newStudent.paidFee}
                       onChange={(e) => setNewStudent({ ...newStudent, paidFee: Number(e.target.value) })}
-                      className="w-full bg-white border border-slate-200 rounded-lg px-3 py-1.5 text-xs font-bold text-slate-900 focus:outline-none"
+                      style={{
+                        backgroundColor: colors.primary[400],
+                        color: colors.greenAccent[500]
+                      }}
+                      className="w-full rounded-md px-3 py-1.5 text-xs font-bold outline-none"
                     />
                   </div>
                 </div>
 
-                <div className="flex items-center justify-between text-xs text-slate-600 pt-2 border-t border-slate-200">
-                  <span>Balance Dues:</span>
-                  <span className="font-bold text-rose-600">
+                <div className="flex items-center justify-between text-xs pt-2 border-t border-white/5">
+                  <span style={{ color: colors.gray[300] }}>Balance Dues:</span>
+                  <span style={{ color: colors.redAccent[400] }} className="font-bold">
                     ₹{Number(newStudent.totalFee) - Number(newStudent.paidFee)}
                   </span>
                 </div>
               </div>
 
-              <div className="pt-3 border-t border-slate-100 flex items-center justify-end gap-3">
+              <div className="pt-3 border-t border-white/5 flex items-center justify-end gap-3">
                 <button
                   type="button"
                   onClick={() => setIsAddStudentOpen(false)}
-                  className="px-4 py-2 text-xs font-semibold text-slate-600 hover:text-slate-800"
+                  style={{ color: colors.gray[300] }}
+                  className="px-4 py-2 text-xs font-semibold hover:opacity-75"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2.5 bg-[#5e72e4] hover:bg-[#4b5ec9] text-white font-bold text-xs rounded-xl shadow-xs transition-colors"
+                  style={{
+                    backgroundColor: colors.blueAccent[700],
+                    color: '#ffffff'
+                  }}
+                  className="px-5 py-2.5 rounded-md font-bold text-xs hover:opacity-90 transition-opacity"
                 >
-                  Complete Registration & Issue Invoice
+                  Complete Registration &amp; Issue Invoice
                 </button>
               </div>
 

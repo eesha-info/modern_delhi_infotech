@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import {
-  CheckSquare, Calendar, Users, Check, X, Clock, AlertCircle,
-  Search, Save, Sparkles, Filter, ChevronRight
+  CheckSquare, Calendar, Users, Check, X, Clock,
+  Search, Save
 } from 'lucide-react';
 import { useData } from '../../context/DataContext';
+import { useAppTheme } from '../../context/ThemeContext';
+import Header from '../dashboard/Header';
 
 const AdminTakeAttendance = () => {
   const { batches, students, attendanceData, markBatchAttendance } = useData();
+  const { colors, mode } = useAppTheme();
 
   // State
   const [selectedBatchId, setSelectedBatchId] = useState('B1');
@@ -107,26 +110,39 @@ const AdminTakeAttendance = () => {
   return (
     <div className="space-y-6">
       
+      {/* Top Header */}
+      <Header
+        title="TAKE ATTENDANCE"
+        subtitle="Manage and mark physical student lab presence batchwise"
+      />
+
       {/* Top Controls Card: Batch Picker & Date Selector */}
-      <div className="bg-white rounded-2xl p-6 shadow-xs border border-slate-200/80">
-        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-5 border-b border-slate-100">
+      <div
+        style={{ backgroundColor: colors.primary[400] }}
+        className="rounded-lg p-6 shadow-xs"
+      >
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-5 border-b border-white/5">
           <div>
-            <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">
-              Daily Attendance Register
-            </span>
-            <h2 className="text-xl font-display font-bold text-slate-900 mt-0.5">
-              Batchwise Student Attendance
-            </h2>
-            <p className="text-xs text-slate-500 mt-1">
-              Select an active batch to record physical presence in the lab.
+            <h3 style={{ color: colors.gray[100] }} className="text-lg font-bold font-display">
+              Select Batch &amp; Date
+            </h3>
+            <p style={{ color: colors.gray[300] }} className="text-xs mt-0.5">
+              Choose the batch time slot and session date to record attendance.
             </p>
           </div>
 
           {/* Date Picker Input */}
           <div className="flex items-center gap-3">
-            <div className="flex items-center gap-2 bg-slate-50 px-3.5 py-2 rounded-xl border border-slate-200">
-              <Calendar className="w-4 h-4 text-slate-500 flex-shrink-0" />
-              <label htmlFor="attendance-date" className="text-xs font-bold text-slate-700 whitespace-nowrap">
+            <div
+              style={{ backgroundColor: colors.primary[500] }}
+              className="flex items-center gap-2 px-3.5 py-2 rounded-md"
+            >
+              <Calendar className="w-4 h-4" style={{ color: colors.gray[300] }} />
+              <label
+                htmlFor="attendance-date"
+                style={{ color: colors.gray[100] }}
+                className="text-xs font-semibold whitespace-nowrap"
+              >
                 Date:
               </label>
               <input
@@ -134,54 +150,66 @@ const AdminTakeAttendance = () => {
                 type="date"
                 value={selectedDate}
                 onChange={(e) => setSelectedDate(e.target.value)}
-                className="bg-transparent text-xs font-semibold text-slate-800 focus:outline-none cursor-pointer"
+                style={{ color: colors.gray[100] }}
+                className="bg-transparent text-xs font-bold focus:outline-none cursor-pointer"
               />
             </div>
 
             <button
               onClick={() => setSelectedDate(new Date().toISOString().split('T')[0])}
-              className="text-xs font-semibold text-slate-700 hover:text-slate-900 bg-slate-100 hover:bg-slate-200 px-3 py-2 rounded-xl transition-colors"
+              style={{
+                backgroundColor: colors.blueAccent[700],
+                color: '#ffffff',
+              }}
+              className="text-xs font-bold px-3 py-2 rounded-md hover:opacity-90 transition-opacity"
             >
               Today
             </button>
           </div>
         </div>
 
-        {/* Batch Selection Pills (Clean, minimal, not overly colorful) */}
+        {/* Batch Selection Pills */}
         <div className="mt-5">
-          <label className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block mb-2.5">
-            Select Training Batch:
+          <label style={{ color: colors.gray[300] }} className="text-[11px] font-bold uppercase tracking-wider block mb-2.5">
+            Select Computer Training Batch:
           </label>
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2.5">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
             {batches.map((batch) => {
               const isSelected = selectedBatchId === batch.id;
               const batchNum = batch.id.replace('B', '');
-              const countInBatch = students.filter(s => s.batchNo === `Batch-${batchNum}` || s.batchNo?.includes(batch.id)).length;
+              const countInBatch = students.filter(
+                s => s.batchNo === `Batch-${batchNum}` || s.batchNo?.includes(batch.id)
+              ).length;
 
               return (
                 <button
                   key={batch.id}
                   onClick={() => setSelectedBatchId(batch.id)}
-                  className={`p-3 rounded-xl text-left border transition-all ${
-                    isSelected
-                      ? 'bg-[#5e72e4] border-[#5e72e4] text-white shadow-xs'
-                      : 'bg-white hover:bg-slate-50 border-slate-200 text-slate-800'
-                  }`}
+                  style={{
+                    backgroundColor: isSelected ? colors.blueAccent[700] : colors.primary[500],
+                    color: '#ffffff',
+                    border: isSelected ? `1px solid ${colors.blueAccent[400]}` : '1px solid transparent',
+                  }}
+                  className="p-3 rounded-md text-left transition-all"
                 >
                   <div className="flex items-center justify-between">
-                    <span className={`text-[10px] font-bold uppercase px-1.5 py-0.5 rounded ${
-                      isSelected ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-700'
-                    }`}>
+                    <span
+                      style={{
+                        backgroundColor: isSelected ? 'rgba(255,255,255,0.2)' : 'rgba(255,255,255,0.05)',
+                        color: colors.gray[100]
+                      }}
+                      className="text-[10px] font-bold px-1.5 py-0.5 rounded"
+                    >
                       {batch.id}
                     </span>
-                    <span className={`text-[10px] ${isSelected ? 'text-blue-100' : 'text-slate-400'}`}>
-                      {countInBatch} Students
+                    <span style={{ color: colors.gray[300] }} className="text-[10px]">
+                      {countInBatch} St.
                     </span>
                   </div>
                   <h4 className="font-bold text-xs mt-2 truncate">
                     {batch.name.split('(')[0]}
                   </h4>
-                  <p className={`text-[10px] mt-0.5 truncate ${isSelected ? 'text-blue-100' : 'text-slate-500'}`}>
+                  <p style={{ color: colors.gray[300] }} className="text-[10px] mt-0.5 truncate">
                     {batch.timing}
                   </p>
                 </button>
@@ -190,95 +218,133 @@ const AdminTakeAttendance = () => {
           </div>
         </div>
 
-        {/* Clean, Subtle Batch Meta Info Bar */}
-        <div className="mt-4 p-3 bg-slate-50 rounded-xl border border-slate-200/80 flex flex-wrap items-center justify-between gap-3 text-xs text-slate-600">
+        {/* Meta Info Bar */}
+        <div
+          style={{ backgroundColor: colors.primary[500] }}
+          className="mt-4 p-3 rounded-md flex flex-wrap items-center justify-between gap-3 text-xs"
+        >
           <div className="flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
-            <strong className="text-slate-900">{activeBatch.name}</strong>
-            <span className="text-slate-300">·</span>
-            <span>Timing: {activeBatch.timing}</span>
-            <span className="text-slate-300">·</span>
-            <span>Room: {activeBatch.room}</span>
-            <span className="text-slate-300">·</span>
-            <span>Instructor: <strong className="text-slate-800">{activeBatch.instructor}</strong></span>
+            <span className="w-2 h-2 rounded-full" style={{ backgroundColor: colors.greenAccent[500] }}></span>
+            <strong style={{ color: colors.gray[100] }}>{activeBatch.name}</strong>
+            <span style={{ color: colors.gray[400] }}>·</span>
+            <span style={{ color: colors.gray[300] }}>Timing: {activeBatch.timing}</span>
+            <span style={{ color: colors.gray[400] }}>·</span>
+            <span style={{ color: colors.gray[300] }}>Room: {activeBatch.room}</span>
+            <span style={{ color: colors.gray[400] }}>·</span>
+            <span style={{ color: colors.gray[300] }}>
+              Mentor: <strong style={{ color: colors.gray[100] }}>{activeBatch.instructor}</strong>
+            </span>
           </div>
 
-          <div className="text-[11px] text-slate-500">
-            Capacity: <strong className="text-slate-800">{activeBatch.enrolled} / {activeBatch.maxCapacity} Seats</strong>
+          <div style={{ color: colors.gray[300] }} className="text-[11px]">
+            Capacity: <strong style={{ color: colors.gray[100] }}>{activeBatch.enrolled} / {activeBatch.maxCapacity} PCs</strong>
           </div>
         </div>
       </div>
 
-      {/* Clean, Neutral Attendance Stats Bar */}
+      {/* Real-time Attendance Stats Bar */}
       <div className="grid grid-cols-2 sm:grid-cols-5 gap-3.5">
         
         {/* Total in batch */}
-        <div className="bg-white rounded-xl p-4 shadow-xs border border-slate-200/80">
+        <div
+          style={{ backgroundColor: colors.primary[400] }}
+          className="rounded-lg p-4 shadow-xs"
+        >
           <div className="flex items-center justify-between">
-            <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Total in Batch</span>
-            <Users className="w-4 h-4 text-slate-400" />
+            <span style={{ color: colors.gray[300] }} className="text-[10px] font-bold uppercase tracking-wider">
+              Total in Batch
+            </span>
+            <Users className="w-4 h-4" style={{ color: colors.gray[300] }} />
           </div>
-          <div className="text-2xl font-black text-slate-900 mt-1 font-display">
+          <div style={{ color: colors.gray[100] }} className="text-2xl font-black mt-1 font-display">
             {totalCount}
           </div>
-          <span className="text-[10px] text-slate-500">Registered Students</span>
+          <span style={{ color: colors.gray[400] }} className="text-[10px]">
+            Registered Students
+          </span>
         </div>
 
-        {/* Present (Color used only on the status pill) */}
-        <div className="bg-white rounded-xl p-4 shadow-xs border border-slate-200/80">
+        {/* Present */}
+        <div
+          style={{ backgroundColor: colors.primary[400] }}
+          className="rounded-lg p-4 shadow-xs"
+        >
           <div className="flex items-center justify-between">
-            <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500">Present</span>
-            <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
+            <span style={{ color: colors.greenAccent[500] }} className="text-[10px] font-bold uppercase tracking-wider">
+              Present
+            </span>
+            <span className="w-2 h-2 rounded-full" style={{ backgroundColor: colors.greenAccent[500] }}></span>
           </div>
-          <div className="text-2xl font-black text-slate-900 mt-1 font-display">
+          <div style={{ color: colors.gray[100] }} className="text-2xl font-black mt-1 font-display">
             {presentCount}
           </div>
-          <span className="text-[10px] text-emerald-700 font-semibold bg-emerald-50 px-1.5 py-0.5 rounded">
+          <span style={{ color: colors.greenAccent[500] }} className="text-[10px] font-semibold">
             In Lab Today
           </span>
         </div>
 
         {/* Absent */}
-        <div className="bg-white rounded-xl p-4 shadow-xs border border-slate-200/80">
+        <div
+          style={{ backgroundColor: colors.primary[400] }}
+          className="rounded-lg p-4 shadow-xs"
+        >
           <div className="flex items-center justify-between">
-            <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500">Absent</span>
-            <span className="w-2 h-2 rounded-full bg-rose-500"></span>
+            <span style={{ color: colors.redAccent[500] }} className="text-[10px] font-bold uppercase tracking-wider">
+              Absent
+            </span>
+            <span className="w-2 h-2 rounded-full" style={{ backgroundColor: colors.redAccent[500] }}></span>
           </div>
-          <div className="text-2xl font-black text-slate-900 mt-1 font-display">
+          <div style={{ color: colors.gray[100] }} className="text-2xl font-black mt-1 font-display">
             {absentCount}
           </div>
-          <span className="text-[10px] text-rose-700 font-semibold bg-rose-50 px-1.5 py-0.5 rounded">
+          <span style={{ color: colors.redAccent[500] }} className="text-[10px] font-semibold">
             Not In Institute
           </span>
         </div>
 
         {/* Late */}
-        <div className="bg-white rounded-xl p-4 shadow-xs border border-slate-200/80">
+        <div
+          style={{ backgroundColor: colors.primary[400] }}
+          className="rounded-lg p-4 shadow-xs"
+        >
           <div className="flex items-center justify-between">
-            <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500">Late</span>
-            <span className="w-2 h-2 rounded-full bg-amber-500"></span>
+            <span style={{ color: colors.blueAccent[400] }} className="text-[10px] font-bold uppercase tracking-wider">
+              Late
+            </span>
+            <span className="w-2 h-2 rounded-full" style={{ backgroundColor: colors.blueAccent[400] }}></span>
           </div>
-          <div className="text-2xl font-black text-slate-900 mt-1 font-display">
+          <div style={{ color: colors.gray[100] }} className="text-2xl font-black mt-1 font-display">
             {lateCount}
           </div>
-          <span className="text-[10px] text-amber-700 font-semibold bg-amber-50 px-1.5 py-0.5 rounded">
+          <span style={{ color: colors.blueAccent[400] }} className="text-[10px] font-semibold">
             Permitted Late
           </span>
         </div>
 
         {/* Attendance Rate */}
-        <div className="bg-white rounded-xl p-4 shadow-xs border border-slate-200/80 col-span-2 sm:col-span-1">
+        <div
+          style={{ backgroundColor: colors.primary[400] }}
+          className="rounded-lg p-4 shadow-xs col-span-2 sm:col-span-1"
+        >
           <div className="flex items-center justify-between">
-            <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500">Attendance</span>
-            <span className="text-xs font-bold text-slate-700">{attendanceRate}%</span>
+            <span style={{ color: colors.gray[300] }} className="text-[10px] font-bold uppercase tracking-wider">
+              Attendance
+            </span>
+            <span style={{ color: colors.greenAccent[500] }} className="text-xs font-bold">{attendanceRate}%</span>
           </div>
-          <div className="text-2xl font-black text-slate-900 mt-1 font-display">
+          <div style={{ color: colors.gray[100] }} className="text-2xl font-black mt-1 font-display">
             {attendanceRate}%
           </div>
-          <div className="w-full bg-slate-100 h-1.5 rounded-full mt-2 overflow-hidden">
+          <div
+            style={{ backgroundColor: colors.primary[500] }}
+            className="w-full h-1.5 rounded-full mt-2 overflow-hidden"
+          >
             <div
-              className="bg-[#5e72e4] h-full rounded-full transition-all duration-300"
-              style={{ width: `${attendanceRate}%` }}
+              style={{
+                backgroundColor: colors.greenAccent[500],
+                width: `${attendanceRate}%`
+              }}
+              className="h-full rounded-full transition-all duration-300"
             ></div>
           </div>
         </div>
@@ -287,63 +353,90 @@ const AdminTakeAttendance = () => {
 
       {/* Save Notification */}
       {saveSuccessMessage && (
-        <div className="p-3.5 bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-xl flex items-center justify-between text-xs animate-fadeIn">
+        <div
+          style={{
+            backgroundColor: 'rgba(76, 206, 172, 0.15)',
+            border: `1px solid ${colors.greenAccent[500]}`,
+            color: colors.greenAccent[500],
+          }}
+          className="p-3.5 rounded-md flex items-center justify-between text-xs animate-fadeIn"
+        >
           <div className="flex items-center gap-2">
-            <Check className="w-4 h-4 text-emerald-600 flex-shrink-0" />
+            <Check className="w-4 h-4 flex-shrink-0" />
             <span className="font-semibold">{saveSuccessMessage}</span>
           </div>
-          <button onClick={() => setSaveSuccessMessage('')} className="p-1 hover:text-emerald-950">
+          <button onClick={() => setSaveSuccessMessage('')} className="p-1 hover:opacity-75">
             <X className="w-4 h-4" />
           </button>
         </div>
       )}
 
       {/* Students Attendance Register Card */}
-      <div className="bg-white rounded-2xl shadow-xs border border-slate-200/80 overflow-hidden">
-        
+      <div
+        style={{ backgroundColor: colors.primary[400] }}
+        className="rounded-lg shadow-xs overflow-hidden"
+      >
         {/* Table Action Bar */}
-        <div className="p-5 border-b border-slate-100 flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div className="p-4 border-b border-white/5 flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            <div className="relative w-64">
-              <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+            <div
+              style={{ backgroundColor: colors.primary[500] }}
+              className="flex items-center rounded-md px-3 py-1.5 w-60"
+            >
               <input
                 type="text"
                 placeholder="Search student or Roll No..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full bg-slate-50 border border-slate-200 rounded-xl pl-9 pr-3 py-1.5 text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:border-[#5e72e4] focus:bg-white"
+                style={{ color: colors.gray[100] }}
+                className="bg-transparent border-none outline-none text-xs flex-1 placeholder:text-slate-400"
               />
+              <Search className="w-4 h-4 text-slate-400" />
             </div>
-            <span className="text-xs text-slate-500">
+            <span style={{ color: colors.gray[300] }} className="text-xs">
               Showing {displayedStudents.length} of {batchStudents.length} students
             </span>
           </div>
 
-          {/* Clean, Non-loud Quick Bulk Buttons */}
+          {/* Quick Bulk Buttons */}
           <div className="flex items-center gap-2">
-            <span className="text-[11px] font-bold text-slate-400 uppercase hidden lg:inline">Quick Bulk:</span>
+            <span style={{ color: colors.gray[300] }} className="text-[11px] font-bold uppercase hidden lg:inline">
+              Quick Bulk:
+            </span>
             
             <button
               onClick={() => handleMarkAll('Present')}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 transition-colors"
+              style={{
+                backgroundColor: colors.primary[500],
+                color: colors.gray[100],
+              }}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-semibold hover:opacity-80 transition-opacity"
             >
-              <Check className="w-3.5 h-3.5 text-emerald-600" />
+              <Check className="w-3.5 h-3.5" style={{ color: colors.greenAccent[500] }} />
               <span>Mark All Present</span>
             </button>
 
             <button
               onClick={() => handleMarkAll('Absent')}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 transition-colors"
+              style={{
+                backgroundColor: colors.primary[500],
+                color: colors.gray[100],
+              }}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-semibold hover:opacity-80 transition-opacity"
             >
-              <X className="w-3.5 h-3.5 text-rose-600" />
+              <X className="w-3.5 h-3.5" style={{ color: colors.redAccent[500] }} />
               <span>Mark All Absent</span>
             </button>
 
             <button
               onClick={() => handleMarkAll('Late')}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 transition-colors"
+              style={{
+                backgroundColor: colors.primary[500],
+                color: colors.gray[100],
+              }}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-semibold hover:opacity-80 transition-opacity"
             >
-              <Clock className="w-3.5 h-3.5 text-amber-600" />
+              <Clock className="w-3.5 h-3.5" style={{ color: colors.blueAccent[400] }} />
               <span>Mark All Late</span>
             </button>
           </div>
@@ -352,32 +445,48 @@ const AdminTakeAttendance = () => {
         {/* Student Attendance List Table */}
         <div className="overflow-x-auto">
           {displayedStudents.length === 0 ? (
-            <div className="py-16 text-center text-slate-400">
-              <Users className="w-12 h-12 mx-auto mb-2 text-slate-300" />
-              <p className="text-sm font-bold text-slate-600">No students found in this batch</p>
-              <p className="text-xs text-slate-400 mt-0.5">Try selecting another batch or adjust your search.</p>
+            <div className="py-16 text-center">
+              <Users className="w-12 h-12 mx-auto mb-2 text-slate-500" />
+              <p style={{ color: colors.gray[100] }} className="text-sm font-bold">
+                No students found in this batch
+              </p>
+              <p style={{ color: colors.gray[300] }} className="text-xs mt-0.5">
+                Try selecting another batch or adjust your search.
+              </p>
             </div>
           ) : (
             <table className="w-full text-left border-collapse">
               <thead>
-                <tr className="bg-slate-50 border-b border-slate-100 text-[11px] font-bold uppercase text-slate-500 tracking-wider">
+                <tr
+                  style={{
+                    backgroundColor: colors.primary[500],
+                    color: colors.gray[300]
+                  }}
+                  className="text-[11px] font-bold uppercase tracking-wider border-b border-white/5"
+                >
                   <th className="py-3 px-4 w-12 text-center">#</th>
                   <th className="py-3 px-4">Student Details</th>
                   <th className="py-3 px-4">Course</th>
                   <th className="py-3 px-4">Assigned PC</th>
-                  <th className="py-3 px-4 text-center">Status</th>
+                  <th className="py-3 px-4 text-center">Mark Status</th>
                   <th className="py-3 px-4">Remarks</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100 text-xs">
+              <tbody className="divide-y divide-white/5 text-xs">
                 {displayedStudents.map((st, idx) => {
                   const studentStatus = currentAttendance[st.id]?.status || 'Present';
                   const studentRemark = currentAttendance[st.id]?.remark || '';
 
                   return (
-                    <tr key={st.id} className="hover:bg-slate-50/70 transition-colors">
+                    <tr
+                      key={st.id}
+                      style={{
+                        backgroundColor: idx % 2 === 0 ? 'transparent' : 'rgba(255,255,255,0.02)'
+                      }}
+                      className="hover:opacity-90 transition-opacity"
+                    >
                       {/* Index */}
-                      <td className="py-3.5 px-4 text-center text-slate-400 font-semibold">
+                      <td style={{ color: colors.gray[300] }} className="py-3.5 px-4 text-center font-semibold">
                         {idx + 1}
                       </td>
 
@@ -387,23 +496,29 @@ const AdminTakeAttendance = () => {
                           <img
                             src={st.avatar}
                             alt={st.name}
-                            className="w-9 h-9 rounded-full object-cover border border-slate-200 flex-shrink-0"
+                            className="w-9 h-9 rounded-full object-cover border border-white/10 flex-shrink-0"
                             onError={(e) => {
                               e.currentTarget.src = "/logo-icon.svg";
                             }}
                           />
                           <div>
-                            <div className="font-bold text-slate-900">
+                            <div style={{ color: colors.gray[100] }} className="font-bold text-sm">
                               {st.name}
                             </div>
-                            <div className="text-[11px] text-slate-500">
+                            <div style={{ color: colors.gray[300] }} className="text-[11px]">
                               S/O: {st.fatherName}
                             </div>
                             <div className="flex items-center gap-2 mt-0.5">
-                              <span className="font-mono text-[10px] text-slate-600 bg-slate-100 px-1.5 py-0.2 rounded">
+                              <span
+                                style={{
+                                  backgroundColor: colors.primary[500],
+                                  color: colors.greenAccent[500]
+                                }}
+                                className="font-mono text-[10px] px-1.5 py-0.5 rounded"
+                              >
                                 {st.regNo}
                               </span>
-                              <span className="text-[10px] text-slate-400">
+                              <span style={{ color: colors.gray[400] }} className="text-[10px]">
                                 Roll: {st.rollNo}
                               </span>
                             </div>
@@ -413,33 +528,45 @@ const AdminTakeAttendance = () => {
 
                       {/* Course */}
                       <td className="py-3.5 px-4">
-                        <span className="font-bold text-slate-800 bg-slate-100 px-2 py-0.5 rounded text-xs">
+                        <span
+                          style={{
+                            backgroundColor: colors.primary[500],
+                            color: colors.gray[100]
+                          }}
+                          className="font-bold px-2 py-0.5 rounded text-xs inline-block"
+                        >
                           {st.courseCode}
                         </span>
-                        <div className="text-[10px] text-slate-400 mt-0.5 truncate max-w-[130px]">
+                        <div style={{ color: colors.gray[400] }} className="text-[10px] mt-0.5 truncate max-w-[130px]">
                           {st.courseName}
                         </div>
                       </td>
 
                       {/* PC Station */}
                       <td className="py-3.5 px-4">
-                        <span className="font-mono text-slate-700 bg-slate-50 px-2.5 py-1 rounded text-[11px] border border-slate-200">
+                        <span
+                          style={{
+                            backgroundColor: colors.primary[500],
+                            color: colors.gray[100]
+                          }}
+                          className="font-mono px-2 py-1 rounded text-[11px]"
+                        >
                           {st.pcNumber || `PC-${String(idx + 1).padStart(2, '0')}`}
                         </span>
                       </td>
 
-                      {/* Attendance Toggle Buttons (Where color is functionally needed) */}
+                      {/* Status Toggle Buttons */}
                       <td className="py-3.5 px-4">
                         <div className="flex items-center justify-center gap-1.5">
                           {/* Present */}
                           <button
                             type="button"
                             onClick={() => handleSetStatus(st.id, 'Present')}
-                            className={`flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors ${
-                              studentStatus === 'Present'
-                                ? 'bg-emerald-600 text-white shadow-xs'
-                                : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-50'
-                            }`}
+                            style={{
+                              backgroundColor: studentStatus === 'Present' ? colors.greenAccent[600] : colors.primary[500],
+                              color: '#ffffff',
+                            }}
+                            className="flex items-center gap-1 px-3 py-1.5 rounded-md text-xs font-semibold transition-opacity"
                           >
                             <Check className="w-3.5 h-3.5" />
                             <span>Present</span>
@@ -449,11 +576,11 @@ const AdminTakeAttendance = () => {
                           <button
                             type="button"
                             onClick={() => handleSetStatus(st.id, 'Absent')}
-                            className={`flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors ${
-                              studentStatus === 'Absent'
-                                ? 'bg-rose-600 text-white shadow-xs'
-                                : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-50'
-                            }`}
+                            style={{
+                              backgroundColor: studentStatus === 'Absent' ? colors.redAccent[500] : colors.primary[500],
+                              color: '#ffffff',
+                            }}
+                            className="flex items-center gap-1 px-3 py-1.5 rounded-md text-xs font-semibold transition-opacity"
                           >
                             <X className="w-3.5 h-3.5" />
                             <span>Absent</span>
@@ -463,11 +590,11 @@ const AdminTakeAttendance = () => {
                           <button
                             type="button"
                             onClick={() => handleSetStatus(st.id, 'Late')}
-                            className={`flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors ${
-                              studentStatus === 'Late'
-                                ? 'bg-amber-500 text-white shadow-xs'
-                                : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-50'
-                            }`}
+                            style={{
+                              backgroundColor: studentStatus === 'Late' ? colors.blueAccent[600] : colors.primary[500],
+                              color: '#ffffff',
+                            }}
+                            className="flex items-center gap-1 px-3 py-1.5 rounded-md text-xs font-semibold transition-opacity"
                           >
                             <Clock className="w-3.5 h-3.5" />
                             <span>Late</span>
@@ -482,7 +609,11 @@ const AdminTakeAttendance = () => {
                           value={studentRemark}
                           onChange={(e) => handleSetRemark(st.id, e.target.value)}
                           placeholder="Optional note..."
-                          className="w-full bg-slate-50 border border-slate-200 rounded-lg px-2.5 py-1 text-xs text-slate-700 focus:outline-none focus:bg-white focus:border-[#5e72e4]"
+                          style={{
+                            backgroundColor: colors.primary[500],
+                            color: colors.gray[100]
+                          }}
+                          className="w-full rounded-md px-2.5 py-1 text-xs outline-none focus:ring-1 focus:ring-teal-400"
                         />
                       </td>
 
@@ -495,15 +626,22 @@ const AdminTakeAttendance = () => {
         </div>
 
         {/* Footer Save Action Bar */}
-        <div className="p-4 bg-slate-50 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-3">
-          <div className="text-xs text-slate-500">
-            Ready to record: <strong className="text-slate-800">{presentCount} Present</strong>, <strong className="text-slate-800">{absentCount} Absent</strong> for <strong className="text-slate-800">{activeBatch.name}</strong>.
+        <div
+          style={{ backgroundColor: colors.primary[500] }}
+          className="p-4 flex flex-col sm:flex-row items-center justify-between gap-3"
+        >
+          <div style={{ color: colors.gray[300] }} className="text-xs">
+            Ready to record: <strong style={{ color: colors.gray[100] }}>{presentCount} Present</strong>, <strong style={{ color: colors.gray[100] }}>{absentCount} Absent</strong> for <strong style={{ color: colors.gray[100] }}>{activeBatch.name}</strong>.
           </div>
 
           <button
             onClick={handleSaveAttendance}
             disabled={isSaving}
-            className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#5e72e4] hover:bg-[#4b5ec9] text-white font-bold rounded-xl text-xs shadow-xs transition-all disabled:opacity-50"
+            style={{
+              backgroundColor: colors.blueAccent[700],
+              color: '#ffffff',
+            }}
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-md text-xs font-bold hover:opacity-90 transition-opacity disabled:opacity-50"
           >
             <Save className="w-4 h-4" />
             <span>{isSaving ? 'Saving...' : 'Save & Record Attendance'}</span>

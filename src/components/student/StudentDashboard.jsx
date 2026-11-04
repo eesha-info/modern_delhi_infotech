@@ -1,20 +1,24 @@
 import React, { useState } from 'react';
 import {
-  Tv, BookOpen, Receipt, Keyboard, Download, Award, Clock,
+  LayoutGrid, BookOpen, Receipt, Keyboard, Download, Award, Clock,
   Calendar, CheckCircle2, ArrowLeft, LogOut, Printer, ShieldCheck, User,
   FileText, Sparkles, ExternalLink, Check, X, AlertCircle, ChevronRight,
-  TrendingUp, Laptop, QrCode, Phone, MapPin
+  TrendingUp, QrCode, Phone
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { useData } from '../../context/DataContext';
-import ArgonSidebar from '../dashboard/ArgonSidebar';
-import ArgonNavbar from '../dashboard/ArgonNavbar';
-import ArgonHeaderCards from '../dashboard/ArgonHeaderCards';
+import { useAppTheme } from '../../context/ThemeContext';
+import Topbar from '../dashboard/Topbar';
+import Sidebar from '../dashboard/Sidebar';
+import Header from '../dashboard/Header';
+import StatBox from '../dashboard/StatBox';
+import ProgressCircle from '../dashboard/ProgressCircle';
 import TypingTestWidget from '../home/TypingTestWidget';
 
 const StudentDashboard = () => {
   const { user, logout, setActiveView } = useAuth();
   const { invoices, courses, batches, setActiveInvoice } = useData();
+  const { colors, mode } = useAppTheme();
 
   // Tab State: 'dashboard' | 'attendance' | 'syllabus' | 'invoices' | 'typing' | 'materials' | 'certificate'
   const [activeTab, setActiveTab] = useState('dashboard');
@@ -24,20 +28,6 @@ const StudentDashboard = () => {
   const courseCode = student?.courseCode || 'ADIT';
   const studentCourse = courses.find(c => c.code === courseCode) || courses[0];
   const studentInvoice = invoices.find(i => i.student?.regNo === student?.regNo) || invoices[0];
-  const studentBatch = batches.find(b => b.name.includes(student?.batchNo || 'Batch-1')) || batches[0];
-
-  const getTabTitle = (tab) => {
-    switch (tab) {
-      case 'dashboard': return 'Student Overview';
-      case 'attendance': return 'My Attendance Record';
-      case 'syllabus': return 'Course Syllabus & Progress';
-      case 'invoices': return 'My Fee Invoices & Receipts';
-      case 'typing': return 'Typing Speed Practice Lab';
-      case 'materials': return 'Study Notes & Downloads';
-      case 'certificate': return 'Digital Course Certificate';
-      default: return 'Student Portal';
-    }
-  };
 
   const studyMaterials = [
     { title: "MS Office 2024 Advanced Complete Handbook", size: "4.2 MB", format: "PDF", category: "Office Suite" },
@@ -61,193 +51,237 @@ const StudentDashboard = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-[#f8f9fe] flex font-sans antialiased text-slate-800">
-      
-      {/* 1. Argon Left Fixed Sidebar */}
-      <ArgonSidebar
+    <div
+      style={{
+        backgroundColor: colors.primary[500],
+        color: colors.gray[100],
+      }}
+      className="min-h-screen flex font-sans antialiased transition-colors"
+    >
+      {/* 1. Left Fixed Sidebar */}
+      <Sidebar
         role="student"
         activeTab={activeTab}
         setActiveTab={setActiveTab}
         mobileOpen={mobileSidebarOpen}
         setMobileOpen={setMobileSidebarOpen}
+        user={user}
         onViewWebsite={() => setActiveView('landing')}
       />
 
-      {/* 2. Right Main Layout Area */}
+      {/* 2. Main Content Wrapper */}
       <div className="flex-1 lg:ml-64 flex flex-col min-w-0">
         
-        {/* Argon Signature Primary Blue Header */}
-        <header className="bg-[#5e72e4] pb-28 pt-4 shadow-xs relative">
-          
-          {/* Argon Navbar */}
-          <ArgonNavbar
-            activeTabTitle={getTabTitle(activeTab)}
-            user={user}
-            role="student"
-            onLogout={logout}
-            onViewWebsite={() => setActiveView('landing')}
-            onOpenMobileSidebar={() => setMobileSidebarOpen(true)}
-          />
+        {/* Topbar with Mode Toggle & Search */}
+        <Topbar
+          user={user}
+          role="student"
+          onLogout={logout}
+          onViewWebsite={() => setActiveView('landing')}
+          onToggleSidebar={() => setMobileSidebarOpen(!mobileSidebarOpen)}
+        />
 
-          {/* Argon 4 Header Metric Cards */}
-          <div className="px-4 sm:px-6 lg:px-8 mt-5">
-            <ArgonHeaderCards
-              role="student"
-              user={user}
-            />
-          </div>
-        </header>
-
-        {/* 3. Main Body Content (Floats over header with negative margin -mt-16) */}
-        <main className="-mt-16 relative z-10 px-4 sm:px-6 lg:px-8 space-y-6 pb-12 flex-1">
+        {/* Main Body */}
+        <main className="p-6 flex-1 space-y-6">
           
           {/* ===================== TAB: DASHBOARD (Overview) ===================== */}
           {activeTab === 'dashboard' && (
             <div className="space-y-6">
               
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <Header
+                  title="DASHBOARD"
+                  subtitle={`Welcome back, ${student?.name || 'Rajeev Kumar'}`}
+                />
+
+                <button
+                  onClick={() => setActiveInvoice(studentInvoice)}
+                  style={{
+                    backgroundColor: colors.blueAccent[700],
+                    color: '#ffffff',
+                  }}
+                  className="inline-flex items-center gap-2 px-4 py-2.5 rounded-md text-xs font-bold shadow-xs hover:opacity-90 transition-opacity"
+                >
+                  <Printer className="w-4 h-4" />
+                  <span className="uppercase tracking-wider">OFFICIAL INVOICE</span>
+                </button>
+              </div>
+
+              {/* ROW 1: 4 Stat Boxes (Exact layout & styling from screenshot!) */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+                <StatBox
+                  title={student?.courseCode || 'ADIT'}
+                  subtitle={`${student?.duration || '12 Months'} Diploma`}
+                  progress={0.65}
+                  increase="65% Done"
+                  icon={BookOpen}
+                />
+                <StatBox
+                  title={student?.attendance || '94.2%'}
+                  subtitle="Attendance Rate"
+                  progress={0.94}
+                  increase="48 Days"
+                  icon={CheckCircle2}
+                />
+                <StatBox
+                  title={`${student?.typingSpeed?.english || 42} WPM`}
+                  subtitle={`Hindi: ${student?.typingSpeed?.hindi || 34} WPM`}
+                  progress={0.7}
+                  increase="Beltron Ready"
+                  icon={Keyboard}
+                />
+                <StatBox
+                  title={student?.balanceDues === 0 ? '₹ 0.00' : `₹ ${student?.balanceDues}`}
+                  subtitle={student?.paymentStatus || 'FULLY PAID'}
+                  progress={1.0}
+                  increase="100% Paid"
+                  icon={Receipt}
+                />
+              </div>
+
+              {/* ROW 2: Student Digital ID Card & Modules Progress & Fee Card */}
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
                 
-                {/* Official Student Digital ID Card (Clean navy #172b4d) */}
-                <div className="bg-[#172b4d] rounded-2xl p-6 text-white shadow-md border border-slate-700/50 flex flex-col justify-between">
+                {/* Official Student Digital ID Card */}
+                <div
+                  style={{ backgroundColor: colors.primary[400] }}
+                  className="rounded-lg p-5 shadow-xs flex flex-col justify-between"
+                >
                   <div>
-                    {/* Header */}
-                    <div className="flex items-center justify-between pb-3 border-b border-white/10">
-                      <div className="flex items-center gap-2.5">
+                    <div className="flex items-center justify-between pb-3 border-b border-white/5">
+                      <div className="flex items-center gap-2">
                         <img
                           src="/mdi-real-logo-cropped.png"
                           alt="MDI"
-                          className="w-8 h-8 rounded-full bg-white p-0.5 object-contain"
+                          className="w-7 h-7 rounded-full bg-white p-0.5 object-contain"
                           onError={(e) => {
                             e.currentTarget.src = "/logo-icon.svg";
                           }}
                         />
-                        <div>
-                          <h4 className="text-xs font-bold tracking-tight leading-tight">MODERN DELHI INFOTECH</h4>
-                          <span className="text-[9px] text-slate-300 uppercase tracking-widest font-semibold">Madhepura, Bihar</span>
-                        </div>
+                        <span style={{ color: colors.gray[100] }} className="font-bold text-xs">
+                          MODERN DELHI INFOTECH
+                        </span>
                       </div>
-                      <span className="px-2 py-0.5 rounded text-[9px] font-bold uppercase bg-white/20 text-white">
-                        2026-27
+                      <span
+                        style={{
+                          backgroundColor: colors.primary[500],
+                          color: colors.greenAccent[500]
+                        }}
+                        className="px-2 py-0.5 rounded text-[10px] font-bold"
+                      >
+                        Active 2026-27
                       </span>
                     </div>
 
-                    {/* Student Info */}
-                    <div className="mt-4 flex items-center gap-4">
+                    <div className="mt-4 flex items-center gap-3">
                       <img
                         src={student?.avatar || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80"}
                         alt={student?.name}
-                        className="w-14 h-14 rounded-xl object-cover border border-white/20 flex-shrink-0"
+                        className="w-14 h-14 rounded-full object-cover border border-white/10"
                       />
                       <div>
-                        <h3 className="text-base font-bold text-white leading-tight">
+                        <h3 style={{ color: colors.gray[100] }} className="font-bold text-base">
                           {student?.name || 'Rajeev Kumar'}
                         </h3>
-                        <p className="text-xs text-slate-300 mt-0.5">
+                        <p style={{ color: colors.gray[300] }} className="text-xs mt-0.5">
                           S/O: {student?.fatherName || 'Suresh Prasad Yadav'}
                         </p>
-                        <div className="mt-2 flex items-center gap-2">
-                          <span className="px-2 py-0.5 rounded bg-white/10 text-white font-mono text-[10px] font-semibold">
-                            {student?.regNo || 'MDI-B2-456'}
-                          </span>
-                          <span className="text-[10px] text-slate-400">
-                            Roll: {student?.rollNo || '456'}
-                          </span>
-                        </div>
+                        <span
+                          style={{ color: colors.greenAccent[500] }}
+                          className="font-mono text-xs font-bold block mt-1"
+                        >
+                          {student?.regNo || 'MDI-B2-456'}
+                        </span>
                       </div>
                     </div>
 
-                    {/* Course & Batch Details */}
-                    <div className="mt-4 pt-3 border-t border-white/10 grid grid-cols-2 gap-2 text-[11px]">
+                    <div className="mt-4 pt-3 border-t border-white/5 grid grid-cols-2 gap-2 text-xs">
                       <div>
-                        <span className="text-slate-400 block text-[10px]">Course:</span>
-                        <strong className="text-white">{student?.courseCode || 'ADIT'} ({student?.duration || '12M'})</strong>
+                        <span style={{ color: colors.gray[400] }} className="block text-[10px]">Program:</span>
+                        <strong style={{ color: colors.gray[100] }}>{student?.courseCode} (12M)</strong>
                       </div>
                       <div>
-                        <span className="text-slate-400 block text-[10px]">Assigned Lab PC:</span>
-                        <strong className="text-white font-mono">{student?.pcNumber || 'PC-04'}</strong>
+                        <span style={{ color: colors.gray[400] }} className="block text-[10px]">Lab PC:</span>
+                        <strong style={{ color: colors.greenAccent[500] }} className="font-mono">{student?.pcNumber || 'PC-04'}</strong>
                       </div>
                       <div>
-                        <span className="text-slate-400 block text-[10px]">Batch Time:</span>
-                        <span className="text-slate-300">{student?.batchTime || '08:00 AM – 09:30 AM'}</span>
+                        <span style={{ color: colors.gray[400] }} className="block text-[10px]">Batch Time:</span>
+                        <span style={{ color: colors.gray[300] }}>{student?.batchTime || '08:00 AM – 09:30 AM'}</span>
                       </div>
                       <div>
-                        <span className="text-slate-400 block text-[10px]">Branch:</span>
-                        <span className="text-slate-300">{student?.branchName || 'Branch 2 (Adarsh Nagar)'}</span>
+                        <span style={{ color: colors.gray[400] }} className="block text-[10px]">Branch:</span>
+                        <span style={{ color: colors.gray[300] }}>Branch 2 (Adarsh Nagar)</span>
                       </div>
                     </div>
                   </div>
 
-                  <div className="mt-4 pt-3 border-t border-white/10 flex items-center justify-between text-[10px] text-slate-400">
-                    <div className="flex items-center gap-1.5 text-emerald-400">
-                      <ShieldCheck className="w-3.5 h-3.5" />
-                      <span>Govt. Regd. Student ID</span>
-                    </div>
-                    <span>Mentor: Sonu Sir</span>
+                  <div className="mt-4 pt-3 border-t border-white/5 flex items-center justify-between text-[10px]">
+                    <span style={{ color: colors.greenAccent[500] }}>Govt. Regd. Student ID</span>
+                    <span style={{ color: colors.gray[400] }}>Director: Sonu Sir</span>
                   </div>
                 </div>
 
-                {/* Course Progress & Modules Completion */}
-                <div className="bg-white rounded-2xl p-6 shadow-xs border border-slate-200/80 flex flex-col justify-between">
+                {/* Course Syllabus Progress Card */}
+                <div
+                  style={{ backgroundColor: colors.primary[400] }}
+                  className="rounded-lg p-5 shadow-xs flex flex-col justify-between"
+                >
                   <div>
-                    <div className="flex items-center justify-between pb-3 border-b border-slate-100">
-                      <div>
-                        <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">
-                          Academic Status
-                        </span>
-                        <h3 className="text-sm font-bold text-slate-900 mt-0.5">
-                          {studentCourse.name}
-                        </h3>
-                      </div>
-                      <span className="px-2 py-0.5 rounded text-xs font-semibold bg-slate-100 text-slate-800">
+                    <div className="flex items-center justify-between pb-3 border-b border-white/5">
+                      <h4 style={{ color: colors.gray[100] }} className="font-bold text-sm font-display">
+                        {studentCourse.name}
+                      </h4>
+                      <span style={{ color: colors.greenAccent[500] }} className="text-xs font-bold">
                         {student?.progress || 65}% Done
                       </span>
                     </div>
 
                     <div className="mt-4">
-                      <div className="flex items-center justify-between text-xs text-slate-500 mb-1.5">
-                        <span>Course Completion</span>
-                        <span className="font-bold text-slate-800">{student?.progress || 65}%</span>
+                      <div className="flex items-center justify-between text-xs mb-1">
+                        <span style={{ color: colors.gray[400] }}>Course Completion</span>
+                        <span style={{ color: colors.gray[100] }} className="font-bold">{student?.progress || 65}%</span>
                       </div>
-                      <div className="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
+                      <div style={{ backgroundColor: colors.primary[500] }} className="w-full h-2 rounded-full overflow-hidden">
                         <div
-                          className="bg-[#5e72e4] h-full rounded-full transition-all duration-300"
-                          style={{ width: `${student?.progress || 65}%` }}
+                          style={{
+                            backgroundColor: colors.greenAccent[500],
+                            width: `${student?.progress || 65}%`
+                          }}
+                          className="h-full rounded-full transition-all"
                         ></div>
                       </div>
                     </div>
 
-                    {/* Quick Module Highlights */}
-                    <div className="mt-5 space-y-2">
-                      <div className="flex items-center justify-between text-xs p-2 rounded-lg bg-slate-50 text-slate-700">
-                        <div className="flex items-center gap-2">
-                          <Check className="w-4 h-4 text-emerald-600" />
-                          <span>Module 1: Fundamentals &amp; Windows 11</span>
-                        </div>
-                        <span className="text-[10px] text-emerald-700 font-semibold bg-emerald-50 px-1.5 py-0.5 rounded">Completed</span>
+                    <div className="mt-4 space-y-2 text-xs">
+                      <div
+                        style={{ backgroundColor: colors.primary[500] }}
+                        className="p-2 rounded flex items-center justify-between"
+                      >
+                        <span style={{ color: colors.gray[100] }}>Module 1: Fundamentals &amp; Windows 11</span>
+                        <span style={{ color: colors.greenAccent[500] }} className="text-[10px] font-bold">Done</span>
                       </div>
-
-                      <div className="flex items-center justify-between text-xs p-2 rounded-lg bg-slate-50 text-slate-700">
-                        <div className="flex items-center gap-2">
-                          <Check className="w-4 h-4 text-emerald-600" />
-                          <span>Module 2: MS Office Advanced Suite</span>
-                        </div>
-                        <span className="text-[10px] text-emerald-700 font-semibold bg-emerald-50 px-1.5 py-0.5 rounded">Completed</span>
+                      <div
+                        style={{ backgroundColor: colors.primary[500] }}
+                        className="p-2 rounded flex items-center justify-between"
+                      >
+                        <span style={{ color: colors.gray[100] }}>Module 2: MS Office Advanced Suite</span>
+                        <span style={{ color: colors.greenAccent[500] }} className="text-[10px] font-bold">Done</span>
                       </div>
-
-                      <div className="flex items-center justify-between text-xs p-2 rounded-lg bg-slate-50 text-slate-700">
-                        <div className="flex items-center gap-2">
-                          <span className="w-2 h-2 rounded-full bg-[#5e72e4]"></span>
-                          <span>Module 3: Tally Prime 4.0 GST &amp; Invoicing</span>
-                        </div>
-                        <span className="text-[10px] text-[#5e72e4] font-semibold bg-blue-50 px-1.5 py-0.5 rounded">Active</span>
+                      <div
+                        style={{ backgroundColor: colors.primary[500] }}
+                        className="p-2 rounded flex items-center justify-between"
+                      >
+                        <span style={{ color: colors.gray[100] }}>Module 3: Tally Prime 4.0 GST</span>
+                        <span style={{ color: colors.blueAccent[400] }} className="text-[10px] font-bold">Active</span>
                       </div>
                     </div>
                   </div>
 
-                  <div className="mt-4 pt-3 border-t border-slate-100">
+                  <div className="mt-4 pt-3 border-t border-white/5">
                     <button
                       onClick={() => setActiveTab('syllabus')}
-                      className="text-xs font-semibold text-[#5e72e4] hover:underline flex items-center justify-between w-full"
+                      style={{ color: colors.blueAccent[400] }}
+                      className="text-xs font-semibold hover:underline flex items-center justify-between w-full"
                     >
                       <span>Explore Full 12-Month Syllabus</span>
                       <ChevronRight className="w-4 h-4" />
@@ -255,43 +289,48 @@ const StudentDashboard = () => {
                   </div>
                 </div>
 
-                {/* Quick Fee & Invoice Summary Card */}
-                <div className="bg-white rounded-2xl p-6 shadow-xs border border-slate-200/80 flex flex-col justify-between">
+                {/* Fee & Invoices Card */}
+                <div
+                  style={{ backgroundColor: colors.primary[400] }}
+                  className="rounded-lg p-5 shadow-xs flex flex-col justify-between"
+                >
                   <div>
-                    <div className="flex items-center justify-between pb-3 border-b border-slate-100">
-                      <div>
-                        <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">
-                          Official Billing
-                        </span>
-                        <h3 className="text-sm font-bold text-slate-900 mt-0.5">
-                          Fee Invoices &amp; Receipts
-                        </h3>
-                      </div>
-                      <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${
-                        student?.balanceDues === 0 ? 'bg-emerald-50 text-emerald-700' : 'bg-amber-50 text-amber-700'
-                      }`}>
+                    <div className="flex items-center justify-between pb-3 border-b border-white/5">
+                      <h4 style={{ color: colors.gray[100] }} className="font-bold text-sm font-display">
+                        Fee Invoice &amp; Receipts
+                      </h4>
+                      <span
+                        style={{
+                          backgroundColor: colors.primary[500],
+                          color: student?.balanceDues === 0 ? colors.greenAccent[500] : colors.redAccent[400]
+                        }}
+                        className="px-2 py-0.5 rounded text-[10px] font-bold"
+                      >
                         {student?.paymentStatus || 'FULLY PAID'}
                       </span>
                     </div>
 
-                    <div className="mt-4 p-4 bg-slate-50 rounded-xl border border-slate-200/80">
-                      <div className="text-[10px] text-slate-400 uppercase font-bold">
+                    <div
+                      style={{ backgroundColor: colors.primary[500] }}
+                      className="mt-4 p-4 rounded-md space-y-2 text-xs"
+                    >
+                      <div style={{ color: colors.gray[400] }} className="text-[10px] uppercase font-bold">
                         Invoice No:
                       </div>
-                      <div className="text-sm font-mono font-bold text-slate-900">
+                      <div style={{ color: colors.greenAccent[500] }} className="font-mono font-bold text-sm">
                         {studentInvoice?.invoiceNo || 'MDI/B2/2026-27/0001'}
                       </div>
-                      <div className="mt-3 flex items-center justify-between text-xs">
-                        <span className="text-slate-500">Total Course Fee:</span>
-                        <strong className="text-slate-900">₹{(studentInvoice?.totalCourseFee || 12000).toLocaleString()}</strong>
+                      <div className="flex items-center justify-between pt-1">
+                        <span style={{ color: colors.gray[400] }}>Total Course Fee:</span>
+                        <strong style={{ color: colors.gray[100] }}>₹{(studentInvoice?.totalCourseFee || 12000).toLocaleString()}</strong>
                       </div>
-                      <div className="mt-1 flex items-center justify-between text-xs">
-                        <span className="text-slate-500">Amount Paid:</span>
-                        <strong className="text-slate-900">₹{(studentInvoice?.totalPaid || 12000).toLocaleString()}</strong>
+                      <div className="flex items-center justify-between">
+                        <span style={{ color: colors.gray[400] }}>Paid Amount:</span>
+                        <strong style={{ color: colors.greenAccent[500] }}>₹{(studentInvoice?.totalPaid || 12000).toLocaleString()}</strong>
                       </div>
-                      <div className="mt-1.5 pt-1.5 border-t border-slate-200 flex items-center justify-between text-xs font-bold">
-                        <span className="text-slate-600">Balance Dues:</span>
-                        <span className="text-emerald-700">
+                      <div className="flex items-center justify-between pt-1 border-t border-white/5 font-bold">
+                        <span style={{ color: colors.gray[300] }}>Balance Dues:</span>
+                        <span style={{ color: colors.greenAccent[500] }}>
                           {studentInvoice?.balanceDues === 0 ? '₹ 0.00 (NIL)' : `₹ ${studentInvoice?.balanceDues}`}
                         </span>
                       </div>
@@ -301,50 +340,56 @@ const StudentDashboard = () => {
                   <div className="mt-4">
                     <button
                       onClick={() => setActiveInvoice(studentInvoice)}
-                      className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-white hover:bg-slate-50 text-slate-800 font-semibold text-xs border border-slate-200 shadow-xs transition-colors"
+                      style={{
+                        backgroundColor: colors.blueAccent[700],
+                        color: '#ffffff'
+                      }}
+                      className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-md font-bold text-xs hover:opacity-90 transition-opacity"
                     >
-                      <Printer className="w-4 h-4 text-slate-500" />
-                      <span>View &amp; Print Official GST Invoice</span>
+                      <Printer className="w-4 h-4" />
+                      <span>Print Official GST Invoice</span>
                     </button>
                   </div>
                 </div>
 
               </div>
 
-              {/* Attendance Quick Snapshot & Typing Speed Widget */}
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {/* ROW 3: Recent Attendance Log & Typing Test Card */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
                 
                 {/* Recent Attendance Activity Card */}
-                <div className="bg-white rounded-2xl shadow-xs border border-slate-200/80 p-6 flex flex-col justify-between">
+                <div
+                  style={{ backgroundColor: colors.primary[400] }}
+                  className="rounded-lg p-5 shadow-xs flex flex-col justify-between"
+                >
                   <div>
-                    <div className="flex items-center justify-between pb-3 border-b border-slate-100">
-                      <div>
-                        <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">
-                          Daily Attendance
-                        </span>
-                        <h3 className="text-sm font-bold text-slate-900 mt-0.5">
-                          Recent Lab Attendance Log
-                        </h3>
-                      </div>
-                      <span className="text-xs font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded">
+                    <div className="flex items-center justify-between pb-3 border-b border-white/5">
+                      <h4 style={{ color: colors.gray[100] }} className="font-bold text-sm font-display">
+                        Recent Lab Attendance Log
+                      </h4>
+                      <span style={{ color: colors.greenAccent[500] }} className="text-xs font-bold">
                         {student?.attendance || '94.2%'} Overall Rate
                       </span>
                     </div>
 
-                    <div className="mt-4 divide-y divide-slate-100 text-xs">
+                    <div className="mt-3 divide-y divide-white/5 text-xs">
                       {attendanceHistory.slice(0, 4).map((att, i) => (
                         <div key={i} className="py-2.5 flex items-center justify-between">
-                          <div className="flex items-center gap-3">
-                            <span className="w-2 h-2 rounded-full bg-slate-300"></span>
-                            <div>
-                              <div className="font-bold text-slate-900">{att.date} ({att.day})</div>
-                              <div className="text-[11px] text-slate-500">{att.remark} · {att.pc}</div>
+                          <div>
+                            <div style={{ color: colors.gray[100] }} className="font-bold">
+                              {att.date} ({att.day})
+                            </div>
+                            <div style={{ color: colors.gray[400] }} className="text-[11px]">
+                              {att.remark} · {att.pc}
                             </div>
                           </div>
-                          <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${
-                            att.status === 'Present' ? 'bg-emerald-50 text-emerald-700' :
-                            att.status === 'Late' ? 'bg-amber-50 text-amber-700' : 'bg-rose-50 text-rose-700'
-                          }`}>
+                          <span
+                            style={{
+                              backgroundColor: colors.primary[500],
+                              color: att.status === 'Present' ? colors.greenAccent[500] : colors.redAccent[400]
+                            }}
+                            className="px-2 py-0.5 rounded text-[10px] font-bold"
+                          >
                             {att.status}
                           </span>
                         </div>
@@ -352,10 +397,11 @@ const StudentDashboard = () => {
                     </div>
                   </div>
 
-                  <div className="mt-4 pt-3 border-t border-slate-100">
+                  <div className="mt-4 pt-3 border-t border-white/5">
                     <button
                       onClick={() => setActiveTab('attendance')}
-                      className="text-xs font-semibold text-[#5e72e4] hover:underline flex items-center justify-between w-full"
+                      style={{ color: colors.blueAccent[400] }}
+                      className="text-xs font-semibold hover:underline flex items-center justify-between w-full"
                     >
                       <span>View Full Monthly Calendar &amp; Log</span>
                       <ChevronRight className="w-4 h-4" />
@@ -363,36 +409,51 @@ const StudentDashboard = () => {
                   </div>
                 </div>
 
-                {/* Typing Practice Quick Card (Clean & focused) */}
-                <div className="bg-white rounded-2xl p-6 shadow-xs border border-slate-200/80 flex flex-col justify-between">
+                {/* Beltron Typing Test Practice Box */}
+                <div
+                  style={{ backgroundColor: colors.primary[400] }}
+                  className="rounded-lg p-5 shadow-xs flex flex-col justify-between"
+                >
                   <div>
-                    <div className="flex items-center justify-between pb-3 border-b border-slate-100">
-                      <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                    <div className="flex items-center justify-between pb-3 border-b border-white/5">
+                      <span style={{ color: colors.gray[400] }} className="text-[10px] font-bold uppercase tracking-wider">
                         Bihar Beltron Standard
                       </span>
-                      <span className="px-2 py-0.5 rounded bg-slate-100 text-slate-700 text-[10px] font-semibold">
+                      <span
+                        style={{
+                          backgroundColor: colors.primary[500],
+                          color: colors.greenAccent[500]
+                        }}
+                        className="px-2 py-0.5 rounded text-[10px] font-semibold"
+                      >
                         Hindi + English
                       </span>
                     </div>
 
-                    <h3 className="text-base font-bold text-slate-900 mt-3 font-display">
+                    <h3 style={{ color: colors.gray[100] }} className="text-base font-bold mt-3 font-display">
                       Typing Speed &amp; Accuracy Practice Lab
                     </h3>
-                    <p className="text-xs text-slate-500 mt-1">
+                    <p style={{ color: colors.gray[300] }} className="text-xs mt-1">
                       Practice with live timer to meet Bihar Beltron exam standards (30+ WPM Hindi, 40+ WPM English).
                     </p>
 
                     <div className="mt-4 grid grid-cols-2 gap-3">
-                      <div className="p-3 bg-slate-50 rounded-xl border border-slate-200">
-                        <span className="text-[10px] text-slate-400 uppercase font-bold">English Speed</span>
-                        <div className="text-2xl font-black text-slate-900 mt-1">
-                          {student?.typingSpeed?.english || 42} <span className="text-xs font-normal text-slate-500">WPM</span>
+                      <div
+                        style={{ backgroundColor: colors.primary[500] }}
+                        className="p-3 rounded-md"
+                      >
+                        <span style={{ color: colors.gray[400] }} className="text-[10px] uppercase font-bold">English Speed</span>
+                        <div style={{ color: colors.gray[100] }} className="text-2xl font-black mt-1 font-display">
+                          {student?.typingSpeed?.english || 42} <span style={{ color: colors.gray[400] }} className="text-xs font-normal">WPM</span>
                         </div>
                       </div>
-                      <div className="p-3 bg-slate-50 rounded-xl border border-slate-200">
-                        <span className="text-[10px] text-slate-400 uppercase font-bold">Hindi Speed</span>
-                        <div className="text-2xl font-black text-slate-900 mt-1">
-                          {student?.typingSpeed?.hindi || 34} <span className="text-xs font-normal text-slate-500">WPM</span>
+                      <div
+                        style={{ backgroundColor: colors.primary[500] }}
+                        className="p-3 rounded-md"
+                      >
+                        <span style={{ color: colors.gray[400] }} className="text-[10px] uppercase font-bold">Hindi Speed</span>
+                        <div style={{ color: colors.gray[100] }} className="text-2xl font-black mt-1 font-display">
+                          {student?.typingSpeed?.hindi || 34} <span style={{ color: colors.gray[400] }} className="text-xs font-normal">WPM</span>
                         </div>
                       </div>
                     </div>
@@ -401,7 +462,11 @@ const StudentDashboard = () => {
                   <div className="mt-5">
                     <button
                       onClick={() => setActiveTab('typing')}
-                      className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-[#5e72e4] hover:bg-[#4b5ec9] text-white font-bold text-xs transition-colors shadow-xs"
+                      style={{
+                        backgroundColor: colors.blueAccent[700],
+                        color: '#ffffff'
+                      }}
+                      className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-md font-bold text-xs hover:opacity-90 transition-opacity"
                     >
                       <Keyboard className="w-4 h-4" />
                       <span>Start Typing Test Now</span>
@@ -417,103 +482,101 @@ const StudentDashboard = () => {
           {/* ===================== TAB: ATTENDANCE ===================== */}
           {activeTab === 'attendance' && (
             <div className="space-y-6">
-              
-              <div className="bg-white rounded-2xl p-6 shadow-xs border border-slate-200/80 flex flex-col md:flex-row md:items-center justify-between gap-4">
-                <div>
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">
-                    Biometric &amp; Lab Register
-                  </span>
-                  <h2 className="text-xl font-display font-bold text-slate-900 mt-0.5">
-                    My Attendance Record
-                  </h2>
-                  <p className="text-xs text-slate-500 mt-1">
-                    Track your daily attendance in Batch {student?.batchNo || 'Batch-1'} ({student?.batchTime || '08:00 AM – 09:30 AM'}).
-                  </p>
-                </div>
+              <Header
+                title="MY ATTENDANCE"
+                subtitle={`Batch ${student?.batchNo || 'Batch-1'} (${student?.batchTime || '08:00 AM – 09:30 AM'})`}
+              />
 
-                <div className="px-4 py-2 rounded-xl bg-slate-50 border border-slate-200 text-center">
-                  <span className="text-[10px] font-bold uppercase block text-slate-400">Attendance Rate</span>
-                  <strong className="text-lg font-black text-slate-900">{student?.attendance || '94.2%'}</strong>
-                </div>
-              </div>
-
-              {/* Attendance Breakdown Pills */}
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                <div className="bg-white rounded-xl p-4 shadow-xs border border-slate-200/80">
-                  <span className="text-[10px] font-bold uppercase text-slate-400 block">Total Working Days</span>
-                  <div className="text-2xl font-black text-slate-900 mt-1">53</div>
-                  <span className="text-[10px] text-slate-500">Session 2026-27</span>
+                <div style={{ backgroundColor: colors.primary[400] }} className="rounded-lg p-4 shadow-xs">
+                  <span style={{ color: colors.gray[400] }} className="text-[10px] uppercase font-bold block">Total Days</span>
+                  <div style={{ color: colors.gray[100] }} className="text-2xl font-black mt-1">53</div>
+                  <span style={{ color: colors.gray[300] }} className="text-[10px]">Session 2026-27</span>
                 </div>
 
-                <div className="bg-white rounded-xl p-4 shadow-xs border border-slate-200/80">
-                  <span className="text-[10px] font-bold uppercase text-slate-400 block">Days Present</span>
-                  <div className="text-2xl font-black text-slate-900 mt-1">48</div>
-                  <span className="text-[10px] text-emerald-700 font-semibold bg-emerald-50 px-1.5 py-0.5 rounded">Present</span>
+                <div style={{ backgroundColor: colors.primary[400] }} className="rounded-lg p-4 shadow-xs">
+                  <span style={{ color: colors.greenAccent[500] }} className="text-[10px] uppercase font-bold block">Present</span>
+                  <div style={{ color: colors.gray[100] }} className="text-2xl font-black mt-1">48</div>
+                  <span style={{ color: colors.greenAccent[500] }} className="text-[10px]">Attended Lab</span>
                 </div>
 
-                <div className="bg-white rounded-xl p-4 shadow-xs border border-slate-200/80">
-                  <span className="text-[10px] font-bold uppercase text-slate-400 block">Days Late</span>
-                  <div className="text-2xl font-black text-slate-900 mt-1">2</div>
-                  <span className="text-[10px] text-amber-700 font-semibold bg-amber-50 px-1.5 py-0.5 rounded">Late</span>
+                <div style={{ backgroundColor: colors.primary[400] }} className="rounded-lg p-4 shadow-xs">
+                  <span style={{ color: colors.blueAccent[400] }} className="text-[10px] uppercase font-bold block">Late</span>
+                  <div style={{ color: colors.gray[100] }} className="text-2xl font-black mt-1">2</div>
+                  <span style={{ color: colors.blueAccent[400] }} className="text-[10px]">Permitted</span>
                 </div>
 
-                <div className="bg-white rounded-xl p-4 shadow-xs border border-slate-200/80">
-                  <span className="text-[10px] font-bold uppercase text-slate-400 block">Days Absent</span>
-                  <div className="text-2xl font-black text-slate-900 mt-1">3</div>
-                  <span className="text-[10px] text-rose-700 font-semibold bg-rose-50 px-1.5 py-0.5 rounded">Absent</span>
+                <div style={{ backgroundColor: colors.primary[400] }} className="rounded-lg p-4 shadow-xs">
+                  <span style={{ color: colors.redAccent[400] }} className="text-[10px] uppercase font-bold block">Absent</span>
+                  <div style={{ color: colors.gray[100] }} className="text-2xl font-black mt-1">3</div>
+                  <span style={{ color: colors.redAccent[400] }} className="text-[10px]">Leave</span>
                 </div>
               </div>
 
-              {/* Full Detailed Log Table */}
-              <div className="bg-white rounded-2xl shadow-xs border border-slate-200/80 overflow-hidden">
-                <div className="p-4 border-b border-slate-100 flex items-center justify-between">
-                  <h3 className="text-sm font-bold text-slate-900">
-                    Day-by-Day Lab Log
+              {/* Attendance Log Table */}
+              <div
+                style={{ backgroundColor: colors.primary[400] }}
+                className="rounded-lg overflow-hidden shadow-xs"
+              >
+                <div className="p-4 border-b border-white/5 flex items-center justify-between">
+                  <h3 style={{ color: colors.gray[100] }} className="text-sm font-bold">
+                    Lab Session Log
                   </h3>
-                  <span className="text-xs text-slate-400">Showing last 8 sessions</span>
+                  <span style={{ color: colors.gray[400] }} className="text-xs">Showing last 8 sessions</span>
                 </div>
 
                 <div className="overflow-x-auto">
-                  <table className="w-full text-left border-collapse">
+                  <table className="w-full text-left border-collapse text-xs">
                     <thead>
-                      <tr className="bg-slate-50 border-b border-slate-100 text-[11px] font-bold uppercase text-slate-500 tracking-wider">
+                      <tr
+                        style={{
+                          backgroundColor: colors.primary[500],
+                          color: colors.gray[300]
+                        }}
+                        className="text-[11px] font-bold uppercase tracking-wider border-b border-white/5"
+                      >
                         <th className="py-3 px-4">Date</th>
                         <th className="py-3 px-4">Day</th>
                         <th className="py-3 px-4">Batch Timing</th>
-                        <th className="py-3 px-4">Lab PC Station</th>
+                        <th className="py-3 px-4">Lab PC</th>
                         <th className="py-3 px-4">Status</th>
                         <th className="py-3 px-4">Mentor Note</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-slate-100 text-xs">
+                    <tbody className="divide-y divide-white/5">
                       {attendanceHistory.map((att, idx) => (
-                        <tr key={idx} className="hover:bg-slate-50/70 transition-colors">
-                          <td className="py-3.5 px-4 font-bold text-slate-900">
+                        <tr key={idx} className="hover:opacity-90 transition-opacity">
+                          <td style={{ color: colors.gray[100] }} className="py-3.5 px-4 font-bold">
                             {att.date}
                           </td>
-                          <td className="py-3.5 px-4 text-slate-600">
+                          <td style={{ color: colors.gray[300] }} className="py-3.5 px-4">
                             {att.day}
                           </td>
-                          <td className="py-3.5 px-4 text-slate-600 font-mono text-[11px]">
+                          <td style={{ color: colors.gray[400] }} className="py-3.5 px-4 font-mono">
                             {att.batch}
                           </td>
                           <td className="py-3.5 px-4">
-                            <span className="font-mono text-slate-700 bg-slate-50 px-2 py-0.5 rounded text-[11px] border border-slate-200">
+                            <span
+                              style={{
+                                backgroundColor: colors.primary[500],
+                                color: colors.gray[100]
+                              }}
+                              className="font-mono px-2 py-0.5 rounded text-[11px]"
+                            >
                               {att.pc}
                             </span>
                           </td>
                           <td className="py-3.5 px-4">
-                            <span className={`inline-block px-2 py-0.5 rounded text-[10px] font-bold ${
-                              att.status === 'Present'
-                                ? 'bg-emerald-50 text-emerald-700'
-                                : att.status === 'Late'
-                                ? 'bg-amber-50 text-amber-700'
-                                : 'bg-rose-50 text-rose-700'
-                            }`}>
+                            <span
+                              style={{
+                                color: att.status === 'Present' ? colors.greenAccent[500] : colors.redAccent[400]
+                              }}
+                              className="font-bold text-[11px]"
+                            >
                               {att.status}
                             </span>
                           </td>
-                          <td className="py-3.5 px-4 text-slate-500">
+                          <td style={{ color: colors.gray[400] }} className="py-3.5 px-4">
                             {att.remark}
                           </td>
                         </tr>
@@ -529,64 +592,62 @@ const StudentDashboard = () => {
           {/* ===================== TAB: SYLLABUS ===================== */}
           {activeTab === 'syllabus' && (
             <div className="space-y-6">
-              
-              <div className="bg-white rounded-2xl p-6 shadow-xs border border-slate-200/80 flex flex-col md:flex-row md:items-center justify-between gap-4">
-                <div>
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">
-                    Curriculum Roadmap
-                  </span>
-                  <h2 className="text-xl font-display font-bold text-slate-900 mt-0.5">
-                    {studentCourse.name} ({studentCourse.code})
-                  </h2>
-                  <p className="text-xs text-slate-500 mt-1">
-                    {studentCourse.duration} Diploma Program · Guided by Sonu Sir (BCA, MCA)
-                  </p>
-                </div>
+              <Header
+                title="COURSE &amp; SYLLABUS"
+                subtitle={`${studentCourse.name} (${studentCourse.code}) · ${studentCourse.duration}`}
+              />
 
-                <span className="px-3 py-1.5 bg-slate-100 text-slate-700 text-xs font-semibold rounded-xl border border-slate-200">
-                  Govt. Exam &amp; Beltron Ready
-                </span>
-              </div>
-
-              {/* Modules Accordion / Cards */}
               <div className="space-y-4">
                 {studentCourse.syllabus?.map((mod, idx) => (
                   <div
                     key={idx}
-                    className="bg-white rounded-2xl p-5 shadow-xs border border-slate-200/80 hover:border-slate-300 transition-colors"
+                    style={{ backgroundColor: colors.primary[400] }}
+                    className="p-5 rounded-lg shadow-xs"
                   >
                     <div className="flex items-start justify-between">
                       <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-lg bg-slate-100 text-slate-700 font-bold text-xs flex items-center justify-center flex-shrink-0">
+                        <div
+                          style={{
+                            backgroundColor: colors.primary[500],
+                            color: colors.greenAccent[500]
+                          }}
+                          className="w-8 h-8 rounded-md font-bold text-xs flex items-center justify-center flex-shrink-0"
+                        >
                           {idx + 1}
                         </div>
                         <div>
-                          <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                          <span style={{ color: colors.gray[400] }} className="text-[10px] font-bold uppercase tracking-wider">
                             {mod.module}
                           </span>
-                          <h3 className="text-sm font-bold text-slate-900 mt-0.5">
+                          <h3 style={{ color: colors.gray[100] }} className="text-sm font-bold mt-0.5">
                             {mod.title}
                           </h3>
                         </div>
                       </div>
 
-                      <span className={`px-2 py-0.5 rounded text-[10px] font-semibold ${
-                        idx < 2 ? 'bg-emerald-50 text-emerald-700 font-bold' :
-                        idx === 2 ? 'bg-blue-50 text-blue-700 font-bold' : 'bg-slate-100 text-slate-500'
-                      }`}>
+                      <span
+                        style={{
+                          color: idx < 2 ? colors.greenAccent[500] : idx === 2 ? colors.blueAccent[400] : colors.gray[400]
+                        }}
+                        className="text-xs font-bold"
+                      >
                         {idx < 2 ? 'Completed' : idx === 2 ? 'In Progress' : 'Upcoming'}
                       </span>
                     </div>
 
-                    <div className="mt-4 pt-3 border-t border-slate-100">
-                      <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block mb-2">
+                    <div className="mt-4 pt-3 border-t border-white/5">
+                      <span style={{ color: colors.gray[400] }} className="text-[10px] font-bold uppercase tracking-wider block mb-2">
                         Topics Covered:
                       </span>
                       <div className="flex flex-wrap gap-2">
                         {mod.topics.map((t, ti) => (
                           <span
                             key={ti}
-                            className="text-xs bg-slate-50 text-slate-700 border border-slate-200 px-2.5 py-1 rounded-lg"
+                            style={{
+                              backgroundColor: colors.primary[500],
+                              color: colors.gray[100]
+                            }}
+                            className="text-xs px-2.5 py-1 rounded-md"
                           >
                             {t}
                           </span>
@@ -603,53 +664,52 @@ const StudentDashboard = () => {
           {/* ===================== TAB: INVOICES ===================== */}
           {activeTab === 'invoices' && (
             <div className="space-y-6">
-              
-              <div className="bg-white rounded-2xl p-6 shadow-xs border border-slate-200/80 flex flex-col md:flex-row md:items-center justify-between gap-4">
-                <div>
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">
-                    Tax Invoice &amp; Payment Ledger
-                  </span>
-                  <h2 className="text-xl font-display font-bold text-slate-900 mt-0.5">
-                    Official Fee Receipts
-                  </h2>
-                  <p className="text-xs text-slate-500 mt-1">
-                    Official tax invoice with GST breakdown and watermark verification.
-                  </p>
-                </div>
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <Header
+                  title="MY FEE INVOICES"
+                  subtitle="Official GST Tax Invoices and payment installments"
+                />
 
                 <button
                   onClick={() => setActiveInvoice(studentInvoice)}
-                  className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white hover:bg-slate-50 text-slate-800 font-bold text-xs border border-slate-200 shadow-xs transition-colors"
+                  style={{
+                    backgroundColor: colors.blueAccent[700],
+                    color: '#ffffff'
+                  }}
+                  className="inline-flex items-center gap-2 px-4 py-2.5 rounded-md font-bold text-xs hover:opacity-90 transition-opacity"
                 >
-                  <Printer className="w-4 h-4 text-slate-500" />
+                  <Printer className="w-4 h-4" />
                   <span>Print Authentic Invoice Replica</span>
                 </button>
               </div>
 
-              {/* Invoice Detailed Preview Card */}
-              <div className="bg-white rounded-2xl shadow-xs border border-slate-200/80 p-6 space-y-6">
-                
-                {/* Invoice Metadata Header */}
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-5 border-b border-slate-100">
+              {/* Invoice Detail Box */}
+              <div
+                style={{ backgroundColor: colors.primary[400] }}
+                className="p-6 rounded-lg shadow-xs space-y-5"
+              >
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-white/5">
                   <div>
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">TAX INVOICE NUMBER</span>
-                    <div className="text-base font-mono font-bold text-slate-900 mt-0.5">
+                    <span style={{ color: colors.gray[400] }} className="text-[10px] uppercase font-bold tracking-wider">
+                      Tax Invoice Number
+                    </span>
+                    <div style={{ color: colors.greenAccent[500] }} className="text-base font-mono font-bold mt-0.5">
                       {studentInvoice?.invoiceNo || 'MDI/B2/2026-27/0001'}
                     </div>
-                    <span className="text-xs text-slate-500">
-                      Date: {studentInvoice?.date || '31-Oct-2026'} · Session 2026-27
+                    <span style={{ color: colors.gray[400] }} className="text-xs">
+                      Date: {studentInvoice?.date} · Session 2026-27
                     </span>
                   </div>
 
-                  <div className="text-left sm:text-right">
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">STATUS</span>
-                    <div>
-                      <span className="inline-block px-2.5 py-0.5 rounded text-xs font-bold bg-emerald-50 text-emerald-700 mt-0.5">
-                        {studentInvoice?.status || 'FULLY PAID'}
-                      </span>
-                    </div>
-                    <span className="text-xs text-slate-500 mt-0.5 block">
-                      Balance Dues: <strong className="text-emerald-700">₹0.00</strong>
+                  <div>
+                    <span
+                      style={{
+                        backgroundColor: colors.primary[500],
+                        color: colors.greenAccent[500]
+                      }}
+                      className="px-3 py-1 rounded text-xs font-bold"
+                    >
+                      {studentInvoice?.status || 'FULLY PAID'}
                     </span>
                   </div>
                 </div>
@@ -658,50 +718,56 @@ const StudentDashboard = () => {
                 <div className="overflow-x-auto">
                   <table className="w-full text-left border-collapse text-xs">
                     <thead>
-                      <tr className="bg-slate-50 border-b border-slate-100 text-[10px] font-bold uppercase text-slate-500">
+                      <tr
+                        style={{
+                          backgroundColor: colors.primary[500],
+                          color: colors.gray[300]
+                        }}
+                        className="text-[10px] font-bold uppercase border-b border-white/5"
+                      >
                         <th className="py-2.5 px-4">Sr.</th>
                         <th className="py-2.5 px-4">Particulars</th>
                         <th className="py-2.5 px-4 text-right">Amount (₹)</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-slate-100">
+                    <tbody className="divide-y divide-white/5">
                       <tr>
                         <td className="py-3 px-4 font-semibold">1</td>
                         <td className="py-3 px-4">
-                          <div className="font-bold text-slate-900">
+                          <div style={{ color: colors.gray[100] }} className="font-bold">
                             Course Fee — {studentInvoice?.course?.code || 'ADIT'}
                           </div>
-                          <div className="text-[11px] text-slate-500">
-                            {studentInvoice?.course?.name || 'Advanced Diploma in Information Technology'} (12 Months)
+                          <div style={{ color: colors.gray[400] }} className="text-[11px]">
+                            {studentInvoice?.course?.name} (12 Months)
                           </div>
                         </td>
-                        <td className="py-3 px-4 text-right font-bold text-slate-900">
+                        <td style={{ color: colors.gray[100] }} className="py-3 px-4 text-right font-bold">
                           ₹{(studentInvoice?.totalCourseFee || 12000).toFixed(2)}
                         </td>
                       </tr>
                     </tbody>
                     <tfoot>
-                      <tr className="border-t border-slate-200 bg-slate-50/50">
-                        <td colSpan="2" className="py-2 px-4 text-right text-slate-500 font-medium">
+                      <tr className="border-t border-white/5">
+                        <td colSpan="2" style={{ color: colors.gray[400] }} className="py-2 px-4 text-right">
                           CGST (9%) Included:
                         </td>
-                        <td className="py-2 px-4 text-right font-mono text-slate-600">
+                        <td style={{ color: colors.gray[300] }} className="py-2 px-4 text-right font-mono">
                           - ₹{(studentInvoice?.feeParticulars?.cgst9Percent || 915.25).toFixed(2)}
                         </td>
                       </tr>
-                      <tr className="bg-slate-50/50">
-                        <td colSpan="2" className="py-2 px-4 text-right text-slate-500 font-medium">
+                      <tr>
+                        <td colSpan="2" style={{ color: colors.gray[400] }} className="py-2 px-4 text-right">
                           SGST (9%) Included:
                         </td>
-                        <td className="py-2 px-4 text-right font-mono text-slate-600">
+                        <td style={{ color: colors.gray[300] }} className="py-2 px-4 text-right font-mono">
                           - ₹{(studentInvoice?.feeParticulars?.sgst9Percent || 915.25).toFixed(2)}
                         </td>
                       </tr>
-                      <tr className="bg-slate-50 font-bold border-t border-slate-200">
-                        <td colSpan="2" className="py-2.5 px-4 text-right text-slate-800">
+                      <tr style={{ backgroundColor: colors.primary[500] }}>
+                        <td colSpan="2" style={{ color: colors.gray[100] }} className="py-2.5 px-4 text-right font-bold">
                           Total Course Fee Payable:
                         </td>
-                        <td className="py-2.5 px-4 text-right text-slate-900 font-bold text-sm">
+                        <td style={{ color: colors.greenAccent[500] }} className="py-2.5 px-4 text-right font-bold text-sm">
                           ₹{(studentInvoice?.totalCourseFee || 12000).toFixed(2)}
                         </td>
                       </tr>
@@ -709,39 +775,42 @@ const StudentDashboard = () => {
                   </table>
                 </div>
 
-                {/* Installments Breakdown */}
+                {/* Installments Table */}
                 <div>
-                  <h4 className="text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">
+                  <h4 style={{ color: colors.gray[100] }} className="text-xs font-bold uppercase tracking-wider mb-2">
                     Installment &amp; Payment Record
                   </h4>
                   <div className="overflow-x-auto">
                     <table className="w-full text-left border-collapse text-xs">
                       <thead>
-                        <tr className="bg-slate-50 border-b border-slate-100 text-[10px] font-bold uppercase text-slate-500">
+                        <tr
+                          style={{
+                            backgroundColor: colors.primary[500],
+                            color: colors.gray[300]
+                          }}
+                          className="text-[10px] font-bold uppercase border-b border-white/5"
+                        >
                           <th className="py-2.5 px-4">#</th>
                           <th className="py-2.5 px-4">Installment</th>
                           <th className="py-2.5 px-4">Date</th>
-                          <th className="py-2.5 px-4">Mode / Ref</th>
+                          <th className="py-2.5 px-4">Mode</th>
                           <th className="py-2.5 px-4">Status</th>
                           <th className="py-2.5 px-4 text-right">Amount (₹)</th>
                         </tr>
                       </thead>
-                      <tbody className="divide-y divide-slate-100">
+                      <tbody className="divide-y divide-white/5">
                         {studentInvoice?.installments?.map((inst) => (
                           <tr key={inst.no}>
                             <td className="py-3 px-4 font-semibold">{inst.no}</td>
-                            <td className="py-3 px-4 font-bold text-slate-800">{inst.title}</td>
-                            <td className="py-3 px-4 text-slate-600">{inst.date}</td>
-                            <td className="py-3 px-4 font-mono text-[11px] text-slate-600">
-                              <div>{inst.mode}</div>
-                              {inst.ref && <div className="text-[10px] text-slate-400">{inst.ref}</div>}
-                            </td>
+                            <td style={{ color: colors.gray[100] }} className="py-3 px-4 font-bold">{inst.title}</td>
+                            <td style={{ color: colors.gray[400] }} className="py-3 px-4">{inst.date}</td>
+                            <td style={{ color: colors.gray[300] }} className="py-3 px-4 font-mono">{inst.mode}</td>
                             <td className="py-3 px-4">
-                              <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-50 text-emerald-700">
+                              <span style={{ color: colors.greenAccent[500] }} className="font-bold text-[11px]">
                                 {inst.status}
                               </span>
                             </td>
-                            <td className="py-3 px-4 text-right font-bold text-slate-900">
+                            <td style={{ color: colors.gray[100] }} className="py-3 px-4 text-right font-bold">
                               ₹{(inst.amount || 0).toFixed(2)}
                             </td>
                           </tr>
@@ -759,82 +828,62 @@ const StudentDashboard = () => {
           {/* ===================== TAB: TYPING ===================== */}
           {activeTab === 'typing' && (
             <div className="space-y-6">
-              
-              <div className="bg-white rounded-2xl p-6 shadow-xs border border-slate-200/80 flex flex-col md:flex-row md:items-center justify-between gap-4">
-                <div>
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">
-                    Govt. Exam Preparation
-                  </span>
-                  <h2 className="text-xl font-display font-bold text-slate-900 mt-0.5">
-                    Typing Speed &amp; Accuracy Lab
-                  </h2>
-                  <p className="text-xs text-slate-500 mt-1">
-                    Interactive simulation for Bihar Beltron, SSC CHSL, High Court &amp; Civil Court typing exams.
-                  </p>
-                </div>
+              <Header
+                title="TYPING SPEED LAB"
+                subtitle="Bihar Beltron Hindi (KrutiDev) &amp; English practice simulation"
+              />
 
-                <span className="px-3 py-1 bg-slate-100 text-slate-700 text-xs font-semibold rounded-xl border border-slate-200">
-                  Hindi (KrutiDev) &amp; English
-                </span>
-              </div>
-
-              {/* Full Interactive Typing Widget */}
               <TypingTestWidget />
-
             </div>
           )}
 
           {/* ===================== TAB: MATERIALS ===================== */}
           {activeTab === 'materials' && (
             <div className="space-y-6">
-              
-              <div className="bg-white rounded-2xl p-6 shadow-xs border border-slate-200/80 flex flex-col md:flex-row md:items-center justify-between gap-4">
-                <div>
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">
-                    Digital Library
-                  </span>
-                  <h2 className="text-xl font-display font-bold text-slate-900 mt-0.5">
-                    Course Handbooks &amp; Notes
-                  </h2>
-                  <p className="text-xs text-slate-500 mt-1">
-                    Free downloadable PDFs prepared by Sonu Sir for practical and theory revision.
-                  </p>
-                </div>
+              <Header
+                title="STUDY MATERIALS"
+                subtitle="Free downloadable PDF course books and handbooks by Sonu Sir"
+              />
 
-                <span className="text-xs text-slate-500">
-                  {studyMaterials.length} Documents Available
-                </span>
-              </div>
-
-              {/* Materials Grid */}
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
                 {studyMaterials.map((mat, idx) => (
                   <div
                     key={idx}
-                    className="bg-white rounded-2xl p-5 shadow-xs border border-slate-200/80 hover:shadow-sm transition-shadow flex flex-col justify-between"
+                    style={{ backgroundColor: colors.primary[400] }}
+                    className="p-5 rounded-lg shadow-xs flex flex-col justify-between"
                   >
                     <div>
                       <div className="flex items-center justify-between">
-                        <span className="text-[10px] font-bold uppercase px-2 py-0.5 rounded bg-slate-100 text-slate-700">
+                        <span
+                          style={{
+                            backgroundColor: colors.primary[500],
+                            color: colors.greenAccent[500]
+                          }}
+                          className="text-[10px] font-bold uppercase px-2 py-0.5 rounded"
+                        >
                           {mat.format}
                         </span>
-                        <span className="text-[10px] text-slate-400">{mat.size}</span>
+                        <span style={{ color: colors.gray[400] }} className="text-[10px]">{mat.size}</span>
                       </div>
 
-                      <h3 className="font-bold text-slate-900 text-sm mt-3 leading-snug">
+                      <h3 style={{ color: colors.gray[100] }} className="font-bold text-sm mt-3 leading-snug">
                         {mat.title}
                       </h3>
-                      <span className="text-[11px] text-slate-500 mt-1 block">
+                      <span style={{ color: colors.gray[400] }} className="text-[11px] mt-1 block">
                         Category: {mat.category}
                       </span>
                     </div>
 
-                    <div className="mt-5 pt-3 border-t border-slate-100">
+                    <div className="mt-5 pt-3 border-t border-white/5">
                       <button
                         onClick={() => alert(`Downloading "${mat.title}" (${mat.size})...`)}
-                        className="w-full inline-flex items-center justify-center gap-1.5 px-3 py-2 bg-slate-50 hover:bg-slate-100 text-slate-700 font-semibold text-xs rounded-xl border border-slate-200 transition-colors"
+                        style={{
+                          backgroundColor: colors.primary[500],
+                          color: colors.gray[100]
+                        }}
+                        className="w-full inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-md font-semibold text-xs hover:opacity-80 transition-opacity"
                       >
-                        <Download className="w-3.5 h-3.5 text-slate-500" />
+                        <Download className="w-3.5 h-3.5 text-slate-400" />
                         <span>Download Handbook</span>
                       </button>
                     </div>
@@ -848,31 +897,33 @@ const StudentDashboard = () => {
           {/* ===================== TAB: CERTIFICATE ===================== */}
           {activeTab === 'certificate' && (
             <div className="space-y-6">
-              
-              <div className="bg-white rounded-2xl p-6 shadow-xs border border-slate-200/80 flex flex-col md:flex-row md:items-center justify-between gap-4">
-                <div>
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">
-                    Credential Verification
-                  </span>
-                  <h2 className="text-xl font-display font-bold text-slate-900 mt-0.5">
-                    Govt. Regd. Course Certificate
-                  </h2>
-                  <p className="text-xs text-slate-500 mt-1">
-                    Regd. Govt. of India · ISO 9001 Standard · Valid for Government &amp; Private Jobs.
-                  </p>
-                </div>
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <Header
+                  title="DIGITAL CERTIFICATE"
+                  subtitle="Govt. of India registered completion certificate preview"
+                />
 
                 <button
                   onClick={() => window.print()}
-                  className="inline-flex items-center gap-2 px-4 py-2.5 bg-white hover:bg-slate-50 text-slate-800 font-bold text-xs rounded-xl border border-slate-200 shadow-xs transition-colors"
+                  style={{
+                    backgroundColor: colors.blueAccent[700],
+                    color: '#ffffff'
+                  }}
+                  className="inline-flex items-center gap-2 px-4 py-2.5 rounded-md font-bold text-xs hover:opacity-90 transition-opacity"
                 >
-                  <Printer className="w-4 h-4 text-slate-500" />
+                  <Printer className="w-4 h-4" />
                   <span>Print Certificate</span>
                 </button>
               </div>
 
               {/* Certificate Frame Preview */}
-              <div className="bg-white rounded-2xl p-8 sm:p-12 shadow-sm border-2 border-slate-200 max-w-3xl mx-auto text-center relative overflow-hidden">
+              <div
+                style={{
+                  backgroundColor: '#ffffff',
+                  color: '#141414'
+                }}
+                className="rounded-lg p-8 sm:p-12 shadow-md border-4 border-amber-600/30 max-w-3xl mx-auto text-center relative overflow-hidden"
+              >
                 <div className="w-16 h-16 mx-auto mb-3">
                   <img
                     src="/mdi-real-logo-cropped.png"
@@ -890,7 +941,7 @@ const StudentDashboard = () => {
                 <p className="text-xs text-slate-600 font-semibold uppercase tracking-widest mt-0.5">
                   Computer Education &amp; Training Centre · Madhepura (Bihar)
                 </p>
-                <p className="text-[10px] text-slate-500 font-semibold uppercase tracking-wider mt-1">
+                <p className="text-[10px] text-amber-800 font-bold uppercase tracking-wider mt-1">
                   Regd. Govt. of India (भारत सरकार से मान्यता प्राप्त)
                 </p>
 
@@ -898,12 +949,12 @@ const StudentDashboard = () => {
                   <span className="text-xs italic text-slate-500 font-serif block">
                     This is to proudly certify that
                   </span>
-                  <h3 className="text-2xl font-black text-slate-900 font-serif mt-1 border-b-2 border-slate-300 inline-block pb-1 px-4">
+                  <h3 className="text-2xl font-black text-blue-950 font-serif mt-1 border-b-2 border-amber-400 inline-block pb-1 px-4">
                     {student?.name || 'Rajeev Kumar'}
                   </h3>
                   <p className="text-xs text-slate-600 mt-2">
                     Son of <strong>{student?.fatherName || 'Suresh Prasad Yadav'}</strong>, having Registration No.{' '}
-                    <strong className="font-mono text-slate-800">{student?.regNo || 'MDI-B2-456'}</strong>
+                    <strong className="font-mono">{student?.regNo || 'MDI-B2-456'}</strong>
                   </p>
                   <p className="text-xs text-slate-600 mt-1 max-w-lg mx-auto">
                     has successfully completed the 1-Year Diploma in{' '}
@@ -919,16 +970,16 @@ const StudentDashboard = () => {
                   </div>
 
                   <div className="text-center">
-                    <div className="w-14 h-14 mx-auto bg-slate-50 p-1 border border-slate-200 rounded flex items-center justify-center">
+                    <div className="w-14 h-14 mx-auto bg-slate-100 p-1 border border-slate-200 rounded flex items-center justify-center">
                       <QrCode className="w-10 h-10 text-slate-700" />
                     </div>
                     <span className="text-[9px] text-slate-400 font-mono block mt-1">Scan to Verify</span>
                   </div>
 
                   <div className="text-right">
-                    <span className="text-xs font-serif italic text-slate-900 block font-bold">Sonu Kumar</span>
+                    <span className="text-xs font-serif italic text-blue-900 block font-bold">Sonu Kumar</span>
                     <span className="text-[10px] text-slate-500 block">Director (BCA, MCA)</span>
-                    <span className="text-[9px] text-slate-400 font-semibold uppercase">Modern Delhi Infotech</span>
+                    <span className="text-[9px] text-amber-700 font-bold uppercase">Modern Delhi Infotech</span>
                   </div>
                 </div>
 

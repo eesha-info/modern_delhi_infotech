@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { DataProvider } from './context/DataContext';
+import { ThemeProvider } from './context/ThemeContext';
 
 // Common Components
 import TopNoticeBar from './components/common/TopNoticeBar';
@@ -168,7 +169,9 @@ function App() {
   return (
     <DataProvider>
       <AuthProvider>
-        <MainAppContent />
+        <ThemeProvider>
+          <MainAppContent />
+        </ThemeProvider>
       </AuthProvider>
     </DataProvider>
   );
