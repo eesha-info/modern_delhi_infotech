@@ -4,6 +4,8 @@
 **Director & Lead Mentor: Sonu Kumar (Sonu Sir - BCA, MCA)**  
 **Branch Code: 2 & 1**
 
+🌐 **Live site:** https://eesha-info.github.io/modern_delhi_infotech/
+
 ---
 
 ## 🚀 Overview
@@ -90,3 +92,14 @@ npm run dev
 npm run build
 ```
 
+
+
+---
+
+## 🚢 Deployment (GitHub Pages)
+
+Every push to `main` runs `.github/workflows/deploy.yml`, which builds the app with
+`VITE_BASE=/modern_delhi_infotech/` and publishes `dist/` to GitHub Pages.
+
+One-time setup: **Settings → Pages → Build and deployment → Source: GitHub Actions**.
+To redeploy without a code change: **Actions → Deploy to GitHub Pages → Run workflow**.
