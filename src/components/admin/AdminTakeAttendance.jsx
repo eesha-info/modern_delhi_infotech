@@ -10,6 +10,7 @@ import Header from '../dashboard/Header';
 const AdminTakeAttendance = () => {
   const { batches, students, attendanceData, markBatchAttendance } = useData();
   const { colors, mode } = useAppTheme();
+  const isDark = mode === 'dark';
 
   // State
   const [selectedBatchId, setSelectedBatchId] = useState('B1');
@@ -118,15 +119,21 @@ const AdminTakeAttendance = () => {
 
       {/* Top Controls Card: Batch Picker & Date Selector */}
       <div
-        style={{ backgroundColor: colors.primary[400] }}
-        className="rounded-lg p-6 shadow-xs"
+        style={{
+          backgroundColor: colors.primary[400],
+          borderColor: isDark ? 'rgba(255,255,255,0.06)' : '#e2e8f0'
+        }}
+        className="rounded-lg p-6 shadow-xs border"
       >
-        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-5 border-b border-white/5">
+        <div
+          style={{ borderColor: isDark ? 'rgba(255,255,255,0.08)' : '#e2e8f0' }}
+          className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-5 border-b"
+        >
           <div>
-            <h3 style={{ color: colors.gray[100] }} className="text-lg font-bold font-display">
+            <h3 style={{ color: isDark ? colors.gray[100] : '#0f172a' }} className="text-lg font-bold font-display">
               Select Batch &amp; Date
             </h3>
-            <p style={{ color: colors.gray[300] }} className="text-xs mt-0.5">
+            <p style={{ color: isDark ? colors.gray[300] : '#64748b' }} className="text-xs mt-0.5">
               Choose the batch time slot and session date to record attendance.
             </p>
           </div>
@@ -134,13 +141,16 @@ const AdminTakeAttendance = () => {
           {/* Date Picker Input */}
           <div className="flex items-center gap-3">
             <div
-              style={{ backgroundColor: colors.primary[500] }}
-              className="flex items-center gap-2 px-3.5 py-2 rounded-md"
+              style={{
+                backgroundColor: isDark ? colors.primary[500] : '#f8fafc',
+                borderColor: isDark ? 'rgba(255,255,255,0.1)' : '#cbd5e1',
+              }}
+              className="flex items-center gap-2 px-3.5 py-2 rounded-md border shadow-xs"
             >
-              <Calendar className="w-4 h-4" style={{ color: colors.gray[300] }} />
+              <Calendar className="w-4 h-4 text-slate-400" />
               <label
                 htmlFor="attendance-date"
-                style={{ color: colors.gray[100] }}
+                style={{ color: isDark ? colors.gray[100] : '#1e293b' }}
                 className="text-xs font-semibold whitespace-nowrap"
               >
                 Date:
@@ -150,7 +160,7 @@ const AdminTakeAttendance = () => {
                 type="date"
                 value={selectedDate}
                 onChange={(e) => setSelectedDate(e.target.value)}
-                style={{ color: colors.gray[100] }}
+                style={{ color: isDark ? colors.gray[100] : '#0f172a' }}
                 className="bg-transparent text-xs font-bold focus:outline-none cursor-pointer"
               />
             </div>
@@ -161,7 +171,7 @@ const AdminTakeAttendance = () => {
                 backgroundColor: colors.blueAccent[700],
                 color: '#ffffff',
               }}
-              className="text-xs font-bold px-3 py-2 rounded-md hover:opacity-90 transition-opacity"
+              className="text-xs font-bold px-3.5 py-2 rounded-md hover:opacity-90 transition-opacity shadow-xs"
             >
               Today
             </button>
@@ -170,7 +180,10 @@ const AdminTakeAttendance = () => {
 
         {/* Batch Selection Pills */}
         <div className="mt-5">
-          <label style={{ color: colors.gray[300] }} className="text-[11px] font-bold uppercase tracking-wider block mb-2.5">
+          <label
+            style={{ color: isDark ? colors.gray[300] : '#475569' }}
+            className="text-[11px] font-bold uppercase tracking-wider block mb-2.5"
+          >
             Select Computer Training Batch:
           </label>
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
@@ -186,30 +199,62 @@ const AdminTakeAttendance = () => {
                   key={batch.id}
                   onClick={() => setSelectedBatchId(batch.id)}
                   style={{
-                    backgroundColor: isSelected ? colors.blueAccent[700] : colors.primary[500],
-                    color: '#ffffff',
-                    border: isSelected ? `1px solid ${colors.blueAccent[400]}` : '1px solid transparent',
+                    backgroundColor: isSelected
+                      ? (isDark ? colors.blueAccent[700] : '#3e4396')
+                      : (isDark ? colors.primary[500] : '#ffffff'),
+                    borderColor: isSelected
+                      ? (isDark ? colors.blueAccent[400] : '#6870fa')
+                      : (isDark ? 'rgba(255,255,255,0.08)' : '#e2e8f0'),
                   }}
-                  className="p-3 rounded-md text-left transition-all"
+                  className={`p-3 rounded-lg text-left transition-all border shadow-xs hover:border-indigo-400 group focus:outline-none ${
+                    isSelected ? 'ring-2 ring-indigo-400/40' : ''
+                  }`}
                 >
                   <div className="flex items-center justify-between">
                     <span
                       style={{
-                        backgroundColor: isSelected ? 'rgba(255,255,255,0.2)' : 'rgba(255,255,255,0.05)',
-                        color: colors.gray[100]
+                        backgroundColor: isSelected
+                          ? 'rgba(255,255,255,0.2)'
+                          : (isDark ? 'rgba(255,255,255,0.08)' : '#f1f5f9'),
+                        color: isSelected
+                          ? '#ffffff'
+                          : (isDark ? colors.gray[100] : '#1e293b'),
                       }}
-                      className="text-[10px] font-bold px-1.5 py-0.5 rounded"
+                      className="text-[10px] font-bold px-1.5 py-0.5 rounded tracking-wide"
                     >
                       {batch.id}
                     </span>
-                    <span style={{ color: colors.gray[300] }} className="text-[10px]">
+                    <span
+                      style={{
+                        color: isSelected
+                          ? '#e2e8f0'
+                          : (isDark ? colors.gray[400] : '#64748b'),
+                      }}
+                      className="text-[11px] font-medium"
+                    >
                       {countInBatch} St.
                     </span>
                   </div>
-                  <h4 className="font-bold text-xs mt-2 truncate">
+
+                  <h4
+                    style={{
+                      color: isSelected
+                        ? '#ffffff'
+                        : (isDark ? colors.gray[100] : '#0f172a'),
+                    }}
+                    className="font-bold text-xs mt-2 truncate"
+                  >
                     {batch.name.split('(')[0]}
                   </h4>
-                  <p style={{ color: colors.gray[300] }} className="text-[10px] mt-0.5 truncate">
+
+                  <p
+                    style={{
+                      color: isSelected
+                        ? '#c3c6fd'
+                        : (isDark ? colors.gray[400] : '#64748b'),
+                    }}
+                    className="text-[10px] mt-0.5 truncate font-medium"
+                  >
                     {batch.timing}
                   </p>
                 </button>
@@ -220,24 +265,59 @@ const AdminTakeAttendance = () => {
 
         {/* Meta Info Bar */}
         <div
-          style={{ backgroundColor: colors.primary[500] }}
-          className="mt-4 p-3 rounded-md flex flex-wrap items-center justify-between gap-3 text-xs"
+          style={{
+            backgroundColor: isDark ? colors.primary[500] : '#f8fafc',
+            borderColor: isDark ? 'rgba(255,255,255,0.08)' : '#e2e8f0',
+          }}
+          className="mt-4 p-3 rounded-lg border flex flex-wrap items-center justify-between gap-3 text-xs"
         >
-          <div className="flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full" style={{ backgroundColor: colors.greenAccent[500] }}></span>
-            <strong style={{ color: colors.gray[100] }}>{activeBatch.name}</strong>
-            <span style={{ color: colors.gray[400] }}>·</span>
-            <span style={{ color: colors.gray[300] }}>Timing: {activeBatch.timing}</span>
-            <span style={{ color: colors.gray[400] }}>·</span>
-            <span style={{ color: colors.gray[300] }}>Room: {activeBatch.room}</span>
-            <span style={{ color: colors.gray[400] }}>·</span>
-            <span style={{ color: colors.gray[300] }}>
-              Mentor: <strong style={{ color: colors.gray[100] }}>{activeBatch.instructor}</strong>
+          <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+            <div className="flex items-center gap-1.5">
+              <span className="w-2.5 h-2.5 rounded-full bg-[#4cceac]"></span>
+              <strong style={{ color: isDark ? colors.gray[100] : '#0f172a' }}>{activeBatch.name}</strong>
+            </div>
+            <span className="text-slate-400 hidden sm:inline">·</span>
+            <span
+              style={{
+                backgroundColor: isDark ? 'rgba(255,255,255,0.05)' : '#ffffff',
+                color: isDark ? colors.gray[300] : '#475569',
+                borderColor: isDark ? 'rgba(255,255,255,0.05)' : '#e2e8f0'
+              }}
+              className="px-2 py-0.5 rounded border text-[11px] font-medium"
+            >
+              ⏰ Timing: <strong style={{ color: isDark ? colors.gray[100] : '#1e293b' }}>{activeBatch.timing}</strong>
+            </span>
+            <span
+              style={{
+                backgroundColor: isDark ? 'rgba(255,255,255,0.05)' : '#ffffff',
+                color: isDark ? colors.gray[300] : '#475569',
+                borderColor: isDark ? 'rgba(255,255,255,0.05)' : '#e2e8f0'
+              }}
+              className="px-2 py-0.5 rounded border text-[11px] font-medium"
+            >
+              🏢 Room: <strong style={{ color: isDark ? colors.gray[100] : '#1e293b' }}>{activeBatch.room}</strong>
+            </span>
+            <span
+              style={{
+                backgroundColor: isDark ? 'rgba(255,255,255,0.05)' : '#ffffff',
+                color: isDark ? colors.gray[300] : '#475569',
+                borderColor: isDark ? 'rgba(255,255,255,0.05)' : '#e2e8f0'
+              }}
+              className="px-2 py-0.5 rounded border text-[11px] font-medium"
+            >
+              👨‍🏫 Mentor: <strong style={{ color: isDark ? colors.gray[100] : '#1e293b' }}>{activeBatch.instructor}</strong>
             </span>
           </div>
 
-          <div style={{ color: colors.gray[300] }} className="text-[11px]">
-            Capacity: <strong style={{ color: colors.gray[100] }}>{activeBatch.enrolled} / {activeBatch.maxCapacity} PCs</strong>
+          <div
+            style={{
+              backgroundColor: isDark ? 'rgba(76, 206, 172, 0.1)' : '#ecfdf5',
+              borderColor: isDark ? 'rgba(76, 206, 172, 0.3)' : '#a7f3d0',
+              color: isDark ? colors.greenAccent[500] : '#047857'
+            }}
+            className="px-2.5 py-1 rounded-md border text-[11px] font-bold"
+          >
+            Capacity: {activeBatch.enrolled} / {activeBatch.maxCapacity} PCs Active
           </div>
         </div>
       </div>
@@ -247,35 +327,41 @@ const AdminTakeAttendance = () => {
         
         {/* Total in batch */}
         <div
-          style={{ backgroundColor: colors.primary[400] }}
-          className="rounded-lg p-4 shadow-xs"
+          style={{
+            backgroundColor: colors.primary[400],
+            borderColor: isDark ? 'rgba(255,255,255,0.06)' : '#e2e8f0'
+          }}
+          className="rounded-lg p-4 shadow-xs border"
         >
           <div className="flex items-center justify-between">
-            <span style={{ color: colors.gray[300] }} className="text-[10px] font-bold uppercase tracking-wider">
+            <span style={{ color: isDark ? colors.gray[300] : '#64748b' }} className="text-[10px] font-bold uppercase tracking-wider">
               Total in Batch
             </span>
-            <Users className="w-4 h-4" style={{ color: colors.gray[300] }} />
+            <Users className="w-4 h-4 text-slate-400" />
           </div>
-          <div style={{ color: colors.gray[100] }} className="text-2xl font-black mt-1 font-display">
+          <div style={{ color: isDark ? colors.gray[100] : '#0f172a' }} className="text-2xl font-black mt-1 font-display">
             {totalCount}
           </div>
-          <span style={{ color: colors.gray[400] }} className="text-[10px]">
+          <span style={{ color: isDark ? colors.gray[400] : '#64748b' }} className="text-[10px]">
             Registered Students
           </span>
         </div>
 
         {/* Present */}
         <div
-          style={{ backgroundColor: colors.primary[400] }}
-          className="rounded-lg p-4 shadow-xs"
+          style={{
+            backgroundColor: colors.primary[400],
+            borderColor: isDark ? 'rgba(255,255,255,0.06)' : '#e2e8f0'
+          }}
+          className="rounded-lg p-4 shadow-xs border"
         >
           <div className="flex items-center justify-between">
             <span style={{ color: colors.greenAccent[500] }} className="text-[10px] font-bold uppercase tracking-wider">
               Present
             </span>
-            <span className="w-2 h-2 rounded-full" style={{ backgroundColor: colors.greenAccent[500] }}></span>
+            <span className="w-2.5 h-2.5 rounded-full bg-[#4cceac]"></span>
           </div>
-          <div style={{ color: colors.gray[100] }} className="text-2xl font-black mt-1 font-display">
+          <div style={{ color: isDark ? colors.gray[100] : '#0f172a' }} className="text-2xl font-black mt-1 font-display">
             {presentCount}
           </div>
           <span style={{ color: colors.greenAccent[500] }} className="text-[10px] font-semibold">
@@ -285,16 +371,19 @@ const AdminTakeAttendance = () => {
 
         {/* Absent */}
         <div
-          style={{ backgroundColor: colors.primary[400] }}
-          className="rounded-lg p-4 shadow-xs"
+          style={{
+            backgroundColor: colors.primary[400],
+            borderColor: isDark ? 'rgba(255,255,255,0.06)' : '#e2e8f0'
+          }}
+          className="rounded-lg p-4 shadow-xs border"
         >
           <div className="flex items-center justify-between">
             <span style={{ color: colors.redAccent[500] }} className="text-[10px] font-bold uppercase tracking-wider">
               Absent
             </span>
-            <span className="w-2 h-2 rounded-full" style={{ backgroundColor: colors.redAccent[500] }}></span>
+            <span className="w-2.5 h-2.5 rounded-full bg-[#db4f4a]"></span>
           </div>
-          <div style={{ color: colors.gray[100] }} className="text-2xl font-black mt-1 font-display">
+          <div style={{ color: isDark ? colors.gray[100] : '#0f172a' }} className="text-2xl font-black mt-1 font-display">
             {absentCount}
           </div>
           <span style={{ color: colors.redAccent[500] }} className="text-[10px] font-semibold">
@@ -304,39 +393,45 @@ const AdminTakeAttendance = () => {
 
         {/* Late */}
         <div
-          style={{ backgroundColor: colors.primary[400] }}
-          className="rounded-lg p-4 shadow-xs"
+          style={{
+            backgroundColor: colors.primary[400],
+            borderColor: isDark ? 'rgba(255,255,255,0.06)' : '#e2e8f0'
+          }}
+          className="rounded-lg p-4 shadow-xs border"
         >
           <div className="flex items-center justify-between">
-            <span style={{ color: colors.blueAccent[400] }} className="text-[10px] font-bold uppercase tracking-wider">
+            <span style={{ color: '#38bdf8' }} className="text-[10px] font-bold uppercase tracking-wider">
               Late
             </span>
-            <span className="w-2 h-2 rounded-full" style={{ backgroundColor: colors.blueAccent[400] }}></span>
+            <span className="w-2.5 h-2.5 rounded-full bg-[#38bdf8]"></span>
           </div>
-          <div style={{ color: colors.gray[100] }} className="text-2xl font-black mt-1 font-display">
+          <div style={{ color: isDark ? colors.gray[100] : '#0f172a' }} className="text-2xl font-black mt-1 font-display">
             {lateCount}
           </div>
-          <span style={{ color: colors.blueAccent[400] }} className="text-[10px] font-semibold">
+          <span style={{ color: '#38bdf8' }} className="text-[10px] font-semibold">
             Permitted Late
           </span>
         </div>
 
         {/* Attendance Rate */}
         <div
-          style={{ backgroundColor: colors.primary[400] }}
-          className="rounded-lg p-4 shadow-xs col-span-2 sm:col-span-1"
+          style={{
+            backgroundColor: colors.primary[400],
+            borderColor: isDark ? 'rgba(255,255,255,0.06)' : '#e2e8f0'
+          }}
+          className="rounded-lg p-4 shadow-xs border col-span-2 sm:col-span-1"
         >
           <div className="flex items-center justify-between">
-            <span style={{ color: colors.gray[300] }} className="text-[10px] font-bold uppercase tracking-wider">
+            <span style={{ color: isDark ? colors.gray[300] : '#64748b' }} className="text-[10px] font-bold uppercase tracking-wider">
               Attendance
             </span>
             <span style={{ color: colors.greenAccent[500] }} className="text-xs font-bold">{attendanceRate}%</span>
           </div>
-          <div style={{ color: colors.gray[100] }} className="text-2xl font-black mt-1 font-display">
+          <div style={{ color: isDark ? colors.gray[100] : '#0f172a' }} className="text-2xl font-black mt-1 font-display">
             {attendanceRate}%
           </div>
           <div
-            style={{ backgroundColor: colors.primary[500] }}
+            style={{ backgroundColor: isDark ? colors.primary[500] : '#e2e8f0' }}
             className="w-full h-1.5 rounded-full mt-2 overflow-hidden"
           >
             <div
@@ -373,70 +468,82 @@ const AdminTakeAttendance = () => {
 
       {/* Students Attendance Register Card */}
       <div
-        style={{ backgroundColor: colors.primary[400] }}
-        className="rounded-lg shadow-xs overflow-hidden"
+        style={{
+          backgroundColor: colors.primary[400],
+          borderColor: isDark ? 'rgba(255,255,255,0.06)' : '#e2e8f0'
+        }}
+        className="rounded-lg shadow-xs overflow-hidden border"
       >
         {/* Table Action Bar */}
-        <div className="p-4 border-b border-white/5 flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div
+          style={{ borderColor: isDark ? 'rgba(255,255,255,0.08)' : '#e2e8f0' }}
+          className="p-4 border-b flex flex-col md:flex-row md:items-center justify-between gap-4"
+        >
           <div className="flex items-center gap-3">
             <div
-              style={{ backgroundColor: colors.primary[500] }}
-              className="flex items-center rounded-md px-3 py-1.5 w-60"
+              style={{
+                backgroundColor: isDark ? colors.primary[500] : '#f8fafc',
+                borderColor: isDark ? 'rgba(255,255,255,0.1)' : '#cbd5e1'
+              }}
+              className="flex items-center rounded-md px-3 py-1.5 w-60 border shadow-xs"
             >
               <input
                 type="text"
                 placeholder="Search student or Roll No..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                style={{ color: colors.gray[100] }}
+                style={{ color: isDark ? colors.gray[100] : '#0f172a' }}
                 className="bg-transparent border-none outline-none text-xs flex-1 placeholder:text-slate-400"
               />
               <Search className="w-4 h-4 text-slate-400" />
             </div>
-            <span style={{ color: colors.gray[300] }} className="text-xs">
+            <span style={{ color: isDark ? colors.gray[300] : '#64748b' }} className="text-xs">
               Showing {displayedStudents.length} of {batchStudents.length} students
             </span>
           </div>
 
           {/* Quick Bulk Buttons */}
           <div className="flex items-center gap-2">
-            <span style={{ color: colors.gray[300] }} className="text-[11px] font-bold uppercase hidden lg:inline">
+            <span style={{ color: isDark ? colors.gray[300] : '#64748b' }} className="text-[11px] font-bold uppercase hidden lg:inline">
               Quick Bulk:
             </span>
             
             <button
               onClick={() => handleMarkAll('Present')}
               style={{
-                backgroundColor: colors.primary[500],
-                color: colors.gray[100],
+                backgroundColor: isDark ? colors.primary[500] : '#f1f5f9',
+                color: isDark ? colors.gray[100] : '#0f172a',
+                borderColor: isDark ? 'rgba(255,255,255,0.1)' : '#cbd5e1'
               }}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-semibold hover:opacity-80 transition-opacity"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-semibold hover:opacity-80 transition-opacity border shadow-xs"
             >
-              <Check className="w-3.5 h-3.5" style={{ color: colors.greenAccent[500] }} />
+              <Check className="w-3.5 h-3.5 text-emerald-500" />
               <span>Mark All Present</span>
             </button>
 
             <button
               onClick={() => handleMarkAll('Absent')}
               style={{
-                backgroundColor: colors.primary[500],
-                color: colors.gray[100],
+                backgroundColor: isDark ? colors.primary[500] : '#f1f5f9',
+                color: isDark ? colors.gray[100] : '#0f172a',
+                borderColor: isDark ? 'rgba(255,255,255,0.1)' : '#cbd5e1'
               }}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-semibold hover:opacity-80 transition-opacity"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-semibold hover:opacity-80 transition-opacity border shadow-xs"
             >
-              <X className="w-3.5 h-3.5" style={{ color: colors.redAccent[500] }} />
+              <X className="w-3.5 h-3.5 text-rose-500" />
               <span>Mark All Absent</span>
             </button>
 
             <button
               onClick={() => handleMarkAll('Late')}
               style={{
-                backgroundColor: colors.primary[500],
-                color: colors.gray[100],
+                backgroundColor: isDark ? colors.primary[500] : '#f1f5f9',
+                color: isDark ? colors.gray[100] : '#0f172a',
+                borderColor: isDark ? 'rgba(255,255,255,0.1)' : '#cbd5e1'
               }}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-semibold hover:opacity-80 transition-opacity"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-semibold hover:opacity-80 transition-opacity border shadow-xs"
             >
-              <Clock className="w-3.5 h-3.5" style={{ color: colors.blueAccent[400] }} />
+              <Clock className="w-3.5 h-3.5 text-amber-500" />
               <span>Mark All Late</span>
             </button>
           </div>
@@ -447,10 +554,10 @@ const AdminTakeAttendance = () => {
           {displayedStudents.length === 0 ? (
             <div className="py-16 text-center">
               <Users className="w-12 h-12 mx-auto mb-2 text-slate-500" />
-              <p style={{ color: colors.gray[100] }} className="text-sm font-bold">
+              <p style={{ color: isDark ? colors.gray[100] : '#0f172a' }} className="text-sm font-bold">
                 No students found in this batch
               </p>
-              <p style={{ color: colors.gray[300] }} className="text-xs mt-0.5">
+              <p style={{ color: isDark ? colors.gray[300] : '#64748b' }} className="text-xs mt-0.5">
                 Try selecting another batch or adjust your search.
               </p>
             </div>
@@ -459,10 +566,11 @@ const AdminTakeAttendance = () => {
               <thead>
                 <tr
                   style={{
-                    backgroundColor: colors.primary[500],
-                    color: colors.gray[300]
+                    backgroundColor: isDark ? colors.primary[500] : '#f8fafc',
+                    color: isDark ? colors.gray[300] : '#475569',
+                    borderColor: isDark ? 'rgba(255,255,255,0.08)' : '#e2e8f0'
                   }}
-                  className="text-[11px] font-bold uppercase tracking-wider border-b border-white/5"
+                  className="text-[11px] font-bold uppercase tracking-wider border-b"
                 >
                   <th className="py-3 px-4 w-12 text-center">#</th>
                   <th className="py-3 px-4">Student Details</th>
@@ -472,7 +580,12 @@ const AdminTakeAttendance = () => {
                   <th className="py-3 px-4">Remarks</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-white/5 text-xs">
+              <tbody
+                style={{
+                  borderColor: isDark ? 'rgba(255,255,255,0.06)' : '#e2e8f0'
+                }}
+                className="divide-y text-xs"
+              >
                 {displayedStudents.map((st, idx) => {
                   const studentStatus = currentAttendance[st.id]?.status || 'Present';
                   const studentRemark = currentAttendance[st.id]?.remark || '';
@@ -481,12 +594,14 @@ const AdminTakeAttendance = () => {
                     <tr
                       key={st.id}
                       style={{
-                        backgroundColor: idx % 2 === 0 ? 'transparent' : 'rgba(255,255,255,0.02)'
+                        backgroundColor: idx % 2 === 0
+                          ? 'transparent'
+                          : (isDark ? 'rgba(255,255,255,0.02)' : 'rgba(0,0,0,0.015)')
                       }}
                       className="hover:opacity-90 transition-opacity"
                     >
                       {/* Index */}
-                      <td style={{ color: colors.gray[300] }} className="py-3.5 px-4 text-center font-semibold">
+                      <td style={{ color: isDark ? colors.gray[300] : '#64748b' }} className="py-3.5 px-4 text-center font-semibold">
                         {idx + 1}
                       </td>
 
@@ -496,29 +611,29 @@ const AdminTakeAttendance = () => {
                           <img
                             src={st.avatar}
                             alt={st.name}
-                            className="w-9 h-9 rounded-full object-cover border border-white/10 flex-shrink-0"
+                            className="w-9 h-9 rounded-full object-cover border border-slate-300/40 flex-shrink-0"
                             onError={(e) => {
                               e.currentTarget.src = "/logo-icon.svg";
                             }}
                           />
                           <div>
-                            <div style={{ color: colors.gray[100] }} className="font-bold text-sm">
+                            <div style={{ color: isDark ? colors.gray[100] : '#0f172a' }} className="font-bold text-sm">
                               {st.name}
                             </div>
-                            <div style={{ color: colors.gray[300] }} className="text-[11px]">
+                            <div style={{ color: isDark ? colors.gray[300] : '#64748b' }} className="text-[11px]">
                               S/O: {st.fatherName}
                             </div>
                             <div className="flex items-center gap-2 mt-0.5">
                               <span
                                 style={{
-                                  backgroundColor: colors.primary[500],
+                                  backgroundColor: isDark ? colors.primary[500] : '#f1f5f9',
                                   color: colors.greenAccent[500]
                                 }}
-                                className="font-mono text-[10px] px-1.5 py-0.5 rounded"
+                                className="font-mono text-[10px] px-1.5 py-0.5 rounded font-bold"
                               >
                                 {st.regNo}
                               </span>
-                              <span style={{ color: colors.gray[400] }} className="text-[10px]">
+                              <span style={{ color: isDark ? colors.gray[400] : '#64748b' }} className="text-[10px]">
                                 Roll: {st.rollNo}
                               </span>
                             </div>
@@ -530,14 +645,15 @@ const AdminTakeAttendance = () => {
                       <td className="py-3.5 px-4">
                         <span
                           style={{
-                            backgroundColor: colors.primary[500],
-                            color: colors.gray[100]
+                            backgroundColor: isDark ? colors.primary[500] : '#f1f5f9',
+                            color: isDark ? colors.gray[100] : '#0f172a',
+                            borderColor: isDark ? 'rgba(255,255,255,0.1)' : '#cbd5e1'
                           }}
-                          className="font-bold px-2 py-0.5 rounded text-xs inline-block"
+                          className="font-bold px-2 py-0.5 rounded text-xs inline-block border"
                         >
                           {st.courseCode}
                         </span>
-                        <div style={{ color: colors.gray[400] }} className="text-[10px] mt-0.5 truncate max-w-[130px]">
+                        <div style={{ color: isDark ? colors.gray[400] : '#64748b' }} className="text-[10px] mt-0.5 truncate max-w-[130px]">
                           {st.courseName}
                         </div>
                       </td>
@@ -546,10 +662,11 @@ const AdminTakeAttendance = () => {
                       <td className="py-3.5 px-4">
                         <span
                           style={{
-                            backgroundColor: colors.primary[500],
-                            color: colors.gray[100]
+                            backgroundColor: isDark ? colors.primary[500] : '#f1f5f9',
+                            color: isDark ? colors.gray[100] : '#0f172a',
+                            borderColor: isDark ? 'rgba(255,255,255,0.1)' : '#cbd5e1'
                           }}
-                          className="font-mono px-2 py-1 rounded text-[11px]"
+                          className="font-mono px-2 py-1 rounded text-[11px] font-semibold border"
                         >
                           {st.pcNumber || `PC-${String(idx + 1).padStart(2, '0')}`}
                         </span>
@@ -563,10 +680,19 @@ const AdminTakeAttendance = () => {
                             type="button"
                             onClick={() => handleSetStatus(st.id, 'Present')}
                             style={{
-                              backgroundColor: studentStatus === 'Present' ? colors.greenAccent[600] : colors.primary[500],
-                              color: '#ffffff',
+                              backgroundColor: studentStatus === 'Present'
+                                ? '#10b981'
+                                : (isDark ? colors.primary[500] : '#f1f5f9'),
+                              color: studentStatus === 'Present'
+                                ? '#ffffff'
+                                : (isDark ? colors.gray[300] : '#475569'),
+                              borderColor: studentStatus === 'Present'
+                                ? '#059669'
+                                : (isDark ? 'rgba(255,255,255,0.1)' : '#cbd5e1'),
                             }}
-                            className="flex items-center gap-1 px-3 py-1.5 rounded-md text-xs font-semibold transition-opacity"
+                            className={`flex items-center gap-1 px-3 py-1.5 rounded-md text-xs font-semibold border transition-all ${
+                              studentStatus === 'Present' ? 'shadow-xs font-bold' : 'hover:opacity-80'
+                            }`}
                           >
                             <Check className="w-3.5 h-3.5" />
                             <span>Present</span>
@@ -577,10 +703,19 @@ const AdminTakeAttendance = () => {
                             type="button"
                             onClick={() => handleSetStatus(st.id, 'Absent')}
                             style={{
-                              backgroundColor: studentStatus === 'Absent' ? colors.redAccent[500] : colors.primary[500],
-                              color: '#ffffff',
+                              backgroundColor: studentStatus === 'Absent'
+                                ? '#ef4444'
+                                : (isDark ? colors.primary[500] : '#f1f5f9'),
+                              color: studentStatus === 'Absent'
+                                ? '#ffffff'
+                                : (isDark ? colors.gray[300] : '#475569'),
+                              borderColor: studentStatus === 'Absent'
+                                ? '#dc2626'
+                                : (isDark ? 'rgba(255,255,255,0.1)' : '#cbd5e1'),
                             }}
-                            className="flex items-center gap-1 px-3 py-1.5 rounded-md text-xs font-semibold transition-opacity"
+                            className={`flex items-center gap-1 px-3 py-1.5 rounded-md text-xs font-semibold border transition-all ${
+                              studentStatus === 'Absent' ? 'shadow-xs font-bold' : 'hover:opacity-80'
+                            }`}
                           >
                             <X className="w-3.5 h-3.5" />
                             <span>Absent</span>
@@ -591,10 +726,19 @@ const AdminTakeAttendance = () => {
                             type="button"
                             onClick={() => handleSetStatus(st.id, 'Late')}
                             style={{
-                              backgroundColor: studentStatus === 'Late' ? colors.blueAccent[600] : colors.primary[500],
-                              color: '#ffffff',
+                              backgroundColor: studentStatus === 'Late'
+                                ? '#f59e0b'
+                                : (isDark ? colors.primary[500] : '#f1f5f9'),
+                              color: studentStatus === 'Late'
+                                ? '#ffffff'
+                                : (isDark ? colors.gray[300] : '#475569'),
+                              borderColor: studentStatus === 'Late'
+                                ? '#d97706'
+                                : (isDark ? 'rgba(255,255,255,0.1)' : '#cbd5e1'),
                             }}
-                            className="flex items-center gap-1 px-3 py-1.5 rounded-md text-xs font-semibold transition-opacity"
+                            className={`flex items-center gap-1 px-3 py-1.5 rounded-md text-xs font-semibold border transition-all ${
+                              studentStatus === 'Late' ? 'shadow-xs font-bold' : 'hover:opacity-80'
+                            }`}
                           >
                             <Clock className="w-3.5 h-3.5" />
                             <span>Late</span>
@@ -610,10 +754,11 @@ const AdminTakeAttendance = () => {
                           onChange={(e) => handleSetRemark(st.id, e.target.value)}
                           placeholder="Optional note..."
                           style={{
-                            backgroundColor: colors.primary[500],
-                            color: colors.gray[100]
+                            backgroundColor: isDark ? colors.primary[500] : '#f8fafc',
+                            color: isDark ? colors.gray[100] : '#0f172a',
+                            borderColor: isDark ? 'rgba(255,255,255,0.1)' : '#cbd5e1'
                           }}
-                          className="w-full rounded-md px-2.5 py-1 text-xs outline-none focus:ring-1 focus:ring-teal-400"
+                          className="w-full rounded-md px-2.5 py-1 text-xs border outline-none focus:ring-1 focus:ring-teal-400"
                         />
                       </td>
 
@@ -627,11 +772,14 @@ const AdminTakeAttendance = () => {
 
         {/* Footer Save Action Bar */}
         <div
-          style={{ backgroundColor: colors.primary[500] }}
-          className="p-4 flex flex-col sm:flex-row items-center justify-between gap-3"
+          style={{
+            backgroundColor: isDark ? colors.primary[500] : '#f8fafc',
+            borderColor: isDark ? 'rgba(255,255,255,0.08)' : '#e2e8f0'
+          }}
+          className="p-4 border-t flex flex-col sm:flex-row items-center justify-between gap-3"
         >
-          <div style={{ color: colors.gray[300] }} className="text-xs">
-            Ready to record: <strong style={{ color: colors.gray[100] }}>{presentCount} Present</strong>, <strong style={{ color: colors.gray[100] }}>{absentCount} Absent</strong> for <strong style={{ color: colors.gray[100] }}>{activeBatch.name}</strong>.
+          <div style={{ color: isDark ? colors.gray[300] : '#475569' }} className="text-xs">
+            Ready to record: <strong style={{ color: isDark ? colors.gray[100] : '#0f172a' }}>{presentCount} Present</strong>, <strong style={{ color: isDark ? colors.gray[100] : '#0f172a' }}>{absentCount} Absent</strong> for <strong style={{ color: isDark ? colors.gray[100] : '#0f172a' }}>{activeBatch.name}</strong>.
           </div>
 
           <button
@@ -641,7 +789,7 @@ const AdminTakeAttendance = () => {
               backgroundColor: colors.blueAccent[700],
               color: '#ffffff',
             }}
-            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-md text-xs font-bold hover:opacity-90 transition-opacity disabled:opacity-50"
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-md text-xs font-bold hover:opacity-90 transition-opacity disabled:opacity-50 shadow-xs"
           >
             <Save className="w-4 h-4" />
             <span>{isSaving ? 'Saving...' : 'Save & Record Attendance'}</span>
