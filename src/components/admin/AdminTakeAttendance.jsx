@@ -14,11 +14,69 @@ const AdminTakeAttendance = ({ initialBatchId = null }) => {
   const isDark = mode === 'dark';
 
   // State
-  const [selectedBatchId, setSelectedBatchId] = useState(initialBatchId || 'B1');
-  const [selectedDate, setSelectedDate] = useState(() => {
-    const today = new Date();
-    return today.toISOString().split('T')[0]; // '2026-11-04'
-  });
+  // Theory / Lab switch (defaults to Theory, or to the type of the batch we were opened for)
+  const typeOf = (b) => ((b?.type || 'Theory') === 'Lab' ? 'Lab' : 'Theory');
+  const [classType, setClassType] = useState(() => typeOf(batches.find((b) => b.id === initialBatchId)) || 'Theory');
+  const typeBatches = batches.filter((b) => typeOf(b) === classType);
+  const localToday = () => {
+    const d = new Date();
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+  };
+
+  // "07:00 AM – 08:00 AM" -> { start: 420, end: 480 } minutes since midnight
+  const slotMinutes = (timing) => {
+    const toMin = (t) => {
+      const m = String(t || '').match(/(\d{1,2}):(\d{2})\s*(AM|PM)/i);
+      if (!m) return null;
+      let h = Number(m[1]) % 12;
+      if (m[3].toUpperCase() === 'PM') h += 12;
+      return h * 60 + Number(m[2]);
+    };
+    const [a, b] = String(timing || '').split(/–|-/);
+    const start = toMin(a);
+    const end = toMin(b) ?? (start !== null ? start + 60 : null);
+    return { start: start ?? 9999, end: end ?? 9999 };
+  };
+
+  // Pick the best batch of a type for a date:
+  //   today  -> the class running now, else the next one today, else the last one today
+  //   other  -> that day's first class
+  //   no class that day (e.g. Sunday) -> first batch of the type
+  const bestBatchFor = (t, dateStr = localToday()) => {
+    const weekday = new Date(`${dateStr}T00:00:00`).getDay();
+    const pattern = [1, 3, 5].includes(weekday) ? 'MWF' : [2, 4, 6].includes(weekday) ? 'TTS' : null;
+    const ofType = batches.filter((b) => typeOf(b) === t);
+    const meeting = ofType
+      .filter((b) => b.days === pattern)
+      .sort((x, y) => slotMinutes(x.timing).start - slotMinutes(y.timing).start);
+    if (meeting.length === 0) return ofType[0]?.id;
+    if (dateStr !== localToday()) return meeting[0].id;
+    const now = new Date();
+    const mins = now.getHours() * 60 + now.getMinutes();
+    const running = meeting.find((b) => { const s = slotMinutes(b.timing); return mins >= s.start && mins < s.end; });
+    const next = meeting.find((b) => slotMinutes(b.timing).start > mins);
+    return (running || next || meeting[meeting.length - 1]).id;
+  };
+
+  const [selectedBatchId, setSelectedBatchId] = useState(
+    () => initialBatchId || bestBatchFor('Theory') || batches[0]?.id
+  );
+  // Opening Theory or Lab always jumps to the class running now (or next)
+  const switchType = (t) => {
+    setClassType(t);
+    const best = bestBatchFor(t, selectedDate);
+    if (best) setSelectedBatchId(best);
+  };
+  const changeDate = (dateStr) => {
+    setSelectedDate(dateStr);
+    const best = bestBatchFor(classType, dateStr);
+    if (best) setSelectedBatchId(best);
+  };
+  const [selectedDate, setSelectedDate] = useState(localToday);
+  // Does a batch meet on the selected date? (MWF / TTS)
+  const DAY_SETS = { MWF: [1, 3, 5], TTS: [2, 4, 6] };
+  const selectedWeekday = new Date(`${selectedDate}T00:00:00`).getDay();
+  const meetsOnDate = (b) => (DAY_SETS[b.days] ? DAY_SETS[b.days].includes(selectedWeekday) : selectedWeekday !== 0);
   const [searchTerm, setSearchTerm] = useState('');
   const [saveSuccessMessage, setSaveSuccessMessage] = useState('');
   const [isSaving, setIsSaving] = useState(false);
@@ -158,14 +216,14 @@ const AdminTakeAttendance = ({ initialBatchId = null }) => {
                 id="attendance-date"
                 type="date"
                 value={selectedDate}
-                onChange={(e) => setSelectedDate(e.target.value)}
+                onChange={(e) => changeDate(e.target.value)}
                 style={{ color: isDark ? colors.gray[100] : '#0f172a' }}
                 className="bg-transparent text-xs font-bold focus:outline-none cursor-pointer"
               />
             </div>
 
             <button
-              onClick={() => setSelectedDate(new Date().toISOString().split('T')[0])}
+              onClick={() => changeDate(localToday())}
               style={{
                 backgroundColor: colors.blueAccent[700],
                 color: '#ffffff',
@@ -179,14 +237,48 @@ const AdminTakeAttendance = ({ initialBatchId = null }) => {
 
         {/* Batch Selection Pills */}
         <div className="mt-5">
-          <label
-            style={{ color: isDark ? colors.gray[300] : '#475569' }}
-            className="text-[11px] font-bold uppercase tracking-wider block mb-2.5"
-          >
-            Select Computer Training Batch:
-          </label>
+          <div className="flex flex-wrap items-center justify-between gap-3 mb-3">
+            <label
+              style={{ color: isDark ? colors.gray[300] : '#475569' }}
+              className="text-[11px] font-bold uppercase tracking-wider block"
+            >
+              Select {classType} Batch:
+            </label>
+            {/* Theory / Lab switch */}
+            <div
+              role="tablist"
+              aria-label="Class type"
+              style={{ backgroundColor: isDark ? colors.primary[500] : '#f1f5f9', borderColor: isDark ? 'rgba(255,255,255,0.08)' : '#e2e8f0' }}
+              className="inline-flex p-1 rounded-lg border"
+            >
+              {['Theory', 'Lab'].map((t) => {
+                const active = classType === t;
+                const n = batches.filter((b) => typeOf(b) === t).length;
+                return (
+                  <button
+                    key={t}
+                    role="tab"
+                    aria-selected={active}
+                    onClick={() => switchType(t)}
+                    style={{
+                      backgroundColor: active ? (t === 'Lab' ? '#d97706' : (isDark ? colors.blueAccent[700] : '#3e4396')) : 'transparent',
+                      color: active ? '#ffffff' : (isDark ? colors.gray[300] : '#475569'),
+                    }}
+                    className="px-4 py-1.5 rounded-md text-xs font-bold transition-colors"
+                  >
+                    {t} <span className="opacity-75 font-semibold">({n})</span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
-            {batches.map((batch) => {
+            {typeBatches.length === 0 && (
+              <p style={{ color: isDark ? colors.gray[400] : '#64748b' }} className="col-span-full text-xs py-4">
+                No {classType} batches yet. Create one in Batch Management.
+              </p>
+            )}
+            {typeBatches.map((batch) => {
               const isSelected = selectedBatchId === batch.id;
               const countInBatch = studentsInBatch(batch.id).length;
 
@@ -228,7 +320,7 @@ const AdminTakeAttendance = ({ initialBatchId = null }) => {
                       }}
                       className="text-[11px] font-medium"
                     >
-                      {countInBatch} St.
+                      {meetsOnDate(batch) ? `${countInBatch} St.` : 'No class'}
                     </span>
                   </div>
 
@@ -313,7 +405,7 @@ const AdminTakeAttendance = ({ initialBatchId = null }) => {
             }}
             className="px-2.5 py-1 rounded-md border text-[11px] font-bold"
           >
-            Capacity: {activeBatch.enrolled} / {activeBatch.maxCapacity} PCs Active
+            Capacity: {batchStudents.length} / {activeBatch.maxCapacity} {typeOf(activeBatch) === 'Lab' ? 'PCs' : 'seats'}
           </div>
         </div>
       </div>
