@@ -143,7 +143,7 @@ const MainAppContent = () => {
       <Footer
         onOpenAdmission={() => handleOpenAdmission(null)}
         onOpenLogin={() => setIsLoginOpen(true)}
-        onOpenVerify={handleOpenVerify}
+        onOpenVerify={() => setIsVerifyOpen(true)}
       />
 
       {/* Modals */}
