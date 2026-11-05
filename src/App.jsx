@@ -10,7 +10,6 @@ import Footer from './components/common/Footer';
 
 // Home Landing Page Sections
 import HeroSection from './components/home/HeroSection';
-import StatsBanner from './components/home/StatsBanner';
 import CourseCatalog from './components/home/CourseCatalog';
 import WhyChooseMdi from './components/home/WhyChooseMdi';
 import DirectorMessage from './components/home/DirectorMessage';
@@ -99,9 +98,6 @@ const MainAppContent = () => {
           onOpenLogin={() => setIsLoginOpen(true)}
           onOpenVerify={handleOpenVerify}
         />
-
-        {/* Key Stats Trust Banner */}
-        <StatsBanner />
 
         {/* Course Catalog (Clean layout, no public pricing) */}
         <CourseCatalog onOpenAdmission={handleOpenAdmission} />

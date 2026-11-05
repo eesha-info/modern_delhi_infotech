@@ -20,7 +20,8 @@ export default {
       },
       fontFamily: {
         sans: ['Inter', 'system-ui', '-apple-system', 'Segoe UI', 'Roboto', 'sans-serif'],
-        display: ['Poppins', 'Inter', 'sans-serif']
+        display: ['Poppins', 'Inter', 'sans-serif'],
+        hindi: ['Hind', 'Poppins', 'sans-serif']
       }
     },
   },
