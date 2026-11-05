@@ -99,7 +99,9 @@ npm run build
 ## 🚢 Deployment (GitHub Pages)
 
 Every push to `main` runs `.github/workflows/deploy.yml`, which builds the app with
-`VITE_BASE=/modern_delhi_infotech/` and publishes `dist/` to GitHub Pages.
+`VITE_BASE=/modern_delhi_infotech/` and pushes the built `dist/` to the `gh-pages` branch.
 
-One-time setup: **Settings → Pages → Build and deployment → Source: GitHub Actions**.
+One-time setup: **Settings → Pages → Build and deployment → Source: Deploy from a branch →
+Branch: `gh-pages` / `(root)` → Save**. Do not select `main`: that publishes the raw source (blank page).
+
 To redeploy without a code change: **Actions → Deploy to GitHub Pages → Run workflow**.

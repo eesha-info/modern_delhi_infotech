@@ -461,14 +461,19 @@ export const DataProvider = ({ children }) => {
     return newStudent;
   };
 
+  /* ---------------- Latest Updates (website marquee) ---------------- */
   const addNotice = (noticeData) => {
     const newNotice = {
-      id: `not-${Date.now().toString().slice(-4)}`,
+      id: `not-${Date.now().toString(36)}`,
       date: new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }),
+      visible: true,
       ...noticeData
     };
     setNotices(prev => [newNotice, ...prev]);
+    return newNotice;
   };
+  const updateNotice = (id, changes) => setNotices((prev) => prev.map((n) => (n.id === id ? { ...n, ...changes } : n)));
+  const deleteNotice = (id) => setNotices((prev) => prev.filter((n) => n.id !== id));
 
   return (
     <DataContext.Provider
@@ -489,6 +494,8 @@ export const DataProvider = ({ children }) => {
         updateEnquiryStatus,
         addStudent,
         addNotice,
+        updateNotice,
+        deleteNotice,
         // Course management
         saveCourse,
         deleteCourse,

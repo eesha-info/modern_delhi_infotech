@@ -22,6 +22,7 @@ import FinalCta from './components/home/FinalCta';
 import DownloadsSection from './components/home/DownloadsSection';
 import GallerySection from './components/home/GallerySection';
 import VerifyRollModal from './components/common/VerifyRollModal';
+import UpdatesTicker from './components/common/UpdatesTicker';
 
 // Modals & Dashboards
 import LoginModal from './components/auth/LoginModal';
@@ -88,6 +89,9 @@ const MainAppContent = () => {
         onOpenAdmission={() => handleOpenAdmission(null)}
         onOpenVerify={() => setIsVerifyOpen(true)}
       />
+
+      {/* Latest updates marquee */}
+      <UpdatesTicker />
 
       {/* 3. Main Body Sections */}
       <main className="flex-1">

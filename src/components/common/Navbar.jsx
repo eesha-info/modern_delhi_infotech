@@ -136,7 +136,7 @@ const Navbar = ({ onOpenLogin, onOpenAdmission, onOpenVerify }) => {
     <>
       {/* ───────── Row 1: brand bar (sticky on mobile only) ───────── */}
       <div className="sticky top-0 lg:static z-40 bg-white border-b border-slate-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between gap-4">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 sm:h-24 flex items-center justify-between gap-4">
           <button onClick={() => goTo('#top')} className="min-w-0 text-left hover:opacity-90" aria-label="Modern Delhi Infotech home">
             <Logo size="md" />
           </button>

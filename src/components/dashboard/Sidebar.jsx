@@ -3,7 +3,7 @@ import {
   LayoutGrid, Users, CheckSquare, Receipt, Mail, Clock,
   BookOpen, Keyboard, FileText, Award, Calendar, ExternalLink,
   Menu, X, User, HelpCircle, BarChart2, PieChart, TrendingUp,
-  Map, Activity, IndianRupee, ClipboardList
+  Map, Activity, IndianRupee, ClipboardList, Megaphone
 } from 'lucide-react';
 import { useAppTheme } from '../../context/ThemeContext';
 import { asset } from '../../utils/asset';
@@ -46,6 +46,7 @@ const Sidebar = ({
         { id: 'fees', label: 'Fee Management', icon: IndianRupee },
         { id: 'invoices', label: 'Invoices Balances', icon: Receipt },
         { id: 'enquiries', label: 'Admission Enquiries', icon: Mail },
+        { id: 'notices', label: 'Latest Updates', icon: Megaphone },
       ]
     },
     {

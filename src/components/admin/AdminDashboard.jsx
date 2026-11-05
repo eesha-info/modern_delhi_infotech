@@ -18,6 +18,7 @@ import AdminFees from './AdminFees';
 import AdminTests from './AdminTests';
 import AdminCertificates from './AdminCertificates';
 import AdminHome from './AdminHome';
+import AdminNotices from './AdminNotices';
 import { asset } from '../../utils/asset';
 
 const AdminDashboard = () => {
@@ -558,6 +559,7 @@ const AdminDashboard = () => {
           {activeTab === 'fees' && <AdminFees />}
           {activeTab === 'tests' && <AdminTests />}
           {activeTab === 'certificates' && <AdminCertificates />}
+          {activeTab === 'notices' && <AdminNotices />}
 
           {/* ===================== TAB: PROFILE FORM ===================== */}
           {activeTab === 'profile' && (

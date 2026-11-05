@@ -1,5 +1,11 @@
-# Builds the site and publishes it to GitHub Pages on every push to main.
-# One-time setup: Settings → Pages → Build and deployment → Source: "GitHub Actions".
+# Builds the site on every push to main and publishes the built files to the
+# `gh-pages` branch. GitHub Pages serves that branch.
+#
+# One-time setup: Settings → Pages → Build and deployment →
+#   Source: "Deploy from a branch", Branch: gh-pages, Folder: / (root) → Save
+#
+# Why a separate branch: if Pages builds from `main`, GitHub publishes the raw
+# source files (a blank page) and can overwrite the real build.
 name: Deploy to GitHub Pages
 
 on:
@@ -8,16 +14,14 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
-  pages: write
-  id-token: write
+  contents: write
 
 concurrency:
-  group: pages
+  group: deploy-gh-pages
   cancel-in-progress: true
 
 jobs:
-  build:
+  build-and-publish:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -34,18 +38,14 @@ jobs:
         env:
           VITE_BASE: /${{ github.event.repository.name }}/
 
-      - uses: actions/configure-pages@v5
+      # Serve files as-is (skip Jekyll processing)
+      - run: touch dist/.nojekyll
 
-      - uses: actions/upload-pages-artifact@v3
+      - name: Publish to gh-pages branch
+        uses: peaceiris/actions-gh-pages@v4
         with:
-          path: dist
-
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      - id: deployment
-        uses: actions/deploy-pages@v4
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_branch: gh-pages
+          publish_dir: ./dist
+          force_orphan: true
+          commit_message: "deploy: ${{ github.sha }}"
